@@ -91,12 +91,12 @@ Cost is estimated as if the calls were live.
 - `llm_calls` has no brand or run id, so per-brand cost in the report covers all brands. This comes with Module 2.
 - Concurrent `generate` for the same brand can hit the unique constraint and roll back. Single-user CLI for now; add ON CONFLICT DO NOTHING or a per-brand lock if jobs go parallel.
 - Silhouette for k=11 vs k=12 is close, so a scikit-learn upgrade could change mock clusters. The staleness test catches it, and the fix is re-recording.
-- The red-team rows (`evals/datasets/redteam.jsonl`, 11) are still `"reviewed": false`.
+- Red-team rows m1-rt-007 (HTML escaping in the dashboard) and m1-rt-010 (formula escaping on CSV export) are deferred to Module 8, when those surfaces exist.
 - On the golden set, the embedding classifier misses negation ("not hoka or brooks..." -> comparison) and the brand name used as an ordinary word ("taskflow diagram" -> navigational). It only sees words. The LLM prompt now has tie-breaks for both; measure them in the live run.
 - The live generation prompt hasn't been tried against the real API.
 
 **Maxx must do:**
 1. ~~Review the golden intent set~~ (done: 94 rows reviewed, `taskflow-029` reworded to remove a training near-duplicate, `stridelab-045` relabeled navigational under a new contrast/exclusion tie-break).
 2. ~~Add the panel settings to `.env.example`~~ (done).
-3. Review the 11 red-team rows in `evals/datasets/redteam.jsonl` and flip `reviewed`.
+3. ~~Review the red-team rows~~ (done: all 11 reviewed; 007, 008, 010 and 011 expectations tightened).
 4. Optional live smoke test: `CITEWISE_MODE=live uv run citewise panel generate Stridelab --max-cost 0.50`, then `panel cluster`, then `panel eval-intent Stridelab --golden evals/datasets/golden/intent.jsonl` to get the LLM-vs-golden number.
