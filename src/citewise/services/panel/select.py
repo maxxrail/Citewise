@@ -39,9 +39,9 @@ class PanelReport:
 
 
 def _proportional(sizes: dict[tuple, int], quota: int) -> dict[tuple, int]:
-    """Split `quota` across cells in proportion to `sizes` (D'Hondt), capped at each size.
+    """Split `quota` across cells in proportion to `sizes` (Sainte-Laguë), capped at each size.
 
-    One seat at a time to the cell with the highest size / (seats + 1); ties go to the
+    One seat at a time to the cell with the highest size / (2 * seats + 1); ties go to the
     bigger cell, then the cell key, so the result is deterministic.
     """
     alloc = dict.fromkeys(sizes, 0)
@@ -49,7 +49,7 @@ def _proportional(sizes: dict[tuple, int], quota: int) -> dict[tuple, int]:
         open_cells = [c for c, s in sizes.items() if alloc[c] < s]
         if not open_cells:
             break
-        best = max(open_cells, key=lambda c: (sizes[c] / (alloc[c] + 1), sizes[c], str(c)))
+        best = max(open_cells, key=lambda c: (sizes[c] / (2 * alloc[c] + 1), sizes[c], str(c)))
         alloc[best] += 1
     return alloc
 

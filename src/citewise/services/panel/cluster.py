@@ -81,7 +81,7 @@ def hdbscan_clusters(x: np.ndarray, min_cluster_size: int | None = None) -> Clus
     """Density clustering; noise (-1) is attached to the nearest cluster centroid."""
     n = x.shape[0]
     size = min_cluster_size or max(5, n // 40)
-    raw = HDBSCAN(min_cluster_size=size, metric="euclidean").fit_predict(x)
+    raw = HDBSCAN(min_cluster_size=size, metric="euclidean", copy=True).fit_predict(x)
     ids = sorted(set(raw) - {-1})
     if not ids:  # everything is noise: one topic
         return Clustering(np.zeros(n, dtype=int), 1, "hdbscan")

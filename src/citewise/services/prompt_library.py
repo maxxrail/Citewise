@@ -16,7 +16,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from jinja2 import Environment, FileSystemLoader, StrictUndefined
+from jinja2 import Environment, FileSystemLoader, StrictUndefined, Undefined
 
 from citewise.core.config import get_settings
 from citewise.providers.base import Message
@@ -26,6 +26,9 @@ USER_MARKER = "=== user ==="
 
 def as_data(value: Any) -> str:
     """JSON-encode a value for a template so quotes/newlines can't break out of it."""
+    if isinstance(value, Undefined):
+        # Raise jinja's own "'x' is undefined" instead of an opaque JSON serialization error.
+        value._fail_with_undefined_error()
     return json.dumps(value, ensure_ascii=False)
 
 
@@ -55,6 +58,8 @@ def render(name: str, version: str, prompts_dir: Path | None = None, **ctx: Any)
     """Render `prompts/<name>.<version>.jinja`, e.g. render("panel/generate", "v1", ...)."""
     prompts_dir = prompts_dir or get_settings().prompts_dir
     text = _env(prompts_dir).get_template(f"{name}.{version}.jinja").render(**ctx)
+    # Mock fixture keys hash the rendered messages: a CRLF checkout must not change them.
+    text = text.replace("\r\n", "\n")
     if USER_MARKER not in text:
         raise ValueError(f"Template {name}.{version} is missing the {USER_MARKER!r} line")
     system, user = (part.strip() for part in text.split(USER_MARKER, 1))
