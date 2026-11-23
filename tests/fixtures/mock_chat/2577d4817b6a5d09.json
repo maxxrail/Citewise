@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"Does Stridelab make trail shoes?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab trail shoe review\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Stride Lab trail runner grip review\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Stridelab good on muddy trails?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab trail shoes for ultras any good\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab waterproof trail shoe\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What is the lug depth on Stridelab trail shoes?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"do stridelab trail shoes run small\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Stridelab trail shoe durability review\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Does StrideLab sponsor any ultra runners?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is the Stridelab trail shoe good in snow?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab trail shoe weight\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Does the Stridelab trail shoe have a rock plate?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab trail shoe drop\", \"funnel_stage\": \"consideration\"}, {\"text\": \"where to buy stridelab trail shoes\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridlab trail shoes\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab store locator\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Stridelab trail shoe warranty\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Are Stridelab trail shoes worth it?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab trail shoe size guide\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "Does Stridelab make trail shoes?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab trail shoe review",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Stride Lab trail runner grip review",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Stridelab good on muddy trails?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab trail shoes for ultras any good",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab waterproof trail shoe",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What is the lug depth on Stridelab trail shoes?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "do stridelab trail shoes run small",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Stridelab trail shoe durability review",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Does StrideLab sponsor any ultra runners?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is the Stridelab trail shoe good in snow?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab trail shoe weight",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Does the Stridelab trail shoe have a rock plate?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab trail shoe drop",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "where to buy stridelab trail shoes",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridlab trail shoes",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab store locator",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Stridelab trail shoe warranty",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Are Stridelab trail shoes worth it?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab trail shoe size guide",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

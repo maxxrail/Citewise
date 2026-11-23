@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Integrations and API\", \"description\": \"Connecting the tool to GitHub, Slack, GitLab and custom code.\"}",
+ "parsed": {
+  "label": "Integrations and API",
+  "description": "Connecting the tool to GitHub, Slack, GitLab and custom code."
+ }
+}

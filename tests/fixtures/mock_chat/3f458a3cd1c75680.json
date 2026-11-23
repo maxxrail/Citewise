@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"Does Taskflow have a client portal?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow for agencies review\", \"funnel_stage\": \"consideration\"}, {\"text\": \"How does Taskflow time tracking work?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow guest access for clients\", \"funnel_stage\": \"consideration\"}, {\"text\": \"is taskflow good for agency work\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Does Taskflow have Gantt charts?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow resource management\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow pm agency templates\", \"funnel_stage\": \"consideration\"}, {\"text\": \"task flow client approvals\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Can clients leave comments in Taskflow?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow invoicing\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Does Taskflow offer white labeling?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow workload view\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What are Taskflow's customer support hours?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow case studies agencies\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow reviews g2\", \"funnel_stage\": \"consideration\"}, {\"text\": \"How does Taskflow handle retainers?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow monday comparison\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow agency plan price\", \"funnel_stage\": \"decision\"}, {\"text\": \"TaskFlow capterra\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "Does Taskflow have a client portal?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow for agencies review",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "How does Taskflow time tracking work?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow guest access for clients",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "is taskflow good for agency work",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Does Taskflow have Gantt charts?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow resource management",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow pm agency templates",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "task flow client approvals",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Can clients leave comments in Taskflow?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow invoicing",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Does Taskflow offer white labeling?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow workload view",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What are Taskflow's customer support hours?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow case studies agencies",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow reviews g2",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "How does Taskflow handle retainers?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow monday comparison",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow agency plan price",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "TaskFlow capterra",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"best running shoes for first marathon\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What are the best cushioned shoes for marathon training?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What shoes should a beginner buy for marathon training?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Can you recommend a good long run shoe for a heavier runner?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best daily trainer for 30 miles a week\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Best marathon shoes under $150?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"good running shoes for slow marathon runners\", \"funnel_stage\": \"consideration\"}, {\"text\": \"beginner marathon shoe recomendations\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What are the best shoes for long runs?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best shoes for long runs?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What running shoes do most first-time marathoners wear?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best running shoes for wide feet marathon\", \"funnel_stage\": \"consideration\"}, {\"text\": \"top rated neutral running shoes 2026\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is a carbon plate shoe worth it for a 5 hour marathon?\", \"funnel_stage\": \"decision\"}, {\"text\": \"What's a good race day shoe for a beginner?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Should I buy a separate pair of shoes just for race day?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"hoka clifton or brooks ghost for first marathon\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Best running shoes for marathon training on concrete?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"marathon shoe discounts this week\", \"funnel_stage\": \"decision\"}, {\"text\": \"Which brands make the best marathon shoes for beginners?\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "best running shoes for first marathon",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What are the best cushioned shoes for marathon training?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What shoes should a beginner buy for marathon training?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Can you recommend a good long run shoe for a heavier runner?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best daily trainer for 30 miles a week",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Best marathon shoes under $150?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "good running shoes for slow marathon runners",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "beginner marathon shoe recomendations",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What are the best shoes for long runs?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best shoes for long runs?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What running shoes do most first-time marathoners wear?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best running shoes for wide feet marathon",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "top rated neutral running shoes 2026",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is a carbon plate shoe worth it for a 5 hour marathon?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "What's a good race day shoe for a beginner?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Should I buy a separate pair of shoes just for race day?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "hoka clifton or brooks ghost for first marathon",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Best running shoes for marathon training on concrete?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "marathon shoe discounts this week",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Which brands make the best marathon shoes for beginners?",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

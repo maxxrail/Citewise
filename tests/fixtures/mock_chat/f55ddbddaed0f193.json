@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"How do startups usually organize tasks before they hire a PM?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"what is a kanban board\", \"funnel_stage\": \"awareness\"}, {\"text\": \"kanban vs scrum for a 5 person startup\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do I run a weekly planning meeting with a small team?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"What is OKR planning and how do early stage startups use it?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do you build a product roadmap you can show investors?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"how to set priorities when everything is urgent\", \"funnel_stage\": \"awareness\"}, {\"text\": \"project management for non technical founders\", \"funnel_stage\": \"consideration\"}, {\"text\": \"what is a sprint\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do you track tasks across a remote team in different time zones?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"whats the difference between a task and a project in pm software\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Do I even need project management software with 3 people?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How should I onboard our first employees onto our workflow?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"how to keep a startup roadmap updated\", \"funnel_stage\": \"awareness\"}, {\"text\": \"What is a Gantt chart used for?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do I set up recurring tasks for my team?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do I stop work getting lost in Slack threads?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"best free project management tool for a startup\", \"funnel_stage\": \"consideration\"}, {\"text\": \"How do you run async standups?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"what does a project managment tool actually do\", \"funnel_stage\": \"awareness\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "How do startups usually organize tasks before they hire a PM?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "what is a kanban board",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "kanban vs scrum for a 5 person startup",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do I run a weekly planning meeting with a small team?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "What is OKR planning and how do early stage startups use it?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do you build a product roadmap you can show investors?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "how to set priorities when everything is urgent",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "project management for non technical founders",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "what is a sprint",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do you track tasks across a remote team in different time zones?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "whats the difference between a task and a project in pm software",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Do I even need project management software with 3 people?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How should I onboard our first employees onto our workflow?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "how to keep a startup roadmap updated",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "What is a Gantt chart used for?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do I set up recurring tasks for my team?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do I stop work getting lost in Slack threads?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "best free project management tool for a startup",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "How do you run async standups?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "what does a project managment tool actually do",
+    "funnel_stage": "awareness"
+   }
+  ]
+ }
+}

@@ -54,9 +54,20 @@ class Settings(BaseSettings):
     llm_timeout_s: float = Field(default=60.0, gt=0)
     llm_max_retries: int = Field(default=2, ge=0)
 
+    # Prompt panel (Module 1).
+    panel_prompts_per_cell: int = Field(default=20, ge=1, le=50)  # per (intent x persona)
+    panel_dedup_threshold: float = Field(default=0.92, gt=0, le=1)
+    # Silhouette curves on short-text embeddings are flat, so the k range carries a product
+    # prior (a ~300-prompt panel reads best as 6-14 topics). See DECISIONS.md.
+    panel_k_min: int = Field(default=6, ge=2)
+    panel_k_max: int = Field(default=14, ge=2)
+    panel_pca_dims: int = Field(default=20, ge=0)  # 0 = cluster the raw embeddings
+    panel_classify_batch: int = Field(default=25, ge=1, le=100)
+
     # Where mock fixtures live. Tests and CI use the repo copy.
     fixtures_dir: Path = REPO_ROOT / "tests" / "fixtures"
     brands_dir: Path = REPO_ROOT / "data" / "brands"
+    prompts_dir: Path = REPO_ROOT / "prompts"  # versioned prompt templates
 
     @property
     def is_mock(self) -> bool:

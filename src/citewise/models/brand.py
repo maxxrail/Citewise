@@ -23,6 +23,8 @@ class Brand(Base):
     category: Mapped[str] = mapped_column(String(200), nullable=False)
     aliases: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False)
     competitors: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False)
+    # Buyer personas used to generate the prompt panel (Module 1), e.g. "trail runner".
+    personas: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utcnow, nullable=False
     )

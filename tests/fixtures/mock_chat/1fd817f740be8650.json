@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Agency tool comparisons\", \"description\": \"Agencies comparing Taskflow with Asana, Monday.com and others for client work.\"}",
+ "parsed": {
+  "label": "Agency tool comparisons",
+  "description": "Agencies comparing Taskflow with Asana, Monday.com and others for client work."
+ }
+}

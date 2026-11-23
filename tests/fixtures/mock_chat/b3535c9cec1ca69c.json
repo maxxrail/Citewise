@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Pricing and plans\", \"description\": \"Seat prices, plan tiers, free plans and enterprise quotes.\"}",
+ "parsed": {
+  "label": "Pricing and plans",
+  "description": "Seat prices, plan tiers, free plans and enterprise quotes."
+ }
+}

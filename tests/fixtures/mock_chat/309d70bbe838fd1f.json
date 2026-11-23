@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"hoka vs brooks for marathon training\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Nike Pegasus vs Hoka Clifton for a first marathon?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab vs hoka for long runs\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Stridelab better than Brooks for beginners?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"asics or new balance for marathon training\", \"funnel_stage\": \"consideration\"}, {\"text\": \"On Cloud vs Hoka for marathons, which is better?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab vs nike for marathon\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab vs nike for a marathon?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"brooks ghost vs asics novablast\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Can you compare Stridelab and New Balance marathon shoes?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"nike vapofly vs hoka rocket x for a beginner\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Carbon plate shoe or regular trainer for my first marathon?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab vs on running for marathon\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Which is more cushioned, Hoka or Stridelab?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"brooks vs asics which lasts longer\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab or asics for 4 hour marathon\", \"funnel_stage\": \"decision\"}, {\"text\": \"Hoka vs New Balance for heavier runners?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Nike or Stridelab better for race day?\", \"funnel_stage\": \"decision\"}, {\"text\": \"Compare marathon shoes from Stridelab, Hoka and Brooks\", \"funnel_stage\": \"consideration\"}, {\"text\": \"is stridelab good for marathon training\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "hoka vs brooks for marathon training",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Nike Pegasus vs Hoka Clifton for a first marathon?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab vs hoka for long runs",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Stridelab better than Brooks for beginners?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "asics or new balance for marathon training",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "On Cloud vs Hoka for marathons, which is better?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab vs nike for marathon",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab vs nike for a marathon?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "brooks ghost vs asics novablast",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Can you compare Stridelab and New Balance marathon shoes?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "nike vapofly vs hoka rocket x for a beginner",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Carbon plate shoe or regular trainer for my first marathon?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab vs on running for marathon",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Which is more cushioned, Hoka or Stridelab?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "brooks vs asics which lasts longer",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab or asics for 4 hour marathon",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Hoka vs New Balance for heavier runners?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Nike or Stridelab better for race day?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Compare marathon shoes from Stridelab, Hoka and Brooks",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "is stridelab good for marathon training",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

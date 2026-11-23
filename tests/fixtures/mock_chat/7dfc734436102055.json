@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Client and agency workflows\", \"description\": \"Running client work: portals, approvals, guest access and retainers.\"}",
+ "parsed": {
+  "label": "Client and agency workflows",
+  "description": "Running client work: portals, approvals, guest access and retainers."
+ }
+}

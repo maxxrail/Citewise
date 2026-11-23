@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Brand reputation and reviews\", \"description\": \"Whether Taskflow is legit, who owns it, and what reviews say.\"}",
+ "parsed": {
+  "label": "Brand reputation and reviews",
+  "description": "Whether Taskflow is legit, who owns it, and what reviews say."
+ }
+}

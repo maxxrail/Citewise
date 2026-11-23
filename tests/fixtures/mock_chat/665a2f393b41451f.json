@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Pricing and discounts\", \"description\": \"Price, sales, coupons, promo codes and cheap options.\"}",
+ "parsed": {
+  "label": "Pricing and discounts",
+  "description": "Price, sales, coupons, promo codes and cheap options."
+ }
+}

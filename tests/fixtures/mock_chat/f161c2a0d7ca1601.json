@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Cushioning and heel drop\", \"description\": \"How much cushioning, stack and heel drop a runner needs.\"}",
+ "parsed": {
+  "label": "Cushioning and heel drop",
+  "description": "How much cushioning, stack and heel drop a runner needs."
+ }
+}

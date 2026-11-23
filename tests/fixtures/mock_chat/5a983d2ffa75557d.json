@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"best project management software for startups\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Best project management software for startups?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What's the best free project management tool for small teams?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"cheap pm tool for 5 people\", \"funnel_stage\": \"decision\"}, {\"text\": \"Which project management app should a seed stage startup use?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best tool to manage a product roadmap\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best pm tool with slack integration\", \"funnel_stage\": \"consideration\"}, {\"text\": \"simple task management app for founders\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What project management software scales from 5 to 50 people?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What's the best all-in-one workspace for startups?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"what pm tool do yc startups use\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is there a good tool for OKRs and tasks in one place?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Can you recommend a project tracker for a fully remote team?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What's the best project management tool for non-technical founders?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"asana or clickup for a small startup\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best kanban app for small team\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best kanban apps for small teams\", \"funnel_stage\": \"consideration\"}, {\"text\": \"good alternatives to notion for task tracking\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best project managment software 2026\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is there a tool that tracks investor updates and tasks together?\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "best project management software for startups",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Best project management software for startups?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What's the best free project management tool for small teams?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "cheap pm tool for 5 people",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Which project management app should a seed stage startup use?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best tool to manage a product roadmap",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best pm tool with slack integration",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "simple task management app for founders",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What project management software scales from 5 to 50 people?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What's the best all-in-one workspace for startups?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "what pm tool do yc startups use",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is there a good tool for OKRs and tasks in one place?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Can you recommend a project tracker for a fully remote team?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What's the best project management tool for non-technical founders?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "asana or clickup for a small startup",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best kanban app for small team",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best kanban apps for small teams",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "good alternatives to notion for task tracking",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best project managment software 2026",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is there a tool that tracks investor updates and tasks together?",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"cheap stability running shoes\", \"funnel_stage\": \"decision\"}, {\"text\": \"Does Stridelab give a discount to physical therapy patients?\", \"funnel_stage\": \"decision\"}, {\"text\": \"buy running shoes for flat feet online\", \"funnel_stage\": \"decision\"}, {\"text\": \"brooks adrenaline sale\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab wide fit buy\", \"funnel_stage\": \"decision\"}, {\"text\": \"cheapest shoes for plantar fasciitus\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab coupon code\", \"funnel_stage\": \"decision\"}, {\"text\": \"new balance 860 discount\", \"funnel_stage\": \"decision\"}, {\"text\": \"Does Stridelab have a home try-on program?\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab 30 day trial run\", \"funnel_stage\": \"decision\"}, {\"text\": \"Are there HSA eligible running shoes I can buy?\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab gift card\", \"funnel_stage\": \"decision\"}, {\"text\": \"order stridelab wide size\", \"funnel_stage\": \"decision\"}, {\"text\": \"asics kayano cheapest price\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab free returns\", \"funnel_stage\": \"decision\"}, {\"text\": \"cheap running shoes for shin splints\", \"funnel_stage\": \"decision\"}, {\"text\": \"How long do stability shoes last?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Is there a discount if I buy two pairs from Stridelab?\", \"funnel_stage\": \"decision\"}, {\"text\": \"stability shoes deals\", \"funnel_stage\": \"decision\"}, {\"text\": \"Is Stridelab good for bad knees?\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "cheap stability running shoes",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Does Stridelab give a discount to physical therapy patients?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "buy running shoes for flat feet online",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "brooks adrenaline sale",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab wide fit buy",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "cheapest shoes for plantar fasciitus",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab coupon code",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "new balance 860 discount",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Does Stridelab have a home try-on program?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab 30 day trial run",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Are there HSA eligible running shoes I can buy?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab gift card",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "order stridelab wide size",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "asics kayano cheapest price",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab free returns",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "cheap running shoes for shin splints",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "How long do stability shoes last?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Is there a discount if I buy two pairs from Stridelab?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stability shoes deals",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Is Stridelab good for bad knees?",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

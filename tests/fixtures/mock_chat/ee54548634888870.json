@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Stridelab for marathons\", \"description\": \"Whether Stridelab models suit a first or goal marathon, often against rivals.\"}",
+ "parsed": {
+  "label": "Stridelab for marathons",
+  "description": "Whether Stridelab models suit a first or goal marathon, often against rivals."
+ }
+}

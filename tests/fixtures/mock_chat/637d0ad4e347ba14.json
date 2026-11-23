@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"best trail running shoes for mud\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best trail running shoes for mud?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What are the best trail shoes for rocky technical terrain?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"waterproof trail runners recommendations\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What's the best shoe for a first 50k?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"good trail shoes for wide feet\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Best ultra running shoes with lots of cushion?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"trail shoes that also work on roads\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Which trail shoes have the best grip on wet rock?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Can you recommend trail shoes for winter running in snow?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best zero drop trail shoes\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What are the best lightweight trail racing shoes?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best trail shoes for 100 milers\", \"funnel_stage\": \"consideration\"}, {\"text\": \"trail runers for beginners\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Best trail shoes with a rock plate?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"is stridelab any good for trail running\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What trail shoes do most ultra runners wear?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"hoka speedgoat vs brooks cascadia for mud\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best gore tex trail shoes\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What are good trail shoes for desert running?\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "best trail running shoes for mud",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best trail running shoes for mud?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What are the best trail shoes for rocky technical terrain?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "waterproof trail runners recommendations",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What's the best shoe for a first 50k?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "good trail shoes for wide feet",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Best ultra running shoes with lots of cushion?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "trail shoes that also work on roads",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Which trail shoes have the best grip on wet rock?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Can you recommend trail shoes for winter running in snow?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best zero drop trail shoes",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What are the best lightweight trail racing shoes?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best trail shoes for 100 milers",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "trail runers for beginners",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Best trail shoes with a rock plate?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "is stridelab any good for trail running",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What trail shoes do most ultra runners wear?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "hoka speedgoat vs brooks cascadia for mud",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best gore tex trail shoes",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What are good trail shoes for desert running?",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

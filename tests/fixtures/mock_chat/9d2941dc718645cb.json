@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Carbon plates and racing\", \"description\": \"Carbon-plated super shoes and lightweight racers for race day.\"}",
+ "parsed": {
+  "label": "Carbon plates and racing",
+  "description": "Carbon-plated super shoes and lightweight racers for race day."
+ }
+}

@@ -1,0 +1,108 @@
+{
+ "purpose": "panel.classify",
+ "text": "{\"labels\": [{\"id\": 1, \"intent\": \"navigational\"}, {\"id\": 2, \"intent\": \"navigational\"}, {\"id\": 3, \"intent\": \"navigational\"}, {\"id\": 4, \"intent\": \"navigational\"}, {\"id\": 5, \"intent\": \"navigational\"}, {\"id\": 6, \"intent\": \"navigational\"}, {\"id\": 7, \"intent\": \"navigational\"}, {\"id\": 8, \"intent\": \"navigational\"}, {\"id\": 9, \"intent\": \"navigational\"}, {\"id\": 10, \"intent\": \"navigational\"}, {\"id\": 11, \"intent\": \"navigational\"}, {\"id\": 12, \"intent\": \"navigational\"}, {\"id\": 13, \"intent\": \"navigational\"}, {\"id\": 14, \"intent\": \"navigational\"}, {\"id\": 15, \"intent\": \"transactional\"}, {\"id\": 16, \"intent\": \"navigational\"}, {\"id\": 17, \"intent\": \"navigational\"}, {\"id\": 18, \"intent\": \"navigational\"}, {\"id\": 19, \"intent\": \"transactional\"}, {\"id\": 20, \"intent\": \"transactional\"}, {\"id\": 21, \"intent\": \"transactional\"}, {\"id\": 22, \"intent\": \"transactional\"}, {\"id\": 23, \"intent\": \"transactional\"}, {\"id\": 24, \"intent\": \"transactional\"}, {\"id\": 25, \"intent\": \"transactional\"}]}",
+ "parsed": {
+  "labels": [
+   {
+    "id": 1,
+    "intent": "navigational"
+   },
+   {
+    "id": 2,
+    "intent": "navigational"
+   },
+   {
+    "id": 3,
+    "intent": "navigational"
+   },
+   {
+    "id": 4,
+    "intent": "navigational"
+   },
+   {
+    "id": 5,
+    "intent": "navigational"
+   },
+   {
+    "id": 6,
+    "intent": "navigational"
+   },
+   {
+    "id": 7,
+    "intent": "navigational"
+   },
+   {
+    "id": 8,
+    "intent": "navigational"
+   },
+   {
+    "id": 9,
+    "intent": "navigational"
+   },
+   {
+    "id": 10,
+    "intent": "navigational"
+   },
+   {
+    "id": 11,
+    "intent": "navigational"
+   },
+   {
+    "id": 12,
+    "intent": "navigational"
+   },
+   {
+    "id": 13,
+    "intent": "navigational"
+   },
+   {
+    "id": 14,
+    "intent": "navigational"
+   },
+   {
+    "id": 15,
+    "intent": "transactional"
+   },
+   {
+    "id": 16,
+    "intent": "navigational"
+   },
+   {
+    "id": 17,
+    "intent": "navigational"
+   },
+   {
+    "id": 18,
+    "intent": "navigational"
+   },
+   {
+    "id": 19,
+    "intent": "transactional"
+   },
+   {
+    "id": 20,
+    "intent": "transactional"
+   },
+   {
+    "id": 21,
+    "intent": "transactional"
+   },
+   {
+    "id": 22,
+    "intent": "transactional"
+   },
+   {
+    "id": 23,
+    "intent": "transactional"
+   },
+   {
+    "id": 24,
+    "intent": "transactional"
+   },
+   {
+    "id": 25,
+    "intent": "transactional"
+   }
+  ]
+ }
+}

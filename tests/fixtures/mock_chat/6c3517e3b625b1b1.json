@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Sprint and agile planning\", \"description\": \"Sprints, backlogs, story points, scrum and kanban for dev teams.\"}",
+ "parsed": {
+  "label": "Sprint and agile planning",
+  "description": "Sprints, backlogs, story points, scrum and kanban for dev teams."
+ }
+}

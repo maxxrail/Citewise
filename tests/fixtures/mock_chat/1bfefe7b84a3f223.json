@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Time tracking and billing\", \"description\": \"Tracking billable hours, timesheets and invoicing.\"}",
+ "parsed": {
+  "label": "Time tracking and billing",
+  "description": "Tracking billable hours, timesheets and invoicing."
+ }
+}

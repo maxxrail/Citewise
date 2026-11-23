@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"How do I run downhill on technical trails without falling?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"What makes a shoe good for trail running?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"what are lugs on trail shoes\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Do trail running shoes need a rock plate?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How deep should lugs be for muddy trails?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"trail vs road shoes difference\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Is Gore-Tex worth it for trail running shoes?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do you keep your feet dry on a rainy trail run?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"how often should you replace trail shoes\", \"funnel_stage\": \"awareness\"}, {\"text\": \"What should I wear for my first 50k ultra?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"whats zero drop and is it good for trails\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How should I lace trail shoes so my heel doesn't slip on climbs?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Why do my feet go numb on long trail runs?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Can you use trail shoes on the road?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"hoka or salomon for snowy trails\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best way to clean muddy trail shoes\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do people train for a 100 mile ultra?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"trail shoe toe bumper what is it for\", \"funnel_stage\": \"awareness\"}, {\"text\": \"best trail shoes for rocky terrain\", \"funnel_stage\": \"consideration\"}, {\"text\": \"How do I stop rolling my ankle on trails?\", \"funnel_stage\": \"awareness\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "How do I run downhill on technical trails without falling?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "What makes a shoe good for trail running?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "what are lugs on trail shoes",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Do trail running shoes need a rock plate?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How deep should lugs be for muddy trails?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "trail vs road shoes difference",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Is Gore-Tex worth it for trail running shoes?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do you keep your feet dry on a rainy trail run?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "how often should you replace trail shoes",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "What should I wear for my first 50k ultra?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "whats zero drop and is it good for trails",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How should I lace trail shoes so my heel doesn't slip on climbs?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Why do my feet go numb on long trail runs?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Can you use trail shoes on the road?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "hoka or salomon for snowy trails",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best way to clean muddy trail shoes",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do people train for a 100 mile ultra?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "trail shoe toe bumper what is it for",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "best trail shoes for rocky terrain",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "How do I stop rolling my ankle on trails?",
+    "funnel_stage": "awareness"
+   }
+  ]
+ }
+}

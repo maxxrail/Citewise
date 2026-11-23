@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"asana vs clickup for startups\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs asana\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Taskflow vs Notion for a small team?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"trello or taskflow for a 5 person startup\", \"funnel_stage\": \"consideration\"}, {\"text\": \"notion vs clickup for project management\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Taskflow better than Monday.com for startups?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs trello\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs trello?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Compare Taskflow, ClickUp and Asana\", \"funnel_stage\": \"consideration\"}, {\"text\": \"asana vs monday for a seed startup\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow or notion for roadmaps\", \"funnel_stage\": \"consideration\"}, {\"text\": \"clickup vs trello which is simpler\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs clickup pricing\", \"funnel_stage\": \"decision\"}, {\"text\": \"Notion or Asana for founders?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs asana for remote teams\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Which is easier to set up, Taskflow or Monday.com?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"trello vs asana free plan\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow vs notion vs clickup\", \"funnel_stage\": \"consideration\"}, {\"text\": \"is taskflow good for startups\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Best tool for a startup, Asana or something else?\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "asana vs clickup for startups",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs asana",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Taskflow vs Notion for a small team?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "trello or taskflow for a 5 person startup",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "notion vs clickup for project management",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Taskflow better than Monday.com for startups?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs trello",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs trello?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Compare Taskflow, ClickUp and Asana",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "asana vs monday for a seed startup",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow or notion for roadmaps",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "clickup vs trello which is simpler",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs clickup pricing",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Notion or Asana for founders?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs asana for remote teams",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Which is easier to set up, Taskflow or Monday.com?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "trello vs asana free plan",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow vs notion vs clickup",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "is taskflow good for startups",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Best tool for a startup, Asana or something else?",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

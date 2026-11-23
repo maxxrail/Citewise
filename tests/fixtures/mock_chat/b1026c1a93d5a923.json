@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Migration from other tools\", \"description\": \"Moving projects and history off Jira, Trello or spreadsheets.\"}",
+ "parsed": {
+  "label": "Migration from other tools",
+  "description": "Moving projects and history off Jira, Trello or spreadsheets."
+ }
+}

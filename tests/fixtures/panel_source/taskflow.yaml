@@ -1,0 +1,721 @@
+# Recorded LLM panel-generation output for the fictional brand Taskflow (project management SaaS).
+# Hand-authored for Module 1 mock mode. 15 cells = 5 intents x 3 personas, 20 prompts each.
+# `label` is present only where the generated prompt drifted to a different intent
+# than the cell it was generated for (what a careful labeler would assign).
+brand: Taskflow
+cells:
+  - intent: informational
+    persona: startup founder
+    prompts:
+      - text: How do startups usually organize tasks before they hire a PM?
+        funnel_stage: awareness
+      - text: what is a kanban board
+        funnel_stage: awareness
+      - text: kanban vs scrum for a 5 person startup
+        funnel_stage: awareness
+      - text: How do I run a weekly planning meeting with a small team?
+        funnel_stage: awareness
+      - text: What is OKR planning and how do early stage startups use it?
+        funnel_stage: awareness
+      - text: How do you build a product roadmap you can show investors?
+        funnel_stage: awareness
+      - text: how to set priorities when everything is urgent
+        funnel_stage: awareness
+      - text: project management for non technical founders
+        funnel_stage: consideration
+        label: commercial
+      - text: what is a sprint
+        funnel_stage: awareness
+      - text: How do you track tasks across a remote team in different time zones?
+        funnel_stage: awareness
+      - text: whats the difference between a task and a project in pm software
+        funnel_stage: awareness
+      - text: Do I even need project management software with 3 people?
+        funnel_stage: awareness
+      - text: How should I onboard our first employees onto our workflow?
+        funnel_stage: awareness
+      - text: how to keep a startup roadmap updated
+        funnel_stage: awareness
+      - text: What is a Gantt chart used for?
+        funnel_stage: awareness
+      - text: How do I set up recurring tasks for my team?
+        funnel_stage: awareness
+      - text: How do I stop work getting lost in Slack threads?
+        funnel_stage: awareness
+      - text: best free project management tool for a startup
+        funnel_stage: consideration
+        label: commercial
+      - text: How do you run async standups?
+        funnel_stage: awareness
+      - text: what does a project managment tool actually do
+        funnel_stage: awareness
+  - intent: informational
+    persona: agency project manager
+    prompts:
+      - text: How do you manage multiple client projects at once without dropping things?
+        funnel_stage: awareness
+      - text: how do agencies track billable hours
+        funnel_stage: awareness
+      - text: What is resource planning in an agency?
+        funnel_stage: awareness
+      - text: How can I get client approvals faster?
+        funnel_stage: awareness
+      - text: how to scope a website project for a client
+        funnel_stage: awareness
+      - text: What's the best way to handle scope creep with clients?
+        funnel_stage: awareness
+      - text: What should a weekly client status report include?
+        funnel_stage: awareness
+      - text: how to plan team capacity across clients
+        funnel_stage: awareness
+      - text: agency project intake process
+        funnel_stage: awareness
+      - text: How do I set up a client onboarding checklist?
+        funnel_stage: awareness
+      - text: what is a retainer and how do you track it
+        funnel_stage: awareness
+      - text: How do you reuse templates for repeat client projects?
+        funnel_stage: awareness
+      - text: How can I share project timelines with clients without giving them full access?
+        funnel_stage: awareness
+      - text: what is a raci chart
+        funnel_stage: awareness
+      - text: How do agencies estimate project timelines?
+        funnel_stage: awareness
+      - text: creative approval workflow steps
+        funnel_stage: awareness
+      - text: does taskflow have time tracking for clients
+        funnel_stage: consideration
+        label: navigational
+      - text: whats a gantt chart dependency
+        funnel_stage: awareness
+      - text: Is Taskflow good for agencies?
+        funnel_stage: consideration
+        label: navigational
+      - text: How do you manage freelancers on client projects?
+        funnel_stage: awareness
+  - intent: informational
+    persona: engineering lead
+    prompts:
+      - text: How do I run sprint planning for a team of 12 engineers?
+        funnel_stage: awareness
+      - text: what is story point estimation
+        funnel_stage: awareness
+      - text: How do you measure engineering velocity without people gaming it?
+        funnel_stage: awareness
+      - text: How do you migrate off Jira without losing ticket history?
+        funnel_stage: awareness
+      - text: what is a burndown chart
+        funnel_stage: awareness
+      - text: How do I link pull requests to tickets automatically?
+        funnel_stage: awareness
+      - text: how to structure a backlog for a platform team
+        funnel_stage: awareness
+      - text: scrum vs kanban for engineering teams
+        funnel_stage: awareness
+      - text: How do you run a retro that isn't boring?
+        funnel_stage: awareness
+      - text: how to track tech debt in a project tool
+        funnel_stage: awareness
+      - text: What metrics should an engineering manager report upward?
+        funnel_stage: awareness
+      - text: How do you balance on-call work with sprint commitments?
+        funnel_stage: awareness
+      - text: how to organize bugs vs features in a backlog
+        funnel_stage: awareness
+      - text: whats the difference between epics and stories
+        funnel_stage: awareness
+      - text: How should I plan a quarterly engineering roadmap?
+        funnel_stage: awareness
+      - text: how to automate ticket status from github
+        funnel_stage: awareness
+      - text: How many story points per sprint is normal?
+        funnel_stage: awareness
+      - text: How do you handle cross-team dependencies?
+        funnel_stage: awareness
+      - text: jira alternatives for engineering teams
+        funnel_stage: consideration
+        label: commercial
+      - text: what is cycle time
+        funnel_stage: awareness
+  - intent: commercial
+    persona: startup founder
+    prompts:
+      - text: best project management software for startups
+        funnel_stage: consideration
+      - text: Best project management software for startups?
+        funnel_stage: consideration
+      - text: What's the best free project management tool for small teams?
+        funnel_stage: consideration
+      - text: cheap pm tool for 5 people
+        funnel_stage: decision
+        label: transactional
+      - text: Which project management app should a seed stage startup use?
+        funnel_stage: consideration
+      - text: best tool to manage a product roadmap
+        funnel_stage: consideration
+      - text: best pm tool with slack integration
+        funnel_stage: consideration
+      - text: simple task management app for founders
+        funnel_stage: consideration
+      - text: What project management software scales from 5 to 50 people?
+        funnel_stage: consideration
+      - text: What's the best all-in-one workspace for startups?
+        funnel_stage: consideration
+      - text: what pm tool do yc startups use
+        funnel_stage: consideration
+      - text: Is there a good tool for OKRs and tasks in one place?
+        funnel_stage: consideration
+      - text: Can you recommend a project tracker for a fully remote team?
+        funnel_stage: consideration
+      - text: What's the best project management tool for non-technical founders?
+        funnel_stage: consideration
+      - text: asana or clickup for a small startup
+        funnel_stage: consideration
+        label: comparison
+      - text: best kanban app for small team
+        funnel_stage: consideration
+      - text: best kanban apps for small teams
+        funnel_stage: consideration
+      - text: good alternatives to notion for task tracking
+        funnel_stage: consideration
+      - text: best project managment software 2026
+        funnel_stage: consideration
+      - text: Is there a tool that tracks investor updates and tasks together?
+        funnel_stage: consideration
+  - intent: commercial
+    persona: agency project manager
+    prompts:
+      - text: What's the best project management software for agencies?
+        funnel_stage: consideration
+      - text: best tool for managing client projects
+        funnel_stage: consideration
+      - text: project management with client portal
+        funnel_stage: consideration
+      - text: best software for agency resource planning
+        funnel_stage: consideration
+      - text: best pm tool with time tracking and invoicing
+        funnel_stage: consideration
+      - text: best project management tool with time tracking and invoicing
+        funnel_stage: consideration
+      - text: Can you recommend project software for a 20 person creative agency?
+        funnel_stage: consideration
+      - text: What's the best tool for client approvals and feedback?
+        funnel_stage: consideration
+      - text: gantt chart software for agencies
+        funnel_stage: consideration
+      - text: best project management for marketing agencies
+        funnel_stage: consideration
+      - text: best project management for marketing agency
+        funnel_stage: consideration
+      - text: Which PM tools let clients see progress without editing anything?
+        funnel_stage: consideration
+      - text: top tools for agency workload management
+        funnel_stage: consideration
+      - text: What's the best tool for managing retainers?
+        funnel_stage: consideration
+      - text: project management software with good templates for client work
+        funnel_stage: consideration
+      - text: best monday.com alternatives for agencies
+        funnel_stage: consideration
+      - text: monday vs asana for agencies
+        funnel_stage: consideration
+        label: comparison
+      - text: agency pm software reccomendations
+        funnel_stage: consideration
+      - text: What's the best tool to replace spreadsheets for project tracking?
+        funnel_stage: consideration
+      - text: best software for managing freelancers and contractors
+        funnel_stage: consideration
+  - intent: commercial
+    persona: engineering lead
+    prompts:
+      - text: What's the best project management tool for software teams?
+        funnel_stage: consideration
+      - text: best jira alternative
+        funnel_stage: consideration
+      - text: best jira alternatives for engineering teams
+        funnel_stage: consideration
+      - text: best sprint planning tool with github integration
+        funnel_stage: consideration
+      - text: lightweight issue tracker for a 10 person dev team
+        funnel_stage: consideration
+      - text: What's the best tool for engineering roadmaps?
+        funnel_stage: consideration
+      - text: project management tool with a good api
+        funnel_stage: consideration
+      - text: Best agile tool for remote engineering teams?
+        funnel_stage: consideration
+      - text: Which PM tool has the best GitHub integration?
+        funnel_stage: consideration
+      - text: best tool for tracking bugs and features together
+        funnel_stage: consideration
+      - text: What project tool works well for a platform team?
+        funnel_stage: consideration
+      - text: Can you recommend a tool for sprint planning and retros?
+        funnel_stage: consideration
+      - text: best project management software with sso
+        funnel_stage: consideration
+      - text: fast issue tracker that devs actually like
+        funnel_stage: consideration
+      - text: What's the best tool for managing cross-team dependencies?
+        funnel_stage: consideration
+      - text: What tools do engineering managers use to track velocity?
+        funnel_stage: consideration
+      - text: linear or jira for a growing team
+        funnel_stage: consideration
+        label: comparison
+      - text: best self hosted project management tool
+        funnel_stage: consideration
+      - text: Project management software with SOC 2 compliance?
+        funnel_stage: consideration
+      - text: does taskflow integrate with github actions
+        funnel_stage: consideration
+        label: navigational
+  - intent: comparison
+    persona: startup founder
+    prompts:
+      - text: asana vs clickup for startups
+        funnel_stage: consideration
+      - text: taskflow vs asana
+        funnel_stage: consideration
+      - text: Taskflow vs Notion for a small team?
+        funnel_stage: consideration
+      - text: trello or taskflow for a 5 person startup
+        funnel_stage: consideration
+      - text: notion vs clickup for project management
+        funnel_stage: consideration
+      - text: Is Taskflow better than Monday.com for startups?
+        funnel_stage: consideration
+      - text: taskflow vs trello
+        funnel_stage: consideration
+      - text: taskflow vs trello?
+        funnel_stage: consideration
+      - text: Compare Taskflow, ClickUp and Asana
+        funnel_stage: consideration
+      - text: asana vs monday for a seed startup
+        funnel_stage: consideration
+      - text: taskflow or notion for roadmaps
+        funnel_stage: consideration
+      - text: clickup vs trello which is simpler
+        funnel_stage: consideration
+      - text: taskflow vs clickup pricing
+        funnel_stage: decision
+      - text: Notion or Asana for founders?
+        funnel_stage: consideration
+      - text: taskflow vs asana for remote teams
+        funnel_stage: consideration
+      - text: Which is easier to set up, Taskflow or Monday.com?
+        funnel_stage: consideration
+      - text: trello vs asana free plan
+        funnel_stage: decision
+      - text: taskflow vs notion vs clickup
+        funnel_stage: consideration
+      - text: is taskflow good for startups
+        funnel_stage: consideration
+        label: navigational
+      - text: Best tool for a startup, Asana or something else?
+        funnel_stage: consideration
+        label: commercial
+  - intent: comparison
+    persona: agency project manager
+    prompts:
+      - text: Monday.com vs Asana for agencies?
+        funnel_stage: consideration
+      - text: taskflow vs monday for client work
+        funnel_stage: consideration
+      - text: taskflow vs asana for agencies
+        funnel_stage: consideration
+      - text: taskflow vs. asana for agencies
+        funnel_stage: consideration
+      - text: clickup vs monday for resource planning
+        funnel_stage: consideration
+      - text: Taskflow or ClickUp for time tracking?
+        funnel_stage: consideration
+      - text: compare taskflow and monday client portals
+        funnel_stage: consideration
+      - text: trello vs taskflow for creative teams
+        funnel_stage: consideration
+      - text: asana vs clickup for marketing agency
+        funnel_stage: consideration
+      - text: Is Taskflow better than Asana for client approvals?
+        funnel_stage: consideration
+      - text: monday or notion for agency projects
+        funnel_stage: consideration
+      - text: taskflow vs teamwork for agencies
+        funnel_stage: consideration
+      - text: ClickUp vs Asana Gantt charts, which is better?
+        funnel_stage: consideration
+      - text: taskflow vs monday pricing for 20 users
+        funnel_stage: decision
+      - text: Taskflow or Asana for managing freelancers?
+        funnel_stage: consideration
+      - text: which has better client sharing taskflow or trello
+        funnel_stage: consideration
+      - text: monday vs clickup for workload view
+        funnel_stage: consideration
+      - text: taskflow vs clickup for agencies
+        funnel_stage: consideration
+      - text: gantt view vs kanban for client projects
+        funnel_stage: awareness
+        label: informational
+      - text: Is Monday.com worth it compared to Taskflow?
+        funnel_stage: consideration
+  - intent: comparison
+    persona: engineering lead
+    prompts:
+      - text: jira vs linear
+        funnel_stage: consideration
+      - text: Taskflow vs Jira for engineering teams?
+        funnel_stage: consideration
+      - text: taskflow vs jira for eng teams
+        funnel_stage: consideration
+      - text: clickup vs jira for sprint planning
+        funnel_stage: consideration
+      - text: Taskflow or Linear for a 15 person dev team?
+        funnel_stage: consideration
+      - text: Is Taskflow's GitHub integration better than Jira's?
+        funnel_stage: consideration
+      - text: asana vs jira for software teams
+        funnel_stage: consideration
+      - text: taskflow vs clickup for agile
+        funnel_stage: consideration
+      - text: Notion vs Jira for engineering docs and tickets?
+        funnel_stage: consideration
+      - text: compare taskflow and jira api
+        funnel_stage: consideration
+      - text: jira or taskflow for scrum
+        funnel_stage: consideration
+      - text: taskflow vs asana for engineering
+        funnel_stage: consideration
+      - text: monday dev vs jira
+        funnel_stage: consideration
+      - text: Taskflow vs Jira migration effort, which is easier to adopt?
+        funnel_stage: decision
+      - text: which is faster taskflow or jira
+        funnel_stage: consideration
+      - text: jira cloud vs taskflow permissions
+        funnel_stage: consideration
+      - text: taskflow vs jira vs linear
+        funnel_stage: consideration
+      - text: clickup or taskflow for bug tracking
+        funnel_stage: consideration
+      - text: How do I migrate from Jira to Taskflow?
+        funnel_stage: awareness
+        label: informational
+      - text: which is cheaper jira or taskflow for 50 devs
+        funnel_stage: decision
+  - intent: navigational
+    persona: startup founder
+    prompts:
+      - text: taskflow pricing page
+        funnel_stage: consideration
+      - text: Is Taskflow legit?
+        funnel_stage: consideration
+      - text: taskflow reviews
+        funnel_stage: consideration
+      - text: What is Taskflow?
+        funnel_stage: consideration
+      - text: taskflow login
+        funnel_stage: consideration
+      - text: task flow app review
+        funnel_stage: consideration
+      - text: TaskFlow PM reviews from startups
+        funnel_stage: consideration
+      - text: Who owns Taskflow?
+        funnel_stage: consideration
+      - text: Does Taskflow have a mobile app?
+        funnel_stage: consideration
+      - text: Is Taskflow good for a startup?
+        funnel_stage: consideration
+      - text: taskflow reddit
+        funnel_stage: consideration
+      - text: Does Taskflow have a free plan?
+        funnel_stage: decision
+        label: transactional
+      - text: taskflow help center
+        funnel_stage: consideration
+      - text: taskflow templates for founders
+        funnel_stage: consideration
+      - text: taskflow status page
+        funnel_stage: consideration
+      - text: Is Taskflow safe for company data?
+        funnel_stage: consideration
+      - text: taskflow pm onboarding
+        funnel_stage: consideration
+      - text: taskflw review
+        funnel_stage: consideration
+      - text: taskflow startup discount
+        funnel_stage: decision
+        label: transactional
+      - text: taskflow sign up
+        funnel_stage: decision
+        label: transactional
+  - intent: navigational
+    persona: agency project manager
+    prompts:
+      - text: Does Taskflow have a client portal?
+        funnel_stage: consideration
+      - text: taskflow for agencies review
+        funnel_stage: consideration
+      - text: How does Taskflow time tracking work?
+        funnel_stage: consideration
+      - text: taskflow guest access for clients
+        funnel_stage: consideration
+      - text: is taskflow good for agency work
+        funnel_stage: consideration
+      - text: Does Taskflow have Gantt charts?
+        funnel_stage: consideration
+      - text: taskflow resource management
+        funnel_stage: consideration
+      - text: taskflow pm agency templates
+        funnel_stage: consideration
+      - text: task flow client approvals
+        funnel_stage: consideration
+      - text: Can clients leave comments in Taskflow?
+        funnel_stage: consideration
+      - text: taskflow invoicing
+        funnel_stage: consideration
+      - text: Does Taskflow offer white labeling?
+        funnel_stage: consideration
+      - text: taskflow workload view
+        funnel_stage: consideration
+      - text: What are Taskflow's customer support hours?
+        funnel_stage: consideration
+      - text: taskflow case studies agencies
+        funnel_stage: consideration
+      - text: taskflow reviews g2
+        funnel_stage: consideration
+      - text: How does Taskflow handle retainers?
+        funnel_stage: consideration
+      - text: taskflow monday comparison
+        funnel_stage: consideration
+        label: comparison
+      - text: taskflow agency plan price
+        funnel_stage: decision
+        label: transactional
+      - text: TaskFlow capterra
+        funnel_stage: consideration
+  - intent: navigational
+    persona: engineering lead
+    prompts:
+      - text: taskflow github integration
+        funnel_stage: consideration
+      - text: taskflow api docs
+        funnel_stage: consideration
+      - text: Does Taskflow support SSO?
+        funnel_stage: consideration
+      - text: taskflow jira import
+        funnel_stage: consideration
+      - text: What sprint planning features does Taskflow have?
+        funnel_stage: consideration
+      - text: Is Taskflow SOC 2 compliant?
+        funnel_stage: consideration
+      - text: does taskflow support story points
+        funnel_stage: consideration
+      - text: taskflow pm gitlab integration
+        funnel_stage: consideration
+      - text: What are the Taskflow API rate limits?
+        funnel_stage: consideration
+      - text: taskflow burndown chart
+        funnel_stage: consideration
+      - text: What do developers think of Taskflow?
+        funnel_stage: consideration
+      - text: Can Taskflow replace Jira for a 40 person eng org?
+        funnel_stage: consideration
+        label: comparison
+      - text: Is there a self-hosted version of Taskflow?
+        funnel_stage: consideration
+      - text: task flow slack integration
+        funnel_stage: consideration
+      - text: How do permissions work in Taskflow?
+        funnel_stage: consideration
+      - text: taskflow webhooks
+        funnel_stage: consideration
+      - text: taskflow uptime history
+        funnel_stage: consideration
+      - text: taskflow changelog
+        funnel_stage: consideration
+      - text: taskflow vs jira
+        funnel_stage: consideration
+        label: comparison
+      - text: taskflow enterprise plan pricing
+        funnel_stage: decision
+        label: transactional
+  - intent: transactional
+    persona: startup founder
+    prompts:
+      - text: taskflow free trial
+        funnel_stage: decision
+      - text: taskflow promo code
+        funnel_stage: decision
+      - text: cheapest project management software
+        funnel_stage: decision
+      - text: taskflow startup discount program
+        funnel_stage: decision
+      - text: free project management software for startups
+        funnel_stage: consideration
+        label: commercial
+      - text: sign up for taskflow
+        funnel_stage: decision
+      - text: taskflow coupon
+        funnel_stage: decision
+      - text: Does Asana have a startup discount?
+        funnel_stage: decision
+      - text: clickup free plan limits
+        funnel_stage: decision
+      - text: Does Taskflow give a discount for annual plans?
+        funnel_stage: decision
+      - text: cheap project management tool
+        funnel_stage: decision
+      - text: How long is the Taskflow free trial?
+        funnel_stage: decision
+      - text: buy taskflow for 5 seats
+        funnel_stage: decision
+      - text: Is Notion free for startups?
+        funnel_stage: decision
+      - text: taskflow black friday deal
+        funnel_stage: decision
+      - text: lowest cost pm tool for small team
+        funnel_stage: decision
+      - text: taskflow monthly vs annual pricing
+        funnel_stage: decision
+      - text: taskflow nonprofit discount
+        funnel_stage: decision
+      - text: monday.com free trial
+        funnel_stage: decision
+      - text: taskflow pricing page link
+        funnel_stage: consideration
+        label: navigational
+  - intent: transactional
+    persona: agency project manager
+    prompts:
+      - text: taskflow agency discount
+        funnel_stage: decision
+      - text: How much is Taskflow for 20 users?
+        funnel_stage: decision
+      - text: cheapest agency project management software
+        funnel_stage: decision
+      - text: monday.com discount code
+        funnel_stage: decision
+      - text: Can I get a Taskflow free trial for my whole team?
+        funnel_stage: decision
+      - text: start taskflow trial
+        funnel_stage: decision
+      - text: taskflow client seats price
+        funnel_stage: decision
+      - text: buy taskflow annual plan
+        funnel_stage: decision
+      - text: asana business plan discount
+        funnel_stage: decision
+      - text: taskflow promo code agencies
+        funnel_stage: decision
+      - text: cheap project management with time tracking
+        funnel_stage: decision
+      - text: clickup coupon
+        funnel_stage: decision
+      - text: taskflow pricing for 20 users
+        funnel_stage: decision
+      - text: How do I upgrade my Taskflow plan?
+        funnel_stage: decision
+      - text: teamwork vs taskflow price
+        funnel_stage: consideration
+        label: comparison
+      - text: Are guest seats free on Taskflow?
+        funnel_stage: decision
+      - text: taskflow referral discount
+        funnel_stage: decision
+      - text: cheapest gantt chart software
+        funnel_stage: decision
+      - text: taskflow deal for agencies
+        funnel_stage: decision
+      - text: taskflow coupon code
+        funnel_stage: decision
+  - intent: transactional
+    persona: engineering lead
+    prompts:
+      - text: taskflow enterprise pricing
+        funnel_stage: decision
+      - text: Can we get an enterprise trial of Taskflow?
+        funnel_stage: decision
+      - text: jira cloud discount
+        funnel_stage: decision
+      - text: taskflow pricing per seat
+        funnel_stage: decision
+      - text: buy taskflow for 50 engineers
+        funnel_stage: decision
+      - text: Does Taskflow offer volume discounts?
+        funnel_stage: decision
+      - text: cheapest jira alternative
+        funnel_stage: decision
+      - text: Is Taskflow free for open source projects?
+        funnel_stage: decision
+      - text: start a taskflow trial for my team
+        funnel_stage: decision
+      - text: How much does Linear cost for 30 users?
+        funnel_stage: decision
+      - text: Is SSO included in the Taskflow price or extra?
+        funnel_stage: decision
+      - text: taskflow annual billing discount
+        funnel_stage: decision
+      - text: clickup enterprise quote
+        funnel_stage: decision
+      - text: How do I get a procurement quote from Taskflow?
+        funnel_stage: decision
+      - text: request taskflow demo
+        funnel_stage: decision
+      - text: taskflow per seat price
+        funnel_stage: decision
+      - text: cheap issue tracker for startups
+        funnel_stage: decision
+      - text: taskflow education discount
+        funnel_stage: decision
+      - text: taskflow api documentation
+        funnel_stage: consideration
+        label: navigational
+      - text: How long does a Jira to Taskflow migration take?
+        funnel_stage: awareness
+        label: informational
+topics:
+  - label: Pricing and plans
+    description: Seat prices, plan tiers, free plans and enterprise quotes.
+    keywords: [pricing, price, per seat, free plan, cost, plan, enterprise, quote, 20 users]
+  - label: Discounts and free trials
+    description: Free trials, coupons, promo codes and startup or nonprofit discounts.
+    keywords: [free trial, trial, discount, promo code, coupon, startup discount, nonprofit, deal, cheapest, cheap]
+  - label: Integrations and API
+    description: Connecting the tool to GitHub, Slack, GitLab and custom code.
+    keywords: [github, gitlab, slack, integration, integrate, api, webhooks, pull requests]
+  - label: Migration from other tools
+    description: Moving projects and history off Jira, Trello or spreadsheets.
+    keywords: [migrate, migration, jira import, replace jira, jira alternative, switch, spreadsheets, ticket history]
+  - label: Client and agency workflows
+    description: "Running client work: portals, approvals, guest access and retainers."
+    keywords: [client, clients, agency, agencies, client portal, approvals, guest access, retainer, freelancers]
+  - label: Sprint and agile planning
+    description: Sprints, backlogs, story points, scrum and kanban for dev teams.
+    keywords: [sprint, sprints, backlog, scrum, kanban, story point, agile, epics, retro, issue tracker, bugs, dev team, tech debt]
+  - label: Time tracking and billing
+    description: Tracking billable hours, timesheets and invoicing.
+    keywords: [time tracking, billable hours, invoicing, timesheets, profitability]
+  - label: Reporting and engineering metrics
+    description: Dashboards, burndown charts, velocity and status reports.
+    keywords: [burndown, velocity, cycle time, metrics, status report, dashboard, report]
+  - label: Security and permissions
+    description: SSO, SOC 2, permissions, self-hosting and data safety.
+    keywords: [sso, soc 2, permissions, self hosted, self-hosted, security, safe, compliant, uptime]
+  - label: Brand reputation and reviews
+    description: Whether Taskflow is legit, who owns it, and what reviews say.
+    keywords: [legit, reviews, review, reddit, g2, capterra, who owns, login, help center, status page, case studies]
+  - label: Small team setup
+    description: "Getting a small startup team organized: onboarding, templates and planning rituals."
+    keywords: [small team, startup, startups, founders, onboard, templates, standups, planning meeting, okrs, remote team, recurring tasks]
+  - label: Roadmaps and timelines
+    description: Gantt charts, roadmaps, dependencies and resource planning.
+    keywords: [gantt, roadmap, roadmaps, timeline, timelines, dependencies, resource planning, workload, capacity]
+  - label: Taskflow vs Asana for startups
+    description: Founders weighing Taskflow against Asana and similar tools for a small startup.
+    keywords: [asana, startup, startups, founder, taskflow or asana, taskflow vs asana]
+  - label: Agency tool comparisons
+    description: Agencies comparing Taskflow with Asana, Monday.com and others for client work.
+    keywords: [agency, agencies, client, clients, monday, asana]

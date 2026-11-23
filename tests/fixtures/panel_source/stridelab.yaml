@@ -1,0 +1,720 @@
+# Recorded LLM panel-generation output for the fictional brand Stridelab (running shoes).
+# Hand-authored for Module 1 mock mode. 15 cells = 5 intents x 3 personas, 20 prompts each.
+# `label` is present only where the generated prompt drifted to a different intent
+# than the cell it was generated for (what a careful labeler would assign).
+brand: Stridelab
+cells:
+  - intent: informational
+    persona: marathon beginner
+    prompts:
+      - text: How many miles a week should I run to train for my first marathon?
+        funnel_stage: awareness
+      - text: whats heel drop in running shoes
+        funnel_stage: awareness
+      - text: How long does it take to train for a marathon if I'm starting from zero?
+        funnel_stage: awareness
+      - text: What should I eat the night before a marathon?
+        funnel_stage: awareness
+      - text: How often should I replace running shoes when training for a marathon?
+        funnel_stage: awareness
+      - text: Is it okay to run a marathon in brand new shoes?
+        funnel_stage: awareness
+      - text: first marathon tips
+        funnel_stage: awareness
+      - text: How long should my longest training run be before race day?
+        funnel_stage: awareness
+      - text: Should running shoes be a half size bigger for long runs?
+        funnel_stage: awareness
+      - text: why do my toenails turn black after long runs
+        funnel_stage: awareness
+      - text: Do I need different shoes for long runs and easy runs?
+        funnel_stage: consideration
+      - text: How do I break in running shoes before a marathon?
+        funnel_stage: awareness
+      - text: marathon training plan for beginers
+        funnel_stage: awareness
+      - text: What does cushioning actually do in a running shoe?
+        funnel_stage: awareness
+      - text: What are carbon plate shoes and do beginners need them?
+        funnel_stage: consideration
+      - text: How do I know if my running shoes are worn out?
+        funnel_stage: awareness
+      - text: What's the difference between neutral and stability shoes?
+        funnel_stage: awareness
+      - text: what are the best shoes for a first marathon
+        funnel_stage: consideration
+        label: commercial
+      - text: how to avoid chafing on long runs
+        funnel_stage: awareness
+      - text: does stridelab make a marathon shoe
+        funnel_stage: awareness
+        label: navigational
+  - intent: informational
+    persona: trail runner
+    prompts:
+      - text: How do I run downhill on technical trails without falling?
+        funnel_stage: awareness
+      - text: What makes a shoe good for trail running?
+        funnel_stage: awareness
+      - text: what are lugs on trail shoes
+        funnel_stage: awareness
+      - text: Do trail running shoes need a rock plate?
+        funnel_stage: awareness
+      - text: How deep should lugs be for muddy trails?
+        funnel_stage: awareness
+      - text: trail vs road shoes difference
+        funnel_stage: awareness
+      - text: Is Gore-Tex worth it for trail running shoes?
+        funnel_stage: awareness
+      - text: How do you keep your feet dry on a rainy trail run?
+        funnel_stage: awareness
+      - text: how often should you replace trail shoes
+        funnel_stage: awareness
+      - text: What should I wear for my first 50k ultra?
+        funnel_stage: awareness
+      - text: whats zero drop and is it good for trails
+        funnel_stage: awareness
+      - text: How should I lace trail shoes so my heel doesn't slip on climbs?
+        funnel_stage: awareness
+      - text: Why do my feet go numb on long trail runs?
+        funnel_stage: awareness
+      - text: Can you use trail shoes on the road?
+        funnel_stage: awareness
+      - text: hoka or salomon for snowy trails
+        funnel_stage: consideration
+        label: comparison
+      - text: best way to clean muddy trail shoes
+        funnel_stage: awareness
+      - text: How do people train for a 100 mile ultra?
+        funnel_stage: awareness
+      - text: trail shoe toe bumper what is it for
+        funnel_stage: awareness
+      - text: best trail shoes for rocky terrain
+        funnel_stage: consideration
+        label: commercial
+      - text: How do I stop rolling my ankle on trails?
+        funnel_stage: awareness
+  - intent: informational
+    persona: injury-prone runner
+    prompts:
+      - text: What causes shin splints in new runners?
+        funnel_stage: awareness
+      - text: Can the wrong running shoes cause knee pain?
+        funnel_stage: awareness
+      - text: how do i know if i overpronate
+        funnel_stage: awareness
+      - text: Do running shoes actually help with plantar fasciitis?
+        funnel_stage: awareness
+      - text: Is it bad to run with flat feet?
+        funnel_stage: awareness
+      - text: How often should I replace my running shoes if I keep getting injured?
+        funnel_stage: awareness
+      - text: Does a higher heel drop help with achilles pain?
+        funnel_stage: awareness
+      - text: what is a stability shoe
+        funnel_stage: awareness
+      - text: wide toe box benefits for bunions
+        funnel_stage: awareness
+      - text: Can max cushion shoes cause injuries?
+        funnel_stage: awareness
+      - text: How can I tell if my running shoes are causing my hip pain?
+        funnel_stage: awareness
+      - text: Should I get a gait analysis before buying new shoes?
+        funnel_stage: awareness
+      - text: ankle support running shoes do they work
+        funnel_stage: awareness
+      - text: How do I come back from a stress fracture safely?
+        funnel_stage: awareness
+      - text: running with shin splints good idea or not
+        funnel_stage: awareness
+      - text: whats the difference between neutral and stability running shoes
+        funnel_stage: awareness
+      - text: Do orthotics fit in normal running shoes?
+        funnel_stage: awareness
+      - text: How many miles before running shoes lose their cushioning?
+        funnel_stage: awareness
+      - text: Is it okay to rotate two pairs of running shoes?
+        funnel_stage: awareness
+      - text: Which running shoes are best for plantar fasciitis?
+        funnel_stage: consideration
+        label: commercial
+  - intent: commercial
+    persona: marathon beginner
+    prompts:
+      - text: best running shoes for first marathon
+        funnel_stage: consideration
+      - text: What are the best cushioned shoes for marathon training?
+        funnel_stage: consideration
+      - text: What shoes should a beginner buy for marathon training?
+        funnel_stage: consideration
+      - text: Can you recommend a good long run shoe for a heavier runner?
+        funnel_stage: consideration
+      - text: best daily trainer for 30 miles a week
+        funnel_stage: consideration
+      - text: Best marathon shoes under $150?
+        funnel_stage: consideration
+      - text: good running shoes for slow marathon runners
+        funnel_stage: consideration
+      - text: beginner marathon shoe recomendations
+        funnel_stage: consideration
+      - text: What are the best shoes for long runs?
+        funnel_stage: consideration
+      - text: best shoes for long runs?
+        funnel_stage: consideration
+      - text: What running shoes do most first-time marathoners wear?
+        funnel_stage: consideration
+      - text: best running shoes for wide feet marathon
+        funnel_stage: consideration
+      - text: top rated neutral running shoes 2026
+        funnel_stage: consideration
+      - text: Is a carbon plate shoe worth it for a 5 hour marathon?
+        funnel_stage: decision
+      - text: What's a good race day shoe for a beginner?
+        funnel_stage: consideration
+      - text: Should I buy a separate pair of shoes just for race day?
+        funnel_stage: consideration
+      - text: hoka clifton or brooks ghost for first marathon
+        funnel_stage: consideration
+        label: comparison
+      - text: Best running shoes for marathon training on concrete?
+        funnel_stage: consideration
+      - text: marathon shoe discounts this week
+        funnel_stage: decision
+        label: transactional
+      - text: Which brands make the best marathon shoes for beginners?
+        funnel_stage: consideration
+  - intent: commercial
+    persona: trail runner
+    prompts:
+      - text: best trail running shoes for mud
+        funnel_stage: consideration
+      - text: best trail running shoes for mud?
+        funnel_stage: consideration
+      - text: What are the best trail shoes for rocky technical terrain?
+        funnel_stage: consideration
+      - text: waterproof trail runners recommendations
+        funnel_stage: consideration
+      - text: What's the best shoe for a first 50k?
+        funnel_stage: consideration
+      - text: good trail shoes for wide feet
+        funnel_stage: consideration
+      - text: Best ultra running shoes with lots of cushion?
+        funnel_stage: consideration
+      - text: trail shoes that also work on roads
+        funnel_stage: consideration
+      - text: Which trail shoes have the best grip on wet rock?
+        funnel_stage: consideration
+      - text: Can you recommend trail shoes for winter running in snow?
+        funnel_stage: consideration
+      - text: best zero drop trail shoes
+        funnel_stage: consideration
+      - text: What are the best lightweight trail racing shoes?
+        funnel_stage: consideration
+      - text: best trail shoes for 100 milers
+        funnel_stage: consideration
+      - text: trail runers for beginners
+        funnel_stage: consideration
+      - text: Best trail shoes with a rock plate?
+        funnel_stage: consideration
+      - text: is stridelab any good for trail running
+        funnel_stage: consideration
+        label: navigational
+      - text: What trail shoes do most ultra runners wear?
+        funnel_stage: consideration
+      - text: hoka speedgoat vs brooks cascadia for mud
+        funnel_stage: consideration
+        label: comparison
+      - text: best gore tex trail shoes
+        funnel_stage: consideration
+      - text: What are good trail shoes for desert running?
+        funnel_stage: consideration
+  - intent: commercial
+    persona: injury-prone runner
+    prompts:
+      - text: What are the best running shoes for shin splints?
+        funnel_stage: consideration
+      - text: best running shoes for flat feet
+        funnel_stage: consideration
+      - text: best shoes for flat feet
+        funnel_stage: consideration
+      - text: Best stability running shoes for overpronation?
+        funnel_stage: consideration
+      - text: running shoes for knee pain recommendations
+        funnel_stage: consideration
+      - text: best running shoes for plantar fasciitis
+        funnel_stage: consideration
+      - text: Good cushioned shoes for achilles tendinitis?
+        funnel_stage: consideration
+      - text: best shoes for bunions wide toe box
+        funnel_stage: consideration
+      - text: What are the best running shoes for heavy runners with bad knees?
+        funnel_stage: consideration
+      - text: What running shoes do physios recommend?
+        funnel_stage: consideration
+      - text: max cushion shoes for injury recovery
+        funnel_stage: consideration
+      - text: Which running shoes work best with custom orthotics?
+        funnel_stage: consideration
+      - text: best running shoes for hip pain
+        funnel_stage: consideration
+      - text: What shoes are supportive enough for coming back from a stress fracture?
+        funnel_stage: consideration
+      - text: best shoes for shin splints
+        funnel_stage: consideration
+      - text: good shoes for high arches and supination
+        funnel_stage: consideration
+      - text: Best stability shoes for marathon training?
+        funnel_stage: consideration
+      - text: cheap running shoes for bad ankles
+        funnel_stage: decision
+        label: transactional
+      - text: asics kayano or brooks adrenaline for overpronation
+        funnel_stage: consideration
+        label: comparison
+      - text: What are the best running shoes for older runners with joint pain?
+        funnel_stage: consideration
+  - intent: comparison
+    persona: marathon beginner
+    prompts:
+      - text: hoka vs brooks for marathon training
+        funnel_stage: consideration
+      - text: Nike Pegasus vs Hoka Clifton for a first marathon?
+        funnel_stage: consideration
+      - text: stridelab vs hoka for long runs
+        funnel_stage: consideration
+      - text: Is Stridelab better than Brooks for beginners?
+        funnel_stage: consideration
+      - text: asics or new balance for marathon training
+        funnel_stage: consideration
+      - text: On Cloud vs Hoka for marathons, which is better?
+        funnel_stage: consideration
+      - text: stridelab vs nike for marathon
+        funnel_stage: consideration
+      - text: stridelab vs nike for a marathon?
+        funnel_stage: consideration
+      - text: brooks ghost vs asics novablast
+        funnel_stage: consideration
+      - text: Can you compare Stridelab and New Balance marathon shoes?
+        funnel_stage: consideration
+      - text: nike vapofly vs hoka rocket x for a beginner
+        funnel_stage: consideration
+      - text: Carbon plate shoe or regular trainer for my first marathon?
+        funnel_stage: consideration
+        label: commercial
+      - text: stridelab vs on running for marathon
+        funnel_stage: consideration
+      - text: Which is more cushioned, Hoka or Stridelab?
+        funnel_stage: consideration
+      - text: brooks vs asics which lasts longer
+        funnel_stage: consideration
+      - text: stridelab or asics for 4 hour marathon
+        funnel_stage: decision
+      - text: Hoka vs New Balance for heavier runners?
+        funnel_stage: consideration
+      - text: Is Nike or Stridelab better for race day?
+        funnel_stage: decision
+      - text: Compare marathon shoes from Stridelab, Hoka and Brooks
+        funnel_stage: consideration
+      - text: is stridelab good for marathon training
+        funnel_stage: consideration
+        label: navigational
+  - intent: comparison
+    persona: trail runner
+    prompts:
+      - text: stridelab trail vs hoka speedgoat
+        funnel_stage: consideration
+      - text: Salomon vs Hoka for trail running?
+        funnel_stage: consideration
+      - text: Stridelab vs Brooks Cascadia on muddy trails
+        funnel_stage: consideration
+      - text: hoka or brooks trail shoes for ultras
+        funnel_stage: consideration
+      - text: stridelab vs on cloudultra
+        funnel_stage: consideration
+      - text: New Balance Hierro vs Hoka Speedgoat, which grips better?
+        funnel_stage: consideration
+      - text: asics trabuco vs nike pegasus trail
+        funnel_stage: consideration
+      - text: stridelab vs hoka for rocky trails
+        funnel_stage: consideration
+      - text: stride lab vs hoka for rocky trails
+        funnel_stage: consideration
+      - text: Which has better grip, Stridelab or Salomon?
+        funnel_stage: consideration
+      - text: nike vs asics trail shoes
+        funnel_stage: consideration
+      - text: Is Stridelab trail grip better than Hoka?
+        funnel_stage: consideration
+      - text: Compare Stridelab and Brooks for a 50k
+        funnel_stage: decision
+      - text: hoka vs on trail shoes durability
+        funnel_stage: consideration
+      - text: stridelab or new balance for wide feet on trails
+        funnel_stage: consideration
+      - text: gore tex vs non gore tex trail shoes
+        funnel_stage: awareness
+        label: informational
+      - text: brooks cascadia vs catamount
+        funnel_stage: consideration
+      - text: Stridelab vs ASICS for winter trail running?
+        funnel_stage: consideration
+      - text: whats better for ultras hoka or brooks
+        funnel_stage: consideration
+      - text: What's the best trail shoe brand for ultras?
+        funnel_stage: consideration
+        label: commercial
+  - intent: comparison
+    persona: injury-prone runner
+    prompts:
+      - text: Brooks Adrenaline vs ASICS Kayano for flat feet?
+        funnel_stage: consideration
+      - text: stridelab vs brooks for shin splints
+        funnel_stage: consideration
+      - text: hoka vs brooks for plantar fasciitis
+        funnel_stage: consideration
+      - text: hoka vs brooks for plantar fasciitis?
+        funnel_stage: consideration
+      - text: Stridelab or ASICS for overpronation?
+        funnel_stage: consideration
+      - text: new balance 860 vs brooks adrenaline
+        funnel_stage: consideration
+      - text: Is Stridelab or Hoka better for bad knees?
+        funnel_stage: consideration
+      - text: Stability shoe vs neutral shoe for knee pain?
+        funnel_stage: awareness
+        label: informational
+      - text: compare stridelab and new balance for wide feet
+        funnel_stage: consideration
+      - text: On vs Hoka for achilles problems
+        funnel_stage: consideration
+      - text: nike vs brooks for injury prone runners
+        funnel_stage: consideration
+      - text: Stridelab vs Hoka cushioning for heavy runners
+        funnel_stage: consideration
+      - text: asics gel nimbus vs hoka bondi
+        funnel_stage: consideration
+      - text: stridelab vs asics for heel pain
+        funnel_stage: consideration
+      - text: Which is more supportive, Stridelab or Brooks?
+        funnel_stage: consideration
+      - text: Hoka Bondi or New Balance 1080 for joint pain?
+        funnel_stage: decision
+      - text: stridelab vs on running for flat feet
+        funnel_stage: consideration
+      - text: brooks vs asics stability shoes
+        funnel_stage: consideration
+      - text: stridelab vs nike for shin splints
+        funnel_stage: consideration
+      - text: best stability shoe for flat feet
+        funnel_stage: consideration
+        label: commercial
+  - intent: navigational
+    persona: marathon beginner
+    prompts:
+      - text: is stridelab good for marathons
+        funnel_stage: consideration
+      - text: stridelab reviews
+        funnel_stage: consideration
+      - text: Is Stridelab legit?
+        funnel_stage: consideration
+      - text: stride lab running shoes review
+        funnel_stage: consideration
+      - text: Does Stridelab run true to size?
+        funnel_stage: consideration
+      - text: What is Stridelab's best marathon shoe?
+        funnel_stage: consideration
+      - text: StrideLab marathon shoe reviews reddit
+        funnel_stage: consideration
+      - text: Who makes Stridelab shoes?
+        funnel_stage: consideration
+      - text: stridelab website
+        funnel_stage: consideration
+      - text: Where can I try on Stridelab shoes?
+        funnel_stage: consideration
+      - text: stridelab size chart
+        funnel_stage: consideration
+      - text: Are Stridelab shoes good for beginners?
+        funnel_stage: consideration
+      - text: stridelab customer service
+        funnel_stage: consideration
+      - text: is strydelab a real brand
+        funnel_stage: consideration
+      - text: stridelab return policy
+        funnel_stage: consideration
+      - text: How much does the Stridelab marathon shoe weigh?
+        funnel_stage: consideration
+      - text: What do runners say about Stridelab on long runs?
+        funnel_stage: consideration
+      - text: Does Stridelab have a running app?
+        funnel_stage: consideration
+      - text: stridelab discount code for first order
+        funnel_stage: decision
+        label: transactional
+      - text: stridelab shipping times
+        funnel_stage: consideration
+  - intent: navigational
+    persona: trail runner
+    prompts:
+      - text: Does Stridelab make trail shoes?
+        funnel_stage: consideration
+      - text: stridelab trail shoe review
+        funnel_stage: consideration
+      - text: Stride Lab trail runner grip review
+        funnel_stage: consideration
+      - text: Is Stridelab good on muddy trails?
+        funnel_stage: consideration
+      - text: stridelab trail shoes for ultras any good
+        funnel_stage: consideration
+      - text: stridelab waterproof trail shoe
+        funnel_stage: consideration
+      - text: What is the lug depth on Stridelab trail shoes?
+        funnel_stage: consideration
+      - text: do stridelab trail shoes run small
+        funnel_stage: consideration
+      - text: Stridelab trail shoe durability review
+        funnel_stage: consideration
+      - text: Does StrideLab sponsor any ultra runners?
+        funnel_stage: consideration
+      - text: Is the Stridelab trail shoe good in snow?
+        funnel_stage: consideration
+      - text: stridelab trail shoe weight
+        funnel_stage: consideration
+      - text: Does the Stridelab trail shoe have a rock plate?
+        funnel_stage: consideration
+      - text: stridelab trail shoe drop
+        funnel_stage: consideration
+      - text: where to buy stridelab trail shoes
+        funnel_stage: decision
+        label: transactional
+      - text: stridlab trail shoes
+        funnel_stage: consideration
+      - text: stridelab store locator
+        funnel_stage: consideration
+      - text: Stridelab trail shoe warranty
+        funnel_stage: consideration
+      - text: Are Stridelab trail shoes worth it?
+        funnel_stage: consideration
+      - text: stridelab trail shoe size guide
+        funnel_stage: consideration
+  - intent: navigational
+    persona: injury-prone runner
+    prompts:
+      - text: is stridelab good for flat feet
+        funnel_stage: consideration
+      - text: Is Stridelab good for flat feet?
+        funnel_stage: consideration
+      - text: Does Stridelab make stability shoes?
+        funnel_stage: consideration
+      - text: stridelab shoes for plantar fasciitis review
+        funnel_stage: consideration
+      - text: Are Stridelab shoes podiatrist approved?
+        funnel_stage: consideration
+      - text: stridelab wide sizes
+        funnel_stage: consideration
+      - text: Do Stridelab shoes have removable insoles?
+        funnel_stage: consideration
+      - text: stride lab arch support
+        funnel_stage: consideration
+      - text: Stridelab reviews from runners with injuries
+        funnel_stage: consideration
+      - text: What's the heel drop on Stridelab shoes?
+        funnel_stage: consideration
+      - text: Can I use my orthotics in Stridelab shoes?
+        funnel_stage: consideration
+      - text: stridelab toe box width
+        funnel_stage: consideration
+      - text: Is Stridelab good for shin splints?
+        funnel_stage: consideration
+      - text: stridelab customer reviews knee pain
+        funnel_stage: consideration
+      - text: Does Stridelab offer gait analysis?
+        funnel_stage: consideration
+      - text: stridelab wide fit discount
+        funnel_stage: decision
+        label: transactional
+      - text: Can I return Stridelab shoes if they hurt my feet?
+        funnel_stage: consideration
+      - text: Is Stridelab worth the money for bad knees?
+        funnel_stage: consideration
+      - text: stridelab vs hoka for flat feet
+        funnel_stage: consideration
+        label: comparison
+      - text: stridlab wide fit
+        funnel_stage: consideration
+  - intent: transactional
+    persona: marathon beginner
+    prompts:
+      - text: stridelab promo code
+        funnel_stage: decision
+      - text: buy stridelab marathon shoes
+        funnel_stage: decision
+      - text: cheapest marathon shoes
+        funnel_stage: decision
+      - text: running shoes black friday deals
+        funnel_stage: decision
+      - text: stridelab discount code
+        funnel_stage: decision
+      - text: Where can I find marathon shoes on sale?
+        funnel_stage: decision
+      - text: where to buy running shoes near me
+        funnel_stage: decision
+      - text: Does Stridelab have a student discount?
+        funnel_stage: decision
+      - text: cheap carbon plate shoes for race day
+        funnel_stage: decision
+      - text: best deals on hoka clifton
+        funnel_stage: decision
+      - text: Does Stridelab offer free shipping?
+        funnel_stage: decision
+      - text: buy brooks ghost size 10
+        funnel_stage: decision
+      - text: stridelab coupon
+        funnel_stage: decision
+      - text: What's the cheapest place to buy ASICS Novablast?
+        funnel_stage: decision
+      - text: stridelab first order discount
+        funnel_stage: decision
+      - text: running shoe deals for beginners
+        funnel_stage: decision
+      - text: Does Stridelab do a bundle deal on two pairs?
+        funnel_stage: decision
+      - text: buy marathon shoes under 100 dollars
+        funnel_stage: decision
+      - text: stridelab refurbished shoes
+        funnel_stage: decision
+      - text: stridelab returns policy
+        funnel_stage: consideration
+        label: navigational
+  - intent: transactional
+    persona: trail runner
+    prompts:
+      - text: cheap trail running shoes
+        funnel_stage: decision
+      - text: trail running shoe sale
+        funnel_stage: decision
+      - text: buy stridelab trail shoes
+        funnel_stage: decision
+      - text: stridelab trail shoe discount
+        funnel_stage: decision
+      - text: cheapest hoka speedgoat
+        funnel_stage: decision
+      - text: trail shoes clearance
+        funnel_stage: decision
+      - text: Where can I buy Stridelab trail shoes online?
+        funnel_stage: decision
+      - text: stridelab trail promo code
+        funnel_stage: decision
+      - text: Who has the best price on Brooks Cascadia right now?
+        funnel_stage: decision
+      - text: discounted gore tex trail shoes
+        funnel_stage: decision
+      - text: stridelab trail shoes buy online
+        funnel_stage: decision
+      - text: cheap ultra running shoes
+        funnel_stage: decision
+      - text: stridelab outlet
+        funnel_stage: decision
+      - text: trail shoes black friday
+        funnel_stage: decision
+      - text: salomon speedcross discount code
+        funnel_stage: decision
+      - text: Best trail shoes for ultras under $120?
+        funnel_stage: consideration
+        label: commercial
+      - text: cheap trail shoes for mud
+        funnel_stage: decision
+      - text: cheap trail shoes for mud?
+        funnel_stage: decision
+      - text: Does Stridelab have a military discount?
+        funnel_stage: decision
+      - text: stridelab trail shoe reviews
+        funnel_stage: consideration
+        label: navigational
+  - intent: transactional
+    persona: injury-prone runner
+    prompts:
+      - text: cheap stability running shoes
+        funnel_stage: decision
+      - text: Does Stridelab give a discount to physical therapy patients?
+        funnel_stage: decision
+      - text: buy running shoes for flat feet online
+        funnel_stage: decision
+      - text: brooks adrenaline sale
+        funnel_stage: decision
+      - text: stridelab wide fit buy
+        funnel_stage: decision
+      - text: cheapest shoes for plantar fasciitus
+        funnel_stage: decision
+      - text: stridelab coupon code
+        funnel_stage: decision
+      - text: new balance 860 discount
+        funnel_stage: decision
+      - text: Does Stridelab have a home try-on program?
+        funnel_stage: decision
+      - text: stridelab 30 day trial run
+        funnel_stage: decision
+      - text: Are there HSA eligible running shoes I can buy?
+        funnel_stage: decision
+      - text: stridelab gift card
+        funnel_stage: decision
+      - text: order stridelab wide size
+        funnel_stage: decision
+      - text: asics kayano cheapest price
+        funnel_stage: decision
+      - text: stridelab free returns
+        funnel_stage: decision
+      - text: cheap running shoes for shin splints
+        funnel_stage: decision
+      - text: How long do stability shoes last?
+        funnel_stage: awareness
+        label: informational
+      - text: Is there a discount if I buy two pairs from Stridelab?
+        funnel_stage: decision
+      - text: stability shoes deals
+        funnel_stage: decision
+      - text: Is Stridelab good for bad knees?
+        funnel_stage: consideration
+        label: navigational
+topics:
+  - label: Marathon training shoes
+    description: Shoes and preparation for first and beginner marathons, long runs and race day.
+    keywords: [marathon, first marathon, long run, long runs, race day, training plan, 4 hour marathon]
+  - label: Trail grip and terrain
+    description: Traction, lugs and stability on mud, rock and technical trails.
+    keywords: [trail, trails, grip, mud, muddy, rocky, lugs, technical terrain, rock plate]
+  - label: Ultra and long distance trail
+    description: Gear and shoe choice for 50k, 100 mile and other ultra races.
+    keywords: [ultra, ultras, 50k, 100 mile, 100 milers, ultra runners, speedgoat]
+  - label: Waterproof and winter running
+    description: Keeping feet dry and running in rain, snow and cold.
+    keywords: [waterproof, gore tex, gore-tex, rain, rainy, snow, snowy, winter]
+  - label: Injury and support
+    description: Shoes for shin splints, plantar fasciitis, knee, hip and achilles pain, and overpronation.
+    keywords: [shin splints, plantar fasciitis, knee pain, bad knees, hip pain, joint pain, overpronation, overpronate, stability, flat feet, achilles, injury, stress fracture, supportive]
+  - label: Cushioning and heel drop
+    description: How much cushioning, stack and heel drop a runner needs.
+    keywords: [cushion, cushioned, cushioning, max cushion, heel drop, zero drop, drop, bondi]
+  - label: Sizing and fit
+    description: Sizing, width, toe box room and fit with orthotics.
+    keywords: [size, sizing, true to size, size chart, wide, wide feet, toe box, half size, orthotics, insoles]
+  - label: Durability and replacement
+    description: How long shoes last and when to replace them.
+    keywords: [replace, worn out, lasts longer, durability, miles, lose cushioning, rotate]
+  - label: Pricing and discounts
+    description: Price, sales, coupons, promo codes and cheap options.
+    keywords: [cheap, cheapest, discount, promo code, coupon, sale, deal, deals, black friday, clearance, price]
+  - label: Brand reputation and reviews
+    description: Whether Stridelab is legit, who makes it, and what reviewers say.
+    keywords: [legit, reviews, review, reddit, worth it, who makes, real brand, website, customer service, podiatrist approved]
+  - label: Returns, shipping and warranty
+    description: Buying logistics such as shipping, returns, trials and warranty.
+    keywords: [return, returns, return policy, shipping, free shipping, warranty, try-on, trial, store locator]
+  - label: Carbon plates and racing
+    description: Carbon-plated super shoes and lightweight racers for race day.
+    keywords: [carbon plate, carbon, vaporfly, vapofly, rocket x, racing, race day shoe, novablast]
+  - label: Long run comfort
+    description: Which shoes stay comfortable over long runs and high weekly mileage.
+    keywords: [long run, long runs, long distance, mileage, comfortable, comfort]
+  - label: Stridelab for marathons
+    description: Whether Stridelab models suit a first or goal marathon, often against rivals.
+    keywords: [stridelab marathon, marathon stridelab, stridelab for marathon, marathon shoe, stridelab shoe]

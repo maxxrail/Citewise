@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"is stridelab good for marathons\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab reviews\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Stridelab legit?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stride lab running shoes review\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Does Stridelab run true to size?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What is Stridelab's best marathon shoe?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"StrideLab marathon shoe reviews reddit\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Who makes Stridelab shoes?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab website\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Where can I try on Stridelab shoes?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab size chart\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Are Stridelab shoes good for beginners?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab customer service\", \"funnel_stage\": \"consideration\"}, {\"text\": \"is strydelab a real brand\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab return policy\", \"funnel_stage\": \"consideration\"}, {\"text\": \"How much does the Stridelab marathon shoe weigh?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What do runners say about Stridelab on long runs?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Does Stridelab have a running app?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab discount code for first order\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab shipping times\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "is stridelab good for marathons",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab reviews",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Stridelab legit?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stride lab running shoes review",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Does Stridelab run true to size?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What is Stridelab's best marathon shoe?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "StrideLab marathon shoe reviews reddit",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Who makes Stridelab shoes?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab website",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Where can I try on Stridelab shoes?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab size chart",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Are Stridelab shoes good for beginners?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab customer service",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "is strydelab a real brand",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab return policy",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "How much does the Stridelab marathon shoe weigh?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What do runners say about Stridelab on long runs?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Does Stridelab have a running app?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab discount code for first order",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab shipping times",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}
