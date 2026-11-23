@@ -19,6 +19,14 @@ All notable changes to Citewise are documented here. Format: [Keep a Changelog](
 - Settings: `PANEL_PROMPTS_PER_CELL`, `PANEL_DEDUP_THRESHOLD`, `PANEL_K_MIN`/`PANEL_K_MAX`, `PANEL_PCA_DIMS`, `PANEL_CLASSIFY_BATCH`, `PROMPTS_DIR`.
 - Dependencies: numpy, scikit-learn, jinja2 (runtime) and matplotlib (dev).
 
+### Fixed (code review, 2026-11-23)
+- Prompt injection: templates are split at the `=== user ===` line before rendering, the brand category is JSON-encoded in every template, and brand fields reject `===`.
+- A provider error (429, timeout) no longer aborts `generate`/`cluster` and rolls back paid work. It counts as a failed attempt and the fallback runs.
+- `panel generate` skips cells already generated with the template version (`--force` regenerates), so live re-runs don't pay again or grow the panel.
+- Spend cap per command (`--max-cost`, default `MAX_COST_USD_PER_RUN`), `PANEL_IMPORT_MAX_ROWS`, and a sampled silhouette for large panels.
+- Fallback/embedding intent labels are retried with the LLM on later runs and never used as training labels.
+- The fallback topic label is bounded. `panel build` refuses unclustered prompts. Re-clustering clears the stale scan panel. An unknown `--version` gives a clean error.
+
 ### Changed
 - The mock embedder now uses calibrated feature hashing (stemmed words, char trigrams, bigrams, plus a fixed anchor dimension) instead of random vectors, so offline dedup and clustering behave like real embeddings.
 - The Docker image ships `prompts/` and sets `PROMPTS_DIR`.

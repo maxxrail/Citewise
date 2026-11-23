@@ -142,7 +142,8 @@ class SourceChat:
         text = json.dumps(parsed, ensure_ascii=False)
         payload = {"purpose": purpose, "text": text, "parsed": parsed}
         path = self.out_dir / f"{key}.json"
-        path.write_text(json.dumps(payload, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+        body = json.dumps(payload, indent=1, ensure_ascii=False) + "\n"
+        path.write_text(body, encoding="utf-8", newline="\n")  # LF on Windows too
         self.written += 1
         return ChatResult(text=text, model=model, provider=self.name, parsed=parsed)
 

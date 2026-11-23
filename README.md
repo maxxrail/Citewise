@@ -69,6 +69,8 @@ uv run citewise panel import Stridelab my_prompts.csv   # bring real prompts: a 
 uv run python scripts/panel_report.py Stridelab   # evals/reports/panel_stridelab.md + .png (add --fresh to run it all in memory)
 ```
 
+Re-running `generate` skips cells that already have prompts (add `--force` to regenerate). `generate` and `cluster` stop making LLM calls once `--max-cost` (default `MAX_COST_USD_PER_RUN`, $3) of estimated spend is reached, and print what they spent. `cluster` replaces the topics and clears the scan panel, so run `build` again afterwards.
+
 The API serves the results at `GET /brands/{id}/prompts` (filters: `topic_id`, `intent`, `in_panel`, `limit`, `offset`) and `GET /brands/{id}/topics`. Committed example reports: [Stridelab](evals/reports/panel_stridelab.md), [Taskflow](evals/reports/panel_taskflow.md).
 
 Prompt templates live in `prompts/panel/*.v1.jinja`, and every generated prompt stores its template version. In mock mode the generated prompts, intent labels and topic labels come from hand-written sources in `tests/fixtures/panel_source/`. If you change a template, the mock embedder or the clustering, re-record the fixtures with `uv run python scripts/record_panel_fixtures.py`. A test fails if they go stale.
