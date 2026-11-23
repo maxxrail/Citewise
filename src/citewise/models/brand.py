@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from sqlalchemy import JSON, DateTime, Integer, String
+from sqlalchemy import JSON, DateTime, Integer, String, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from citewise.core.db import Base
@@ -24,7 +24,9 @@ class Brand(Base):
     aliases: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False)
     competitors: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False)
     # Buyer personas used to generate the prompt panel (Module 1), e.g. "trail runner".
-    personas: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False)
+    personas: Mapped[list[str]] = mapped_column(
+        JSON, default=list, nullable=False, server_default=text("'[]'")
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utcnow, nullable=False
     )

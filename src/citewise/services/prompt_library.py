@@ -11,17 +11,19 @@ brand-supplied text through `as_data()` (JSON-encoded), never raw.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from jinja2 import Environment, FileSystemLoader, StrictUndefined, Undefined
+from jinja2 import Environment, FileSystemLoader, StrictUndefined, Template, Undefined
 
 from citewise.core.config import get_settings
 from citewise.providers.base import Message
 
 USER_MARKER = "=== user ==="
+_MARKER_LINE = re.compile(r"^=== user ===[ \t]*\n", re.MULTILINE)
 
 
 def as_data(value: Any) -> str:
@@ -54,15 +56,29 @@ def _env(prompts_dir: Path) -> Environment:
     return env
 
 
+@lru_cache
+def _parts(prompts_dir: Path, filename: str) -> tuple[Template, Template]:
+    """Split the template *source* at the marker line, then compile each half.
+
+    Splitting before rendering means no interpolated value (a brand category, an imported
+    prompt) can contain a fake marker and move the system/user boundary.
+    """
+    env = _env(prompts_dir)
+    assert env.loader is not None
+    source, _, _ = env.loader.get_source(env, filename)
+    # Mock fixture keys hash the rendered messages: a CRLF checkout must not change them.
+    source = source.replace("\r\n", "\n")
+    pieces = _MARKER_LINE.split(source, maxsplit=1)
+    if len(pieces) != 2:
+        raise ValueError(f"Template {filename} needs a line containing only {USER_MARKER!r}")
+    return env.from_string(pieces[0]), env.from_string(pieces[1])
+
+
 def render(name: str, version: str, prompts_dir: Path | None = None, **ctx: Any) -> RenderedPrompt:
     """Render `prompts/<name>.<version>.jinja`, e.g. render("panel/generate", "v1", ...)."""
     prompts_dir = prompts_dir or get_settings().prompts_dir
-    text = _env(prompts_dir).get_template(f"{name}.{version}.jinja").render(**ctx)
-    # Mock fixture keys hash the rendered messages: a CRLF checkout must not change them.
-    text = text.replace("\r\n", "\n")
-    if USER_MARKER not in text:
-        raise ValueError(f"Template {name}.{version} is missing the {USER_MARKER!r} line")
-    system, user = (part.strip() for part in text.split(USER_MARKER, 1))
+    system_tpl, user_tpl = _parts(prompts_dir, f"{name}.{version}.jinja")
+    system, user = system_tpl.render(**ctx).strip(), user_tpl.render(**ctx).strip()
     messages: list[Message] = []
     if system:
         messages.append({"role": "system", "content": system})

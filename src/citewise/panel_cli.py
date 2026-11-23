@@ -14,7 +14,9 @@ panel_app = typer.Typer(
 )
 
 GOLDEN_INTENTS = REPO_ROOT / "evals" / "datasets" / "golden" / "intent.jsonl"
-TEACHER_SOURCES = ("llm", "import")  # labels the embedding classifier may learn from
+
+
+MAX_COST_HELP = "Stop LLM calls after this estimated spend (default MAX_COST_USD_PER_RUN)."
 
 
 def _fail(message: str) -> None:
@@ -22,37 +24,67 @@ def _fail(message: str) -> None:
     raise typer.Exit(code=1)
 
 
+def _budgeted_chat(max_cost: float | None):  # type: ignore[no-untyped-def]
+    """The OpenAI chat provider behind a spend cap for this command."""
+    from citewise.providers import get_chat_provider
+    from citewise.providers.budget import BudgetedChatProvider
+
+    cap = get_settings().max_cost_usd_per_run if max_cost is None else max_cost
+    return BudgetedChatProvider(get_chat_provider("openai"), cap)
+
+
+def _budget_note(chat) -> None:  # type: ignore[no-untyped-def]
+    typer.echo(f"estimated LLM spend: ${chat.spent_usd:.4f} (cap ${chat.max_cost_usd:.2f})")
+    if chat.refused:
+        typer.secho(
+            f"  budget reached: {chat.refused} call(s) skipped; raise --max-cost and re-run",
+            fg=typer.colors.YELLOW,
+        )
+
+
 @panel_app.command()
 def generate(
     brand: str = typer.Argument(..., help="Brand name or id."),
     version: str = typer.Option("v1", help="Template version of prompts/panel/generate."),
+    force: bool = typer.Option(
+        False, "--force", help="Regenerate cells that already have prompts (costs money live)."
+    ),
+    max_cost: float | None = typer.Option(None, min=0, help=MAX_COST_HELP),
 ) -> None:
-    """Generate candidate prompts per intent x persona, dedup them, and store them."""
+    """Generate candidate prompts per intent x persona, dedup them, and store them.
+
+    Cells already generated with this template version are skipped unless --force.
+    """
+    from jinja2 import TemplateNotFound
+
     from citewise.core.db import session_scope
-    from citewise.providers import get_chat_provider, get_embedder
+    from citewise.providers import get_embedder
     from citewise.services.panel.common import BrandNotFoundError, brand_prompts, resolve_brand
     from citewise.services.panel.generate import generate_panel
 
     settings = get_settings()
+    chat = _budgeted_chat(max_cost)
     try:
         with session_scope() as session:
             b = resolve_brand(session, brand)
-            report = generate_panel(
-                session, b, get_chat_provider("openai"), get_embedder(), settings, version
-            )
+            report = generate_panel(session, b, chat, get_embedder(), settings, version, force)
             total = len(brand_prompts(session, b.id))
     except BrandNotFoundError as exc:
         _fail(str(exc))
         return
+    except TemplateNotFound:
+        _fail(f"No template prompts/panel/generate.{version}.jinja")
+        return
     typer.echo(
         f"{b.name}: {report.candidates} candidates from template panel/generate.{version} "
-        f"({report.failed_calls} failed calls)\n"
+        f"({report.failed_calls} failed cells, {report.skipped_cells} already generated)\n"
         f"  dropped: {report.invalid} invalid, {report.exact_duplicates} exact duplicates, "
         f"{report.near_duplicates} near-duplicates (cosine > {settings.panel_dedup_threshold})\n"
         f"  stored: {report.stored} new, {total} total prompts for {b.name}"
     )
     for dropped, kept in report.examples[:3]:
         typer.echo(f"  e.g. dropped {dropped!r} (kept {kept!r})")
+    _budget_note(chat)
 
 
 @panel_app.command("import")
@@ -85,19 +117,21 @@ def cluster(
     brand: str = typer.Argument(..., help="Brand name or id."),
     algorithm: str = typer.Option("kmeans", help="kmeans (silhouette-selected k) or hdbscan."),
     seed: int = typer.Option(0, help="Random seed for KMeans."),
+    max_cost: float | None = typer.Option(None, min=0, help=MAX_COST_HELP),
 ) -> None:
-    """Cluster prompts into labeled topics and classify any prompt without an intent."""
+    """Cluster prompts into labeled topics and classify any prompt without an intent.
+
+    Replaces the brand's topics and clears the scan panel (re-run `panel build`).
+    """
     from citewise.core.db import session_scope
-    from citewise.providers import get_chat_provider
     from citewise.services.panel.cluster import cluster_brand
     from citewise.services.panel.common import BrandNotFoundError, resolve_brand
 
+    chat = _budgeted_chat(max_cost)
     try:
         with session_scope() as session:
             b = resolve_brand(session, brand)
-            report = cluster_brand(
-                session, b, get_chat_provider("openai"), get_settings(), algorithm, seed
-            )
+            report = cluster_brand(session, b, chat, get_settings(), algorithm, seed)
     except (BrandNotFoundError, ValueError) as exc:
         _fail(str(exc))
         return
@@ -110,6 +144,8 @@ def cluster(
         typer.echo(f"  {size:>4}  {source:<8}  {label}")
     typer.echo(f"intents: {dict(sorted(report.intents.items()))}")
     typer.echo(f"intent sources: {dict(sorted(report.intent_sources.items()))}")
+    _budget_note(chat)
+    typer.echo("scan panel cleared: run `citewise panel build` to pick a new one")
 
 
 @panel_app.command("eval-intent")
@@ -128,7 +164,11 @@ def eval_intent(
         brand_prompts,
         resolve_brand,
     )
-    from citewise.services.panel.intent import cross_validated_agreement, format_agreement
+    from citewise.services.panel.intent import (
+        TEACHER_SOURCES,
+        cross_validated_agreement,
+        format_agreement,
+    )
 
     try:
         with session_scope() as session:

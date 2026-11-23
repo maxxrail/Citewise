@@ -47,7 +47,9 @@ class ClusterReport:
     intent_sources: dict[str, int]
 
 
-def select_k(x: np.ndarray, k_min: int, k_max: int, seed: int = 0) -> tuple[int, dict[int, float]]:
+def select_k(
+    x: np.ndarray, k_min: int, k_max: int, seed: int = 0, sample: int = 2000
+) -> tuple[int, dict[int, float]]:
     """Pick k in [k_min, k_max] with the highest cosine silhouette (ties -> smaller k).
 
     The range is clipped to what the data allows (silhouette needs 2 <= k <= n - 1).
@@ -62,15 +64,21 @@ def select_k(x: np.ndarray, k_min: int, k_max: int, seed: int = 0) -> tuple[int,
         labels = KMeans(n_clusters=k, n_init=10, random_state=seed).fit_predict(x)
         if len(set(labels)) < 2:
             continue
-        scores[k] = float(silhouette_score(x, labels, metric="cosine"))
+        scores[k] = float(
+            silhouette_score(
+                x, labels, metric="cosine", sample_size=min(n, sample), random_state=seed
+            )
+        )
     if not scores:
         return 1, {}
     best = max(scores, key=lambda k: (round(scores[k], 6), -k))
     return best, scores
 
 
-def kmeans_clusters(x: np.ndarray, k_min: int, k_max: int, seed: int = 0) -> Clustering:
-    k, scores = select_k(x, k_min, k_max, seed)
+def kmeans_clusters(
+    x: np.ndarray, k_min: int, k_max: int, seed: int = 0, sample: int = 2000
+) -> Clustering:
+    k, scores = select_k(x, k_min, k_max, seed, sample)
     if k == 1:
         return Clustering(np.zeros(x.shape[0], dtype=int), 1, "kmeans", scores)
     labels = KMeans(n_clusters=k, n_init=10, random_state=seed).fit_predict(x)
@@ -142,7 +150,9 @@ def cluster_brand(
     if algorithm == "hdbscan":
         clustering = hdbscan_clusters(z)
     elif algorithm == "kmeans":
-        clustering = kmeans_clusters(z, settings.panel_k_min, settings.panel_k_max, seed)
+        clustering = kmeans_clusters(
+            z, settings.panel_k_min, settings.panel_k_max, seed, settings.panel_silhouette_sample
+        )
     else:
         raise ValueError(f"Unknown algorithm {algorithm!r}; use kmeans or hdbscan")
     cent = centrality(x, clustering.labels, clustering.k)  # in the original space
@@ -163,7 +173,10 @@ def cluster_brand(
     sources = ensure_intents(session, brand, prompts, chat, settings)
 
     # Clear links explicitly: SQLite doesn't enforce ON DELETE SET NULL without a PRAGMA.
-    session.execute(update(Prompt).where(Prompt.brand_id == brand.id).values(topic_id=None))
+    # The old panel was stratified over the old topics, so it is cleared: re-run `build`.
+    session.execute(
+        update(Prompt).where(Prompt.brand_id == brand.id).values(topic_id=None, in_panel=False)
+    )
     session.execute(delete(Topic).where(Topic.brand_id == brand.id))
 
     topics: list[tuple[str, int, str]] = []

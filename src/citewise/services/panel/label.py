@@ -27,9 +27,9 @@ _STOP = frozenset(
 def fallback_label(texts: list[str]) -> TopicLabel:
     """Top 3 content words: a readable label when the LLM call fails twice."""
     counts = Counter(w for t in texts for w in set(_WORD.findall(t.lower())) if w not in _STOP)
-    words = [w for w, _ in counts.most_common(3)] or ["misc"]
+    words = [w[:15] for w, _ in counts.most_common(3)] or ["misc"]
     return TopicLabel(
-        label=" ".join(w.capitalize() for w in words),
+        label=" ".join(w.capitalize() for w in words)[:60].strip(),
         description=f"Questions mentioning {', '.join(words)}.",
     )
 

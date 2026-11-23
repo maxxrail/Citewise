@@ -65,6 +65,7 @@ class StoreReport:
     near_duplicates: int = 0
     stored: int = 0
     failed_calls: int = 0
+    skipped_cells: int = 0  # already generated with this template version
     examples: list[tuple[str, str]] = field(default_factory=list)  # (dropped, kept)
 
 
@@ -91,12 +92,18 @@ def render_generation(
 
 
 def generate_candidates(
-    brand: Brand, chat: ChatProvider, settings: Settings, version: str = "v1"
+    brand: Brand,
+    chat: ChatProvider,
+    settings: Settings,
+    version: str = "v1",
+    skip: set[tuple[str, str]] | None = None,
 ) -> tuple[list[Candidate], int]:
-    """Run every generation cell. Returns (candidates, number of cells that failed)."""
+    """Run every generation cell not in `skip`. Returns (candidates, cells that failed)."""
     candidates: list[Candidate] = []
     failed = 0
     for intent, persona in generation_cells(brand):
+        if skip and (intent, persona) in skip:
+            continue
         prompt = render_generation(brand, intent, persona, settings.panel_prompts_per_cell, version)
         batch = complete_structured(
             chat,
@@ -240,16 +247,32 @@ def generate_panel(
     embedder: EmbeddingProvider,
     settings: Settings,
     version: str = "v1",
+    force: bool = False,
 ) -> StoreReport:
-    candidates, failed = generate_candidates(brand, chat, settings, version)
+    """Generate and store a panel. Cells that already have prompts from this template
+    version are skipped unless `force`: live output differs on every call, so blindly
+    re-running would pay again and keep growing the panel.
+    """
+    template_version = f"{GENERATE_TEMPLATE}.{version}"
+    done: set[tuple[str, str]] = set()
+    if not force:
+        for p in brand_prompts(session, brand.id):
+            if p.template_version == template_version and p.requested_intent:
+                done.add((p.requested_intent, p.persona or DEFAULT_PERSONA))
+    candidates, failed = generate_candidates(brand, chat, settings, version, skip=done)
     report = store_candidates(session, brand, candidates, embedder, settings.panel_dedup_threshold)
     report.failed_calls = failed
+    report.skipped_cells = len(done & set(generation_cells(brand)))
     return report
 
 
 def import_csv(
     session: Session, brand: Brand, path: Path, embedder: EmbeddingProvider, settings: Settings
 ) -> StoreReport:
-    return store_candidates(
-        session, brand, read_csv_candidates(path), embedder, settings.panel_dedup_threshold
-    )
+    candidates = read_csv_candidates(path)
+    if len(candidates) > settings.panel_import_max_rows:
+        raise ValueError(
+            f"{path} has {len(candidates)} rows; the limit is {settings.panel_import_max_rows} "
+            "(PANEL_IMPORT_MAX_ROWS). Each row is embedded and classified, so this caps cost."
+        )
+    return store_candidates(session, brand, candidates, embedder, settings.panel_dedup_threshold)

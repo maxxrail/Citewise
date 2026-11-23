@@ -153,8 +153,9 @@ def write_report(session: Session, brand: Brand, out_dir: Path, use_umap: bool) 
         "generator was asked for.",
         f"- Scan panel: **{len(panel)} prompts** covering "
         f"{len({p.topic_id for p in panel})}/{len(topics)} topics.",
-        f"- Panel LLM calls: {len(calls)}, estimated ${sum(c.cost_usd for c in calls):.4f} "
-        f"(mock calls are priced as if live).",
+        f"- Panel LLM calls in this DB: {len(calls)}, estimated "
+        f"${sum(c.cost_usd for c in calls):.4f} (all brands, since `llm_calls` has no brand "
+        "id yet; mock calls are priced as if live).",
         "",
         "## Topics",
         "",

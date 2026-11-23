@@ -15,6 +15,8 @@ from typing import TypeVar
 from pydantic import BaseModel, ValidationError
 
 from citewise.providers.base import ChatProvider, JsonSchema, Message
+from citewise.providers.budget import BudgetExceededError
+from citewise.providers.pricing import UnpricedModelError
 
 log = logging.getLogger(__name__)
 T = TypeVar("T", bound=BaseModel)
@@ -45,7 +47,21 @@ def complete_structured(
     attempt_messages = list(messages)
     error = ""
     for attempt in (1, 2):
-        result = chat.complete(attempt_messages, model=model, purpose=purpose, json_schema=schema)
+        try:
+            result = chat.complete(
+                attempt_messages, model=model, purpose=purpose, json_schema=schema
+            )
+        except UnpricedModelError:
+            raise  # configuration error: fail loudly before anything is spent
+        except BudgetExceededError as exc:
+            log.error("%s: skipped, %s", purpose, exc)
+            return None  # no retry: the next call would be refused too
+        except Exception as exc:  # provider error after the SDK's own retries
+            # The tracker already wrote an ok=False llm_calls row. Returning None lets the
+            # caller's fallback run instead of rolling back everything paid for so far.
+            error = f"{type(exc).__name__}: {exc}"[:1000]
+            log.warning("%s: provider error (attempt %d): %s", purpose, attempt, error)
+            continue
         try:
             return _parse(output, result.parsed, result.text)
         except (ValidationError, json.JSONDecodeError, ValueError) as exc:

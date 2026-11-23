@@ -22,6 +22,8 @@ def _clean_line(v: str) -> str:
         raise ValueError("must not be blank")
     if _CONTROL_CHARS.search(v):
         raise ValueError("must be a single line without control characters")
+    if "===" in v:  # looks like a prompt-template section marker (e.g. "=== user ===")
+        raise ValueError("must not contain '==='")
     return v
 
 

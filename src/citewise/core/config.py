@@ -63,6 +63,9 @@ class Settings(BaseSettings):
     panel_k_max: int = Field(default=14, ge=2)
     panel_pca_dims: int = Field(default=20, ge=0)  # 0 = cluster the raw embeddings
     panel_classify_batch: int = Field(default=25, ge=1, le=100)
+    panel_import_max_rows: int = Field(default=5000, ge=1)
+    # Silhouette is O(n^2) in memory; above this many prompts it is computed on a sample.
+    panel_silhouette_sample: int = Field(default=2000, ge=100)
 
     # Where mock fixtures live. Tests and CI use the repo copy.
     fixtures_dir: Path = REPO_ROOT / "tests" / "fixtures"

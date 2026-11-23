@@ -32,6 +32,8 @@ log = logging.getLogger(__name__)
 
 CLASSIFY_TEMPLATE = "panel/classify_intent"
 MIN_TRAIN_PER_CLASS = 2
+# Labels good enough to learn from and to keep: the LLM's, or a human's (CSV import).
+TEACHER_SOURCES = ("llm", "import")
 
 
 class IntentClassifier(Protocol):
@@ -166,14 +168,16 @@ def format_agreement(a: Agreement, title: str) -> str:
 def ensure_intents(
     session: Session, brand: Brand, prompts: list[Prompt], chat: ChatProvider, settings: Settings
 ) -> dict[str, int]:
-    """Label every prompt that has no intent yet. Returns counts by intent_source.
+    """Label every prompt without a teacher label. Returns counts by intent_source.
 
     Order of preference: the LLM classifier; for items it couldn't label, the embedding
-    classifier trained on everything labeled so far; last resort, the intent the
-    generator was asked for. Already-labeled prompts are never re-sent, so re-running
-    `panel cluster` costs nothing extra.
+    classifier trained on teacher labels (LLM or imported); last resort, the intent the
+    generator was asked for. Prompts with a teacher label are never re-sent, so re-running
+    `panel cluster` costs nothing extra; guessed labels are retried with the LLM.
     """
-    todo = [p for p in prompts if p.intent is None]
+    # Guessed labels (fallback / embedding) get another chance at the LLM on every run, so
+    # a transient outage doesn't freeze them.
+    todo = [p for p in prompts if p.intent is None or p.intent_source not in TEACHER_SOURCES]
     if todo:
         llm = LLMIntentClassifier(
             chat,
@@ -185,8 +189,9 @@ def ensure_intents(
             if intent is not None:
                 p.intent, p.intent_source = intent, "llm"
 
-    still = [p for p in prompts if p.intent is None]
-    labeled = [p for p in prompts if p.intent is not None and p.embedding]
+    still = [p for p in prompts if p.intent is None or p.intent_source not in TEACHER_SOURCES]
+    # Train only on teacher labels: learning from our own guesses would compound errors.
+    labeled = [p for p in prompts if p.intent_source in TEACHER_SOURCES and p.embedding]
     counts = Counter(p.intent for p in labeled)
     if still and len(counts) >= 2 and min(counts.values()) >= MIN_TRAIN_PER_CLASS:
         clf = EmbeddingIntentClassifier().fit(
@@ -198,7 +203,7 @@ def ensure_intents(
             preds = clf.predict_vectors(as_matrix([p.embedding for p in with_vec if p.embedding]))
             for p, intent in zip(with_vec, preds, strict=True):
                 p.intent, p.intent_source = intent, "embedding"
-    for p in prompts:
-        if p.intent is None:
+    for p in still:
+        if p.intent_source not in ("embedding", *TEACHER_SOURCES):
             p.intent, p.intent_source = p.requested_intent or "informational", "fallback"
     return dict(Counter(p.intent_source or "none" for p in prompts))

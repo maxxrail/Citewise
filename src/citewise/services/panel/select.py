@@ -99,6 +99,12 @@ def build_panel(session: Session, brand: Brand, size: int, seed: int = 0) -> Pan
     prompts = brand_prompts(session, brand.id)
     if not prompts:
         raise ValueError(f"{brand.name} has no prompts. Run `citewise panel generate`.")
+    unclustered = sum(1 for p in prompts if p.topic_id is None or p.intent is None)
+    if unclustered:
+        raise ValueError(
+            f"{unclustered} {brand.name} prompts have no topic or intent yet "
+            "(new imports or generations?). Run `citewise panel cluster` first."
+        )
     items = [PanelItem(p.id, p.topic_id, p.intent) for p in prompts]
     selected = stratified_sample(items, size, seed)
     chosen = set(selected)
