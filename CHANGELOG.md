@@ -18,6 +18,11 @@ All notable changes to Citewise are documented here. Format: [Keep a Changelog](
 - CI: mypy step and a `docker build` job. Pre-commit pins bumped (ruff v0.17.6, gitleaks v8.30.1, pre-commit-hooks v6.0.0).
 - Tests (mock mode, SQLite): config, providers, tracking, API, seed idempotency, CLI, Alembic upgrade/downgrade.
 
+### Fixed (review, 2026-11-23)
+- Mock structured output now resolves `$ref`/`$defs`, so Pydantic-generated nested schemas validate in mock mode.
+- Live mode refuses models with no price (`UnpricedModelError`) instead of recording $0. Price lookup only strips dated snapshot suffixes, not arbitrary `-suffix` matches.
+- Brand input is bounded (max 20 aliases/competitors, max 100 chars each), single-line, deduped, and the domain is normalised to a hostname.
+
 ## Kit
 
 ### Added

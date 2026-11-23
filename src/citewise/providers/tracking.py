@@ -23,7 +23,7 @@ from citewise.providers.base import (
     Message,
     Usage,
 )
-from citewise.providers.pricing import estimate_cost
+from citewise.providers.pricing import estimate_cost, require_price
 
 log = logging.getLogger(__name__)
 
@@ -71,10 +71,14 @@ def _elapsed_ms(start: float) -> int:
 class TrackedChatProvider:
     """Wraps a chat backend; same `ChatProvider` protocol, plus `llm_calls` logging."""
 
-    def __init__(self, backend: ChatProvider, recorder: CallRecorder) -> None:
+    def __init__(
+        self, backend: ChatProvider, recorder: CallRecorder, *, require_prices: bool = False
+    ) -> None:
         self.backend = backend
         self.recorder = recorder
         self.name = backend.name
+        # Live mode sets this: an unpriced model would record $0 and blind the budget guard.
+        self.require_prices = require_prices
 
     def complete(
         self,
@@ -85,6 +89,8 @@ class TrackedChatProvider:
         json_schema: JsonSchema | None = None,
         tools: list[dict[str, Any]] | None = None,
     ) -> ChatResult:
+        if self.require_prices:
+            require_price(model)  # before the call: nothing billed, nothing to record
         start = time.perf_counter()
         try:
             result = self.backend.complete(
@@ -121,13 +127,18 @@ class TrackedChatProvider:
 class TrackedEmbedder:
     """Implements `EmbeddingProvider` over a backend, logging each batch to `llm_calls`."""
 
-    def __init__(self, backend: EmbeddingBackend, recorder: CallRecorder) -> None:
+    def __init__(
+        self, backend: EmbeddingBackend, recorder: CallRecorder, *, require_prices: bool = False
+    ) -> None:
         self.backend = backend
         self.recorder = recorder
+        self.require_prices = require_prices
 
     def embed(self, texts: list[str], *, purpose: str = "embed") -> list[list[float]]:
         if not texts:
             return []
+        if self.require_prices:
+            require_price(self.backend.model)
         start = time.perf_counter()
         try:
             result = self.backend.embed_with_usage(texts)

@@ -54,7 +54,8 @@ def get_chat_provider(
     else:
         backend = NotYetImplementedProvider(name)
 
-    return TrackedChatProvider(backend, CallRecorder(session_factory or get_sessionmaker()))
+    recorder = CallRecorder(session_factory or get_sessionmaker())
+    return TrackedChatProvider(backend, recorder, require_prices=not settings.is_mock)
 
 
 def get_embedder(
@@ -75,4 +76,5 @@ def get_embedder(
             timeout_s=settings.llm_timeout_s,
             max_retries=settings.llm_max_retries,
         )
-    return TrackedEmbedder(backend, CallRecorder(session_factory or get_sessionmaker()))
+    recorder = CallRecorder(session_factory or get_sessionmaker())
+    return TrackedEmbedder(backend, recorder, require_prices=not settings.is_mock)
