@@ -133,6 +133,7 @@ class TrackedEmbedder:
         self.backend = backend
         self.recorder = recorder
         self.require_prices = require_prices
+        self.ident = f"{backend.name}:{backend.model}"
 
     def embed(self, texts: list[str], *, purpose: str = "embed") -> list[list[float]]:
         if not texts:

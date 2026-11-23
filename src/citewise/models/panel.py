@@ -67,6 +67,9 @@ class Prompt(Base):
     )
     centrality: Mapped[float | None] = mapped_column(Float, nullable=True)  # cos to centroid
     embedding: Mapped[list[float] | None] = mapped_column(JSON, nullable=True)
+    # Vector space of `embedding` ("<provider>:<model>"). Vectors from different spaces are
+    # meaningless together (mock vs live share a model name), so stale ones are re-embedded.
+    embedding_model: Mapped[str | None] = mapped_column(String(128), nullable=True)
     in_panel: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, index=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utcnow, nullable=False

@@ -67,6 +67,7 @@ uv run citewise panel eval-intent Stridelab --golden evals/datasets/golden/inten
 uv run citewise panel build Stridelab --size 50   # stratified topic x intent sample to scan in Module 2
 uv run citewise panel import Stridelab my_prompts.csv   # bring real prompts: a `text` column (+ optional intent, persona, funnel_stage)
 uv run python scripts/panel_report.py Stridelab   # evals/reports/panel_stridelab.md + .png (add --fresh to run it all in memory)
+uv run citewise panel reset Stridelab            # delete this brand's prompts + topics to start over (asks first; --yes to skip)
 ```
 
 Re-running `generate` skips cells that already have prompts (add `--force` to regenerate). `generate` and `cluster` stop making LLM calls once `--max-cost` (default `MAX_COST_USD_PER_RUN`, $3) of estimated spend is reached, and print what they spent. `cluster` replaces the topics and clears the scan panel, so run `build` again afterwards.
@@ -77,7 +78,7 @@ Prompt templates live in `prompts/panel/*.v1.jinja`, and every generated prompt 
 
 ### Live mode
 
-Set `CITEWISE_MODE=live` and `OPENAI_API_KEY` in `.env`. Only the OpenAI provider (chat + embeddings) is live so far. The other engines arrive in Module 2. A live `panel generate` + `cluster` for one brand is about 15 generation calls on `MODEL_GENERATE`, about 25 small classification and labeling calls on `MODEL_EXTRACT`, and 2 embedding batches. Check `llm_calls` for the exact cost. Model IDs are set per purpose (`MODEL_EXTRACT`, `MODEL_JUDGE`, `MODEL_GENERATE`, `MODEL_EMBED`) in `.env`.
+Set `CITEWISE_MODE=live` and `OPENAI_API_KEY` in `.env`. Only the OpenAI provider (chat + embeddings) is live so far. The other engines arrive in Module 2. A live `panel generate` + `cluster` for one brand is about 15 generation calls on `MODEL_GENERATE`, about 25 small classification and labeling calls on `MODEL_EXTRACT`, and 2 embedding batches. Check `llm_calls` for the exact cost. If the database already holds a mock-mode panel, run `citewise panel reset <brand>` first, because `generate` skips cells that already have prompts. Each stored embedding records its embedder (`mock:` vs `openai:`), and stale ones are re-embedded automatically. Model IDs are set per purpose (`MODEL_EXTRACT`, `MODEL_JUDGE`, `MODEL_GENERATE`, `MODEL_EMBED`) in `.env`.
 
 ## How it's built
 

@@ -51,6 +51,7 @@ class SourceEmbedder:
 
     def __init__(self, model: str) -> None:
         self.backend = MockEmbedder(model)
+        self.ident = f"{self.backend.name}:{model}"  # same vector space as mock mode
 
     def embed(self, texts: list[str], *, purpose: str = "embed") -> list[list[float]]:
         return self.backend.embed_with_usage(texts).vectors

@@ -532,23 +532,7 @@ def test_api_404_and_validation(client: TestClient) -> None:
     assert client.get("/brands/1/prompts?limit=0").status_code == 422
 
 
-# ---- CLI ----
-
-
-@pytest.fixture
-def cli_db(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[str]:
-    """A file SQLite DB for the CLI (it opens its own sessions via settings)."""
-    from citewise.core import db as core_db
-
-    url = f"sqlite:///{(tmp_path / 'cli.db').as_posix()}"
-    monkeypatch.setenv("DATABASE_URL", url)
-    for cached in (get_settings, core_db.get_engine, core_db.get_sessionmaker):
-        cached.cache_clear()
-    Base.metadata.create_all(core_db.get_engine())
-    yield url
-    core_db.get_engine().dispose()
-    for cached in (get_settings, core_db.get_engine, core_db.get_sessionmaker):
-        cached.cache_clear()
+# ---- CLI (the `cli_db` fixture lives in conftest.py) ----
 
 
 def test_cli_panel_commands_end_to_end(cli_db: str) -> None:

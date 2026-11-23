@@ -4,6 +4,18 @@ All notable changes to Citewise are documented here. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+## module-01 review (2026-11-23)
+
+### Added
+- `citewise panel reset <brand> [--yes]`: delete a brand's prompts and topics so the panel can be rebuilt (e.g. before the first live run).
+- `prompts.embedding_model` (migration `0003`) and `EmbeddingProvider.ident`.
+
+### Fixed
+- Stored embeddings from another vector space (mock vs live, or a `MODEL_EMBED` change) are re-embedded before dedup, clustering and `eval-intent`, instead of being silently mixed.
+- Piped CLI output no longer crashes on Windows for non-cp1252 text (Japanese, emoji).
+- `eval-intent --golden` in live mode respects `--max-cost`. The cross-validation title now says "teacher labels".
+- The live smoke-test instructions now reset the mock panel first (before, `generate` skipped every cell).
+
 ## module-01 - Prompt panel and topic discovery (2026-11-23)
 
 ### Added
