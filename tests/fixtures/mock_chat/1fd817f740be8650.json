@@ -1,8 +1,8 @@
 {
  "purpose": "panel.label_topic",
- "text": "{\"label\": \"Agency tool comparisons\", \"description\": \"Agencies comparing Taskflow with Asana, Monday.com and others for client work.\"}",
+ "text": "{\"label\": \"Choosing a PM Tool\", \"description\": \"Generic searches for the best or cheapest project management software for a team type.\"}",
  "parsed": {
-  "label": "Agency tool comparisons",
-  "description": "Agencies comparing Taskflow with Asana, Monday.com and others for client work."
+  "label": "Choosing a PM Tool",
+  "description": "Generic searches for the best or cheapest project management software for a team type."
  }
 }

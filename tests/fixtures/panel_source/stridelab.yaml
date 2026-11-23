@@ -718,3 +718,39 @@ topics:
   - label: Stridelab for marathons
     description: Whether Stridelab models suit a first or goal marathon, often against rivals.
     keywords: [stridelab marathon, marathon stridelab, stridelab for marathon, marathon shoe, stridelab shoe]
+# Hand-written topic labels, keyed by each cluster's most central prompt (the first line of
+# `uv run python scripts/record_panel_fixtures.py --verbose`). Re-check after re-clustering.
+cluster_labels:
+  "stridelab reviews":
+    label: Stridelab Reviews and Buying
+    description: Whether Stridelab is legit, its reviews, sizing, website and where to buy it.
+  "what are lugs on trail shoes":
+    label: Trail Shoe Features
+    description: Lugs, rock plates, waterproofing and grip for trail running shoes.
+  "best running shoes for first marathon":
+    label: Marathon Training Shoes
+    description: Which shoes to buy for a first or beginner marathon and the training block.
+  "best running shoes for hip pain":
+    label: Cushioning for Joint Pain
+    description: Cushioned shoes for heavy, older or injured runners with knee, hip or ankle pain.
+  "brooks ghost vs asics novablast":
+    label: Competitor Model Comparisons
+    description: Head-to-head comparisons of specific Brooks, ASICS, Hoka and New Balance models.
+  "buy stridelab trail shoes":
+    label: Stridelab Trail Shoes
+    description: Reviews, specs and buying questions about the Stridelab trail shoe.
+  "best shoes for shin splints":
+    label: Injury and Foot Problems
+    description: Shoes for shin splints, flat feet and injury recovery, including max cushion and carbon.
+  "stridelab trail vs hoka speedgoat":
+    label: Stridelab vs Hoka
+    description: Comparing Stridelab with Hoka (and other trail brands) on grip, cushioning and fit.
+  "best shoes for long runs?":
+    label: Long Run Comfort
+    description: Shoes and fit for long runs, plus chafing, numb feet and long-run planning.
+  "what is a stability shoe":
+    label: Stability Shoes
+    description: What stability shoes are, which ones suit overpronation and where to find deals.
+  "buy stridelab marathon shoes":
+    label: Stridelab Marathon Shoe
+    description: Whether the Stridelab marathon shoe is good, how it compares and where to buy it.

@@ -1,8 +1,8 @@
 {
  "purpose": "panel.label_topic",
- "text": "{\"label\": \"Integrations and API\", \"description\": \"Connecting the tool to GitHub, Slack, GitLab and custom code.\"}",
+ "text": "{\"label\": \"Feature-Led Tool Search\", \"description\": \"Finding a tool by a must-have feature such as GitHub, Slack, time tracking or invoicing.\"}",
  "parsed": {
-  "label": "Integrations and API",
-  "description": "Connecting the tool to GitHub, Slack, GitLab and custom code."
+  "label": "Feature-Led Tool Search",
+  "description": "Finding a tool by a must-have feature such as GitHub, Slack, time tracking or invoicing."
  }
 }

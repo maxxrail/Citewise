@@ -1,8 +1,8 @@
 {
  "purpose": "panel.label_topic",
- "text": "{\"label\": \"Small team setup\", \"description\": \"Getting a small startup team organized: onboarding, templates and planning rituals.\"}",
+ "text": "{\"label\": \"Tools for Small Teams\", \"description\": \"Kanban, agile and Jira-alternative tools for small or growing teams.\"}",
  "parsed": {
-  "label": "Small team setup",
-  "description": "Getting a small startup team organized: onboarding, templates and planning rituals."
+  "label": "Tools for Small Teams",
+  "description": "Kanban, agile and Jira-alternative tools for small or growing teams."
  }
 }

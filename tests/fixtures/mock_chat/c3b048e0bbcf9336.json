@@ -1,8 +1,8 @@
 {
  "purpose": "panel.label_topic",
- "text": "{\"label\": \"Roadmaps and timelines\", \"description\": \"Gantt charts, roadmaps, dependencies and resource planning.\"}",
+ "text": "{\"label\": \"Gantt and Planning Charts\", \"description\": \"What Gantt, burndown and RACI charts are and which tools provide them.\"}",
  "parsed": {
-  "label": "Roadmaps and timelines",
-  "description": "Gantt charts, roadmaps, dependencies and resource planning."
+  "label": "Gantt and Planning Charts",
+  "description": "What Gantt, burndown and RACI charts are and which tools provide them."
  }
 }

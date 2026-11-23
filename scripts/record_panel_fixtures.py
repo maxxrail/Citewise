@@ -13,8 +13,10 @@ Re-run it whenever a panel template, the brand YAML, the mock embedder or the cl
 changes (the fixture keys hash the rendered messages). `tests/test_panel_pipeline.py`
 fails if the generation fixtures are stale.
 
-Labels are hand-authored: generation/intents come straight from the source file; a topic
-label is the authored theme whose keywords best match the cluster's central prompts.
+Labels are hand-authored: generation/intents come straight from the source file. A topic
+label comes from `cluster_labels` (keyed by the cluster's most central prompt, written by
+reading `--verbose` output) or, failing that, from the authored theme whose keywords best
+match the cluster's central prompts.
 """
 
 from __future__ import annotations
@@ -80,6 +82,10 @@ class SourceChat:
                 cleaned = clean_prompt_text(p["text"]) or p["text"]
                 self.labels[text_hash(cleaned)] = p.get("label", cell["intent"])
         self.topics = source["topics"]
+        # Hand-written labels for specific clusters, keyed by the cluster's most central
+        # prompt. These win over keyword matching (which is only a first draft).
+        self.cluster_labels: dict[str, dict[str, str]] = source.get("cluster_labels") or {}
+        self.seen_clusters: list[tuple[list[str], str]] = []
         self.used_labels: set[str] = set()
         self.written = 0
 
@@ -99,6 +105,10 @@ class SourceChat:
             }
         if purpose == "panel.label_topic":
             texts = _data_block(user)
+            override = self.cluster_labels.get(texts[0])
+            self.seen_clusters.append((texts, "override" if override else "keywords"))
+            if override:
+                return {"label": override["label"], "description": override["description"]}
             ranked = sorted(
                 self.topics,
                 key=lambda t: (-_keyword_score(texts, t["keywords"]), t["label"]),
@@ -174,8 +184,13 @@ def record_brand(brand_data: Any, source: dict[str, Any], out_dir: Path) -> None
             f"{brand.name}: {report.stored} prompts stored ({report.near_duplicates} near dupes), "
             f"{clusters.k} topics, {chat.written} fixtures written"
         )
-        for label, size, _ in clusters.topics:
-            print(f"  {size:>4}  {label}")
+        for (label, size, _), (central, how) in zip(
+            clusters.topics, chat.seen_clusters, strict=True
+        ):
+            print(f"  {size:>4}  {label}  [{how}]")
+            if "--verbose" in sys.argv:
+                for t in central:
+                    print(f"          - {t}")
 
 
 def main() -> int:

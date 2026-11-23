@@ -1,8 +1,8 @@
 {
  "purpose": "panel.label_topic",
- "text": "{\"label\": \"Client and agency workflows\", \"description\": \"Running client work: portals, approvals, guest access and retainers.\"}",
+ "text": "{\"label\": \"Agency and Engineering Practice\", \"description\": \"How-to and tooling questions about resource planning, story points and team metrics.\"}",
  "parsed": {
-  "label": "Client and agency workflows",
-  "description": "Running client work: portals, approvals, guest access and retainers."
+  "label": "Agency and Engineering Practice",
+  "description": "How-to and tooling questions about resource planning, story points and team metrics."
  }
 }

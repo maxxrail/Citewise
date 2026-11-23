@@ -719,3 +719,45 @@ topics:
   - label: Agency tool comparisons
     description: Agencies comparing Taskflow with Asana, Monday.com and others for client work.
     keywords: [agency, agencies, client, clients, monday, asana]
+# Hand-written topic labels, keyed by each cluster's most central prompt (the first line of
+# `uv run python scripts/record_panel_fixtures.py --verbose`). Re-check after re-clustering.
+cluster_labels:
+  "What is Taskflow?":
+    label: Taskflow Basics and Reviews
+    description: What Taskflow is, whether it is legit, reviews, login, docs and coupons.
+  "best project management software with sso":
+    label: Choosing a PM Tool
+    description: Generic searches for the best or cheapest project management software for a team type.
+  "best software for agency resource planning":
+    label: Agency and Engineering Practice
+    description: How-to and tooling questions about resource planning, story points and team metrics.
+  "task flow client approvals":
+    label: Client Collaboration in Taskflow
+    description: Client portals, guest access, comments and approvals in Taskflow versus rivals.
+  "best kanban app for small team":
+    label: Tools for Small Teams
+    description: Kanban, agile and Jira-alternative tools for small or growing teams.
+  "taskflow vs jira":
+    label: Taskflow vs Jira
+    description: Comparing Taskflow with Jira for engineering teams and migrating from Jira.
+  "taskflow education discount":
+    label: Taskflow Discounts
+    description: Education, nonprofit, startup, annual and volume discounts on Taskflow.
+  "is taskflow good for startups":
+    label: PM Tools for Startups
+    description: Which project management tool a startup should pick, Taskflow, Asana or others.
+  "best tool for tracking bugs and features together":
+    label: Feature-Led Tool Search
+    description: Finding a tool by a must-have feature such as GitHub, Slack, time tracking or invoicing.
+  "taskflow vs clickup pricing":
+    label: Taskflow vs ClickUp
+    description: Comparing Taskflow with ClickUp on price, agile features and time tracking.
+  "taskflow vs asana for agencies":
+    label: Taskflow for Agencies
+    description: Whether Taskflow suits agency work, its templates and how it compares to Asana.
+  "taskflow free trial":
+    label: Free Plan and Trial
+    description: Taskflow free trials, the free plan, free guest seats and time tracking basics.
+  "What is a Gantt chart used for?":
+    label: Gantt and Planning Charts
+    description: What Gantt, burndown and RACI charts are and which tools provide them.

@@ -1,8 +1,8 @@
 {
  "purpose": "panel.label_topic",
- "text": "{\"label\": \"Sprint and agile planning\", \"description\": \"Sprints, backlogs, story points, scrum and kanban for dev teams.\"}",
+ "text": "{\"label\": \"Taskflow vs ClickUp\", \"description\": \"Comparing Taskflow with ClickUp on price, agile features and time tracking.\"}",
  "parsed": {
-  "label": "Sprint and agile planning",
-  "description": "Sprints, backlogs, story points, scrum and kanban for dev teams."
+  "label": "Taskflow vs ClickUp",
+  "description": "Comparing Taskflow with ClickUp on price, agile features and time tracking."
  }
 }

@@ -1,8 +1,8 @@
 {
  "purpose": "panel.label_topic",
- "text": "{\"label\": \"Brand reputation and reviews\", \"description\": \"Whether Taskflow is legit, who owns it, and what reviews say.\"}",
+ "text": "{\"label\": \"Taskflow Basics and Reviews\", \"description\": \"What Taskflow is, whether it is legit, reviews, login, docs and coupons.\"}",
  "parsed": {
-  "label": "Brand reputation and reviews",
-  "description": "Whether Taskflow is legit, who owns it, and what reviews say."
+  "label": "Taskflow Basics and Reviews",
+  "description": "What Taskflow is, whether it is legit, reviews, login, docs and coupons."
  }
 }

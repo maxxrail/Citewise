@@ -1,8 +1,8 @@
 {
  "purpose": "panel.label_topic",
- "text": "{\"label\": \"Pricing and discounts\", \"description\": \"Price, sales, coupons, promo codes and cheap options.\"}",
+ "text": "{\"label\": \"Stability Shoes\", \"description\": \"What stability shoes are, which ones suit overpronation and where to find deals.\"}",
  "parsed": {
-  "label": "Pricing and discounts",
-  "description": "Price, sales, coupons, promo codes and cheap options."
+  "label": "Stability Shoes",
+  "description": "What stability shoes are, which ones suit overpronation and where to find deals."
  }
 }

@@ -1,8 +1,8 @@
 {
  "purpose": "panel.label_topic",
- "text": "{\"label\": \"Taskflow Agencies Asana\", \"description\": \"Questions mentioning taskflow, agencies, asana.\"}",
+ "text": "{\"label\": \"Taskflow for Agencies\", \"description\": \"Whether Taskflow suits agency work, its templates and how it compares to Asana.\"}",
  "parsed": {
-  "label": "Taskflow Agencies Asana",
-  "description": "Questions mentioning taskflow, agencies, asana."
+  "label": "Taskflow for Agencies",
+  "description": "Whether Taskflow suits agency work, its templates and how it compares to Asana."
  }
 }

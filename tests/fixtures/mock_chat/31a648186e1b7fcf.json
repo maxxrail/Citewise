@@ -1,8 +1,8 @@
 {
  "purpose": "panel.label_topic",
- "text": "{\"label\": \"Marathon training shoes\", \"description\": \"Shoes and preparation for first and beginner marathons, long runs and race day.\"}",
+ "text": "{\"label\": \"Marathon Training Shoes\", \"description\": \"Which shoes to buy for a first or beginner marathon and the training block.\"}",
  "parsed": {
-  "label": "Marathon training shoes",
-  "description": "Shoes and preparation for first and beginner marathons, long runs and race day."
+  "label": "Marathon Training Shoes",
+  "description": "Which shoes to buy for a first or beginner marathon and the training block."
  }
 }

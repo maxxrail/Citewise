@@ -1,8 +1,8 @@
 {
  "purpose": "panel.label_topic",
- "text": "{\"label\": \"Pricing and plans\", \"description\": \"Seat prices, plan tiers, free plans and enterprise quotes.\"}",
+ "text": "{\"label\": \"Client Collaboration in Taskflow\", \"description\": \"Client portals, guest access, comments and approvals in Taskflow versus rivals.\"}",
  "parsed": {
-  "label": "Pricing and plans",
-  "description": "Seat prices, plan tiers, free plans and enterprise quotes."
+  "label": "Client Collaboration in Taskflow",
+  "description": "Client portals, guest access, comments and approvals in Taskflow versus rivals."
  }
 }

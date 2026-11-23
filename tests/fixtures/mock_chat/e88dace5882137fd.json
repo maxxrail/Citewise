@@ -1,8 +1,8 @@
 {
  "purpose": "panel.label_topic",
- "text": "{\"label\": \"Trail grip and terrain\", \"description\": \"Traction, lugs and stability on mud, rock and technical trails.\"}",
+ "text": "{\"label\": \"Trail Shoe Features\", \"description\": \"Lugs, rock plates, waterproofing and grip for trail running shoes.\"}",
  "parsed": {
-  "label": "Trail grip and terrain",
-  "description": "Traction, lugs and stability on mud, rock and technical trails."
+  "label": "Trail Shoe Features",
+  "description": "Lugs, rock plates, waterproofing and grip for trail running shoes."
  }
 }

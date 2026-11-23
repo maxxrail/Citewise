@@ -1,8 +1,8 @@
 {
  "purpose": "panel.label_topic",
- "text": "{\"label\": \"Injury and support\", \"description\": \"Shoes for shin splints, plantar fasciitis, knee, hip and achilles pain, and overpronation.\"}",
+ "text": "{\"label\": \"Competitor Model Comparisons\", \"description\": \"Head-to-head comparisons of specific Brooks, ASICS, Hoka and New Balance models.\"}",
  "parsed": {
-  "label": "Injury and support",
-  "description": "Shoes for shin splints, plantar fasciitis, knee, hip and achilles pain, and overpronation."
+  "label": "Competitor Model Comparisons",
+  "description": "Head-to-head comparisons of specific Brooks, ASICS, Hoka and New Balance models."
  }
 }
