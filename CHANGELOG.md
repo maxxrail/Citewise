@@ -15,7 +15,7 @@ All notable changes to Citewise are documented here. Format: [Keep a Changelog](
 - API `GET /brands/{id}/prompts` and `GET /brands/{id}/topics`.
 - `scripts/panel_report.py` (markdown topic table, topic x intent, PCA map PNG) and committed reports for both example brands in `evals/reports/`.
 - `scripts/record_panel_fixtures.py` and hand-written sources in `tests/fixtures/panel_source/`, so the whole pipeline runs offline and gives identical clusters each run.
-- Eval data: golden intent set (`evals/datasets/golden/intent.jsonl`, 80 rows), labeling rubric (`evals/rubrics/intent_labels.yaml`), Module 1 red-team cases (`evals/datasets/redteam.jsonl`).
+- Eval data: golden intent set (`evals/datasets/golden/intent.jsonl`, 94 hand-reviewed rows), labeling rubric (`evals/rubrics/intent_labels.yaml`), Module 1 red-team cases (`evals/datasets/redteam.jsonl`).
 - Settings: `PANEL_PROMPTS_PER_CELL`, `PANEL_DEDUP_THRESHOLD`, `PANEL_K_MIN`/`PANEL_K_MAX`, `PANEL_PCA_DIMS`, `PANEL_CLASSIFY_BATCH`, `PROMPTS_DIR`.
 - Dependencies: numpy, scikit-learn, jinja2 (runtime) and matplotlib (dev).
 
@@ -25,6 +25,7 @@ All notable changes to Citewise are documented here. Format: [Keep a Changelog](
 - `panel generate` skips cells already generated with the template version (`--force` regenerates), so live re-runs don't pay again or grow the panel.
 - Spend cap per command (`--max-cost`, default `MAX_COST_USD_PER_RUN`), `PANEL_IMPORT_MAX_ROWS`, and a sampled silhouette for large panels.
 - Fallback/embedding intent labels are retried with the LLM on later runs and never used as training labels.
+- Golden set review: one row reworded (it nearly duplicated a training prompt), one relabeled, 14 hard cases added. New rubric and classifier tie-breaks for contrast/exclusion ("unlike X") and for the brand name used as an ordinary word.
 - The fallback topic label is bounded. `panel build` refuses unclustered prompts. Re-clustering clears the stale scan panel. An unknown `--version` gives a clean error.
 
 ### Changed

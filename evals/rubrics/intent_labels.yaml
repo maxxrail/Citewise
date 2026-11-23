@@ -52,6 +52,8 @@ precedence: >-
 tie_breaks:
   - 2+ named options with vs/or/compare/better than -> comparison, even if it says "best" or compares on price ("stridelab vs hoka price").
   - Exactly one named product plus "alternatives", "like X" or "instead of X" -> commercial, not comparison.
+  - A brand named only as contrast or exclusion ("unlike X", "not X", "other than X") is not a second option. Classify the rest of the question - one remaining named brand -> navigational ("unlike hoka, is stridelab good for wide feet"); a request for other options -> commercial ("not asana, what else has a simple kanban board"). Explicit "compared to", "vs" or "better than" is still comparison.
+  - A brand name used as an ordinary word, not the brand ("what is a taskflow in software engineering", "taskflow diagram") -> classify as if no brand were named.
   - X vs Y where X and Y are generic categories, not named products -> informational; if it is framed as choosing what to buy for a goal -> commercial.
   - Named brand + price, cost, discount, coupon, free trial or free plan -> transactional ("how much is taskflow").
   - Named brand + an explicit page or site (pricing page, login, website, help center) -> navigational, even if the page is about pricing.

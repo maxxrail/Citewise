@@ -55,13 +55,13 @@ Statuses: ⬜ not started · 🟨 in progress · ✅ done (all acceptance criter
 - CLI `citewise panel generate|import|cluster|eval-intent|build`, API `GET /brands/{id}/prompts|topics`, `scripts/panel_report.py`, and committed reports for both brands.
 - Spend cap (`--max-cost`).
 
-Mock mode got a calibrated semantic mock embedder and hand-written panel sources, which a recorder turns into fixtures (`scripts/record_panel_fixtures.py`). Eval data drafted by `eval-designer`: 80-row golden intent set, intent labeling rubric, 11 Module 1 red-team cases.
+Mock mode got a calibrated semantic mock embedder and hand-written panel sources, which a recorder turns into fixtures (`scripts/record_panel_fixtures.py`). Eval data drafted by `eval-designer`: golden intent set, intent labeling rubric, 11 Module 1 red-team cases. Maxx reviewed the golden set (all 94 rows `reviewed: true`), corrected one row and added 14 hard cases (typos, negation, the brand name used as an ordinary word).
 
 **Results (mock):**
 | Brand | Stored after dedup | Topics | Embedding vs LLM, cross-validated (acc / macro-F1) | Embedding vs golden (acc / macro-F1) | Panel of 50 covers | Cost per brand |
 |---|---|---|---|---|---|---|
-| Stridelab | 272 of 300 | 11 | 0.717 / 0.713 | 0.800 / 0.796 | 11/11 topics | ~$0.075 |
-| Taskflow | 276 of 300 | 13 | 0.826 / 0.821 | 0.775 / 0.769 | 13/13 topics | ~$0.074 |
+| Stridelab | 272 of 300 | 11 | 0.717 / 0.713 | 0.761 / 0.757 (46 rows) | 11/11 topics | ~$0.075 |
+| Taskflow | 276 of 300 | 13 | 0.826 / 0.821 | 0.729 / 0.724 (48 rows) | 13/13 topics | ~$0.074 |
 
 Cost is estimated as if the calls were live.
 
@@ -91,10 +91,12 @@ Cost is estimated as if the calls were live.
 - `llm_calls` has no brand or run id, so per-brand cost in the report covers all brands. This comes with Module 2.
 - Concurrent `generate` for the same brand can hit the unique constraint and roll back. Single-user CLI for now; add ON CONFLICT DO NOTHING or a per-brand lock if jobs go parallel.
 - Silhouette for k=11 vs k=12 is close, so a scikit-learn upgrade could change mock clusters. The staleness test catches it, and the fix is re-recording.
-- The golden set and red-team rows are marked `"reviewed": false`.
+- The red-team rows (`evals/datasets/redteam.jsonl`, 11) are still `"reviewed": false`.
+- On the golden set, the embedding classifier misses negation ("not hoka or brooks..." -> comparison) and the brand name used as an ordinary word ("taskflow diagram" -> navigational). It only sees words. The LLM prompt now has tie-breaks for both; measure them in the live run.
 - The live generation prompt hasn't been tried against the real API.
 
 **Maxx must do:**
-1. Review `evals/datasets/golden/intent.jsonl` (80 rows, ~39% marked hard) and flip `reviewed` to true, or fix labels. The boundary rules are in `evals/rubrics/intent_labels.yaml`.
-2. Add the new optional settings to `.env.example` (this session can't read or write it).
-3. Optional live smoke test: `CITEWISE_MODE=live uv run citewise panel generate Stridelab --max-cost 0.50`, then `panel cluster`, then `panel eval-intent Stridelab --golden evals/datasets/golden/intent.jsonl` to get the LLM-vs-golden number.
+1. ~~Review the golden intent set~~ (done: 94 rows reviewed, `taskflow-029` reworded to remove a training near-duplicate, `stridelab-045` relabeled navigational under a new contrast/exclusion tie-break).
+2. ~~Add the panel settings to `.env.example`~~ (done).
+3. Review the 11 red-team rows in `evals/datasets/redteam.jsonl` and flip `reviewed`.
+4. Optional live smoke test: `CITEWISE_MODE=live uv run citewise panel generate Stridelab --max-cost 0.50`, then `panel cluster`, then `panel eval-intent Stridelab --golden evals/datasets/golden/intent.jsonl` to get the LLM-vs-golden number.
