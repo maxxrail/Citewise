@@ -7,7 +7,13 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from citewise.core.config import Settings
 from citewise.providers import get_chat_provider
-from citewise.providers.base import ChatProvider, EmbeddingProvider, Message
+from citewise.providers.base import (
+    ChatProvider,
+    EmbeddingProvider,
+    JsonSchema,
+    Message,
+    strict_schema_errors,
+)
 from citewise.providers.mock import MockChatProvider, fixture_key, mock_vector
 from citewise.providers.openai_client import extract_url_citations
 from citewise.providers.pricing import estimate_cost
@@ -31,6 +37,7 @@ def test_mock_chat_is_deterministic(settings: Settings) -> None:
 def test_mock_chat_loads_recorded_fixture(settings: Settings) -> None:
     mock = MockChatProvider(settings.fixtures_dir)
     result = mock.complete(FIXTURE_MSGS, model="m", purpose="example")
+    # Generic fixture (no engine) is shared by every engine that has no specific one.
     assert result.raw == {"fixture_key": fixture_key("example", FIXTURE_MSGS), "fixture_hit": True}
     assert "Taskflow" in result.text
     assert [c.position for c in result.citations] == [1, 2]
@@ -93,3 +100,53 @@ def test_extract_url_citations_dedupes_and_orders() -> None:
     cites = extract_url_citations(raw)
     assert [(c.url, c.position) for c in cites] == [("https://a.com", 1), ("https://b.com", 2)]
     assert cites[0].title == "A"
+
+
+def test_mock_engines_answer_differently_without_fixtures(settings: Settings) -> None:
+    msgs: list[Message] = [{"role": "user", "content": "best running shoes?"}]
+    texts = {
+        MockChatProvider(settings.fixtures_dir, engine=e).complete(msgs, model="m").text
+        for e in ("openai", "anthropic", "gemini", "perplexity")
+    }
+    assert len(texts) == 4
+
+
+def test_engine_specific_fixture_wins_over_generic(settings: Settings, tmp_path) -> None:
+    msgs: list[Message] = [{"role": "user", "content": "q"}]
+    (tmp_path / "mock_chat").mkdir()
+    (tmp_path / "mock_chat" / f"{fixture_key('p', msgs)}.json").write_text('{"text": "generic"}')
+    specific = fixture_key("p", msgs, "gemini")
+    (tmp_path / "mock_chat" / f"{specific}.json").write_text('{"text": "gemini only"}')
+
+    assert MockChatProvider(tmp_path, "gemini").complete(msgs, model="m", purpose="p").text == (
+        "gemini only"
+    )
+    assert MockChatProvider(tmp_path, "openai").complete(msgs, model="m", purpose="p").text == (
+        "generic"
+    )
+
+
+def test_strict_schema_validation_matches_openai_rules() -> None:
+    loose = {"type": "object", "properties": {"a": {"type": "string"}}}
+    errors = strict_schema_errors(loose)
+    assert any("additionalProperties" in e for e in errors)
+    assert any("required" in e for e in errors)
+    with pytest.raises(ValueError, match="not strict-compatible"):
+        JsonSchema(name="loose", schema=loose)
+    JsonSchema(name="loose_ok", schema=loose, strict=False)  # explicit opt-out allowed
+
+    nested = {
+        "type": "object",
+        "properties": {
+            "items": {
+                "type": "array",
+                "items": {"type": "object", "properties": {"x": {"type": "integer"}}},
+            }
+        },
+        "required": ["items"],
+        "additionalProperties": False,
+    }
+    assert strict_schema_errors(nested) == [
+        "$.items[]: additionalProperties must be false",
+        "$.items[]: required must list ['x']",
+    ]

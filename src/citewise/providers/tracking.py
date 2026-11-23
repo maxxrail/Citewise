@@ -103,6 +103,8 @@ class TrackedChatProvider:
             )
             raise
         result.latency_ms = _elapsed_ms(start)
+        # Truncated/failed responses still bill tokens: record cost, but flag them not ok.
+        completed = result.status == "completed"
         self.recorder.record(
             purpose=purpose,
             kind="chat",
@@ -110,7 +112,8 @@ class TrackedChatProvider:
             model=result.model,
             usage=result.usage,
             latency_ms=result.latency_ms,
-            ok=True,
+            ok=completed,
+            error=None if completed else f"response status: {result.status}",
         )
         return result
 

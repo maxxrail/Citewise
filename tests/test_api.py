@@ -56,3 +56,16 @@ def test_duplicate_brand_conflicts(client: TestClient) -> None:
 def test_invalid_brand_rejected(client: TestClient) -> None:
     resp = client.post("/brands", json={"name": "  ", "domain": "x.com", "category": "c"})
     assert resp.status_code == 422
+
+
+def test_concurrent_duplicate_maps_integrity_error_to_409(client: TestClient, monkeypatch) -> None:
+    from sqlalchemy.exc import IntegrityError
+
+    from citewise.services import brands as svc
+
+    def racing_create(db, payload):
+        raise IntegrityError("INSERT", {}, Exception("UNIQUE constraint failed: brands.name"))
+
+    monkeypatch.setattr(svc, "create_brand", racing_create)
+    resp = client.post("/brands", json={"name": "Acme", "domain": "acme.com", "category": "c"})
+    assert resp.status_code == 409

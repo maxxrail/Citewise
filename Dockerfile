@@ -20,7 +20,10 @@ COPY --from=build --chown=citewise:citewise /app /app
 COPY --chown=citewise:citewise alembic.ini ./
 COPY --chown=citewise:citewise migrations ./migrations
 COPY --chown=citewise:citewise data/brands ./data/brands
-ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1 CITEWISE_MODE=mock
+# Mock fixtures ship in the image so `docker compose up` in mock mode serves recorded answers.
+COPY --chown=citewise:citewise tests/fixtures ./tests/fixtures
+# Explicit paths: don't rely on the package's install location to find repo data.
+ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1 CITEWISE_MODE=mock     FIXTURES_DIR=/app/tests/fixtures BRANDS_DIR=/app/data/brands
 USER citewise
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \

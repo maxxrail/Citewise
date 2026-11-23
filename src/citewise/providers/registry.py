@@ -42,11 +42,15 @@ def get_chat_provider(
 
     backend: ChatProvider
     if settings.is_mock:
-        backend = MockChatProvider(settings.fixtures_dir)
+        backend = MockChatProvider(settings.fixtures_dir, engine=name)
     elif name == "openai":
         from citewise.providers.openai_client import OpenAIChatProvider
 
-        backend = OpenAIChatProvider(_require_key(settings, "openai"))
+        backend = OpenAIChatProvider(
+            _require_key(settings, "openai"),
+            timeout_s=settings.llm_timeout_s,
+            max_retries=settings.llm_max_retries,
+        )
     else:
         backend = NotYetImplementedProvider(name)
 
@@ -65,5 +69,10 @@ def get_embedder(
     else:
         from citewise.providers.openai_client import OpenAIEmbedder
 
-        backend = OpenAIEmbedder(_require_key(settings, "openai"), settings.model_embed)
+        backend = OpenAIEmbedder(
+            _require_key(settings, "openai"),
+            settings.model_embed,
+            timeout_s=settings.llm_timeout_s,
+            max_retries=settings.llm_max_retries,
+        )
     return TrackedEmbedder(backend, CallRecorder(session_factory or get_sessionmaker()))

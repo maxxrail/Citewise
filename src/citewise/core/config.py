@@ -49,6 +49,11 @@ class Settings(BaseSettings):
 
     max_cost_usd_per_run: float = Field(default=3.0, ge=0)
 
+    # Per-request limits for live clients. The SDK default timeout is 600s; one hung call
+    # would stall a whole run.
+    llm_timeout_s: float = Field(default=60.0, gt=0)
+    llm_max_retries: int = Field(default=2, ge=0)
+
     # Where mock fixtures live. Tests and CI use the repo copy.
     fixtures_dir: Path = REPO_ROOT / "tests" / "fixtures"
     brands_dir: Path = REPO_ROOT / "data" / "brands"

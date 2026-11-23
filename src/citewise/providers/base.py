@@ -35,6 +35,7 @@ class ChatResult:
     text: str
     model: str
     provider: str
+    status: str = "completed"  # anything else (e.g. "incomplete") is recorded as ok=False
     parsed: dict[str, Any] | None = None  # set when json_schema was requested and parsed OK
     citations: list[Citation] = field(default_factory=list)
     usage: Usage = field(default_factory=Usage)
@@ -51,12 +52,45 @@ class EmbedResult:
     latency_ms: int = 0
 
 
+def strict_schema_errors(schema: dict[str, Any], path: str = "$") -> list[str]:
+    """Problems that would make OpenAI strict structured output reject `schema`.
+
+    Strict mode requires every object to set `additionalProperties: false` and to list
+    every property in `required` (optional fields use a `["type", "null"]` union instead).
+    """
+    errors: list[str] = []
+    if schema.get("type") == "object" or "properties" in schema:
+        props = schema.get("properties", {})
+        if schema.get("additionalProperties") is not False:
+            errors.append(f"{path}: additionalProperties must be false")
+        missing = set(props) - set(schema.get("required", []))
+        if missing:
+            errors.append(f"{path}: required must list {sorted(missing)}")
+        for key, sub in props.items():
+            errors += strict_schema_errors(sub, f"{path}.{key}")
+    if isinstance(schema.get("items"), dict):
+        errors += strict_schema_errors(schema["items"], f"{path}[]")
+    for sub in schema.get("anyOf", []):
+        errors += strict_schema_errors(sub, path)
+    for name, sub in schema.get("$defs", {}).items():
+        errors += strict_schema_errors(sub, f"$defs.{name}")
+    return errors
+
+
 @dataclass(frozen=True)
 class JsonSchema:
-    """A named JSON schema for structured output (OpenAI requires a name)."""
+    """A named JSON schema for structured output (OpenAI requires a name).
+
+    Validated at construction so mock mode rejects schemas the live API would reject.
+    """
 
     name: str
     schema: dict[str, Any]
+    strict: bool = True
+
+    def __post_init__(self) -> None:
+        if self.strict and (errors := strict_schema_errors(self.schema)):
+            raise ValueError(f"Schema {self.name!r} is not strict-compatible: {errors}")
 
 
 @runtime_checkable

@@ -30,9 +30,17 @@ from citewise.providers.base import (
 MOCK_EMBED_DIM = 1536  # same shape as text-embedding-3-small
 
 
-def fixture_key(purpose: str, messages: list[Message]) -> str:
-    """Stable key for a mock chat fixture. Model is excluded so model swaps don't break fixtures."""
-    payload = json.dumps({"purpose": purpose, "messages": messages}, sort_keys=True)
+def fixture_key(purpose: str, messages: list[Message], engine: str | None = None) -> str:
+    """Stable key for a mock chat fixture.
+
+    `engine=None` gives the generic key shared by all engines; passing an engine gives an
+    engine-specific key that wins when present. Model is excluded so model swaps don't
+    break fixtures.
+    """
+    body: dict[str, Any] = {"purpose": purpose, "messages": messages}
+    if engine is not None:
+        body["engine"] = engine
+    payload = json.dumps(body, sort_keys=True)
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
 
 
@@ -70,10 +78,21 @@ def _example_for_schema(schema: dict[str, Any], seed: str) -> Any:
 
 
 class MockChatProvider:
-    name = "mock"
+    """Mock for one engine. Engines differ in mock mode, so per-engine metrics stay meaningful."""
 
-    def __init__(self, fixtures_dir: Path) -> None:
+    def __init__(self, fixtures_dir: Path, engine: str = "openai") -> None:
         self.fixtures_dir = fixtures_dir / "mock_chat"
+        self.engine = engine
+        self.name = f"mock:{engine}"
+
+    def _find_fixture(self, purpose: str, messages: list[Message]) -> tuple[str, Path | None]:
+        """Engine-specific fixture first, then the generic one. Returns (key, path or None)."""
+        engine_key = fixture_key(purpose, messages, self.engine)
+        for key in (engine_key, fixture_key(purpose, messages)):
+            path = self.fixtures_dir / f"{key}.json"
+            if path.exists():
+                return key, path
+        return engine_key, None
 
     def complete(
         self,
@@ -84,11 +103,10 @@ class MockChatProvider:
         json_schema: JsonSchema | None = None,
         tools: list[dict[str, Any]] | None = None,
     ) -> ChatResult:
-        key = fixture_key(purpose, messages)
+        key, path = self._find_fixture(purpose, messages)
         prompt_text = "\n".join(m["content"] for m in messages)
-        path = self.fixtures_dir / f"{key}.json"
 
-        if path.exists():
+        if path is not None:
             data = json.loads(path.read_text(encoding="utf-8"))
             text = data.get("text", "")
             parsed = data.get("parsed")
@@ -99,7 +117,7 @@ class MockChatProvider:
             citations = []
         else:
             parsed = None
-            text = f"[mock:{purpose}:{key}] Deterministic placeholder answer."
+            text = f"[{self.name}:{purpose}:{key}] Deterministic placeholder answer."
             citations = []
 
         if json_schema is not None and parsed is None and text:
@@ -116,7 +134,7 @@ class MockChatProvider:
             citations=citations,
             usage=Usage(tokens_in=estimate_tokens(prompt_text), tokens_out=estimate_tokens(text)),
             latency_ms=0,
-            raw={"fixture_key": key, "fixture_hit": path.exists()},
+            raw={"fixture_key": key, "fixture_hit": path is not None},
         )
 
 

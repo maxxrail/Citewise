@@ -36,9 +36,21 @@ PRICES_PER_MTOK: dict[str, tuple[float, float]] = {
 _warned: set[str] = set()
 
 
+def price_for(model: str) -> tuple[float, float] | None:
+    """Exact match, else the longest table key that `model` extends with a `-suffix`.
+
+    Providers often resolve an alias to a dated snapshot (`gpt-6-luna-2026-11-01`); those
+    must be priced like the alias, or live runs would look free and dodge the budget guard.
+    """
+    if model in PRICES_PER_MTOK:
+        return PRICES_PER_MTOK[model]
+    matches = [k for k in PRICES_PER_MTOK if model.startswith(k + "-")]
+    return PRICES_PER_MTOK[max(matches, key=len)] if matches else None
+
+
 def estimate_cost(model: str, tokens_in: int, tokens_out: int) -> float:
     """Estimated USD cost of one call. Unknown models cost 0 and log a warning once."""
-    price = PRICES_PER_MTOK.get(model)
+    price = price_for(model)
     if price is None:
         if model not in _warned:
             log.warning("No price for model %r; recording cost 0. Update pricing.py.", model)

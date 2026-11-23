@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from citewise.core.config import Settings
 from citewise.models import LLMCall
 from citewise.providers import JsonSchema, get_chat_provider, get_embedder
-from citewise.providers.base import ChatResult, Message
+from citewise.providers.base import ChatResult, Message, Usage
 from citewise.providers.pricing import estimate_cost
 from citewise.providers.tracking import CallRecorder, TrackedChatProvider
 
@@ -33,7 +33,7 @@ def test_chat_call_writes_row_with_cost_and_latency(
     row = rows[0]
     assert row.purpose == "test_chat"
     assert row.kind == "chat"
-    assert row.provider == "mock"
+    assert row.provider == f"mock:{engine_name}"
     assert row.model == "gpt-6-luna"
     assert row.ok is True
     assert row.tokens_in == result.usage.tokens_in > 0
@@ -53,6 +53,8 @@ def test_structured_call_and_embedding_each_write_a_row(
         schema={
             "type": "object",
             "properties": {"label": {"enum": ["yes", "no"]}, "score": {"type": "number"}},
+            "required": ["label", "score"],
+            "additionalProperties": False,
         },
     )
     result = chat.complete(MSGS, model="gpt-6-luna", purpose="judge", json_schema=schema)
@@ -122,3 +124,54 @@ def test_stub_provider_failure_is_tracked_in_live_mode(
         provider.complete(MSGS, model="claude-haiku-5-5", purpose="engine")
     (row,) = _rows(db)
     assert row.ok is False and row.provider == "anthropic"
+
+
+class _Snapshot:
+    """Live backends report the model they were asked for; raw keeps the dated snapshot."""
+
+    name = "snap"
+
+    def complete(self, messages, *, model, purpose="general", json_schema=None, tools=None):
+        return ChatResult(
+            text="ok",
+            model=model,
+            provider=self.name,
+            usage=Usage(tokens_in=1000, tokens_out=1000),
+            raw={"model": "gpt-6-luna-2026-11-01"},
+        )
+
+
+def test_dated_snapshot_ids_are_still_priced(
+    session_factory: sessionmaker[Session], db: Session
+) -> None:
+    assert estimate_cost("gpt-6-luna-2026-11-01", 1000, 1000) == estimate_cost(
+        "gpt-6-luna", 1000, 1000
+    )
+    provider = TrackedChatProvider(_Snapshot(), CallRecorder(session_factory))
+    provider.complete(MSGS, model="gpt-6-luna")
+    (row,) = _rows(db)
+    assert row.cost_usd > 0
+
+
+class _Truncated:
+    name = "trunc"
+
+    def complete(self, messages, *, model, purpose="general", json_schema=None, tools=None):
+        return ChatResult(
+            text="partial",
+            model=model,
+            provider=self.name,
+            status="incomplete",
+            usage=Usage(tokens_in=10, tokens_out=500),
+        )
+
+
+def test_incomplete_response_is_recorded_not_ok_but_billed(
+    session_factory: sessionmaker[Session], db: Session
+) -> None:
+    provider = TrackedChatProvider(_Truncated(), CallRecorder(session_factory))
+    assert provider.complete(MSGS, model="gpt-6-luna").text == "partial"
+    (row,) = _rows(db)
+    assert row.ok is False
+    assert row.error == "response status: incomplete"
+    assert row.tokens_out == 500 and row.cost_usd > 0

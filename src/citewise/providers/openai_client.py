@@ -24,10 +24,10 @@ from citewise.providers.base import (
 log = logging.getLogger(__name__)
 
 
-def _client(api_key: str) -> Any:
+def _client(api_key: str, timeout_s: float, max_retries: int) -> Any:
     from openai import OpenAI  # imported lazily so mock mode never needs the SDK configured
 
-    return OpenAI(api_key=api_key)
+    return OpenAI(api_key=api_key, timeout=timeout_s, max_retries=max_retries)
 
 
 def extract_url_citations(raw: dict[str, Any]) -> list[Citation]:
@@ -52,8 +52,8 @@ def extract_url_citations(raw: dict[str, Any]) -> list[Citation]:
 class OpenAIChatProvider:
     name = "openai"
 
-    def __init__(self, api_key: str) -> None:
-        self.client = _client(api_key)
+    def __init__(self, api_key: str, *, timeout_s: float = 60.0, max_retries: int = 2) -> None:
+        self.client = _client(api_key, timeout_s, max_retries)
 
     def complete(
         self,
@@ -71,7 +71,7 @@ class OpenAIChatProvider:
                     "type": "json_schema",
                     "name": json_schema.name,
                     "schema": json_schema.schema,
-                    "strict": True,
+                    "strict": json_schema.strict,
                 }
             }
         if tools:
@@ -92,8 +92,11 @@ class OpenAIChatProvider:
         usage = response.usage
         return ChatResult(
             text=text,
-            model=raw.get("model", model),
+            # Price by the requested alias; the resolved snapshot ID stays in `raw["model"]`.
+            model=model,
             provider=self.name,
+            # "incomplete" (max tokens hit) or "failed" -> tracking marks the call not ok.
+            status=raw.get("status") or "completed",
             parsed=parsed,
             citations=extract_url_citations(raw),
             usage=Usage(
@@ -107,8 +110,10 @@ class OpenAIChatProvider:
 class OpenAIEmbedder:
     name = "openai"
 
-    def __init__(self, api_key: str, model: str) -> None:
-        self.client = _client(api_key)
+    def __init__(
+        self, api_key: str, model: str, *, timeout_s: float = 60.0, max_retries: int = 2
+    ) -> None:
+        self.client = _client(api_key, timeout_s, max_retries)
         self.model = model
 
     def embed_with_usage(self, texts: list[str]) -> EmbedResult:
