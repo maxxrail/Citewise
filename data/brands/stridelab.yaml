@@ -1,0 +1,14 @@
+# Fictional running-shoe brand (example brand for demos and tests).
+name: Stridelab
+domain: stridelab.example
+category: running shoes
+aliases:
+  - StrideLab
+  - Stride Lab
+competitors:
+  - Nike
+  - Hoka
+  - Brooks
+  - ASICS
+  - New Balance
+  - "On"  # quoted: bare On is YAML boolean true

@@ -1,0 +1,22 @@
+{
+  "purpose": "example",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Which project management tool is best for small teams?"
+    }
+  ],
+  "text": "For small teams, Trello and Taskflow are popular choices [1][2].",
+  "citations": [
+    {
+      "url": "https://taskflow.example/pricing",
+      "title": "Taskflow pricing",
+      "position": 1
+    },
+    {
+      "url": "https://www.g2.com/categories/project-management",
+      "title": "G2 project management",
+      "position": 2
+    }
+  ]
+}

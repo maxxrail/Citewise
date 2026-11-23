@@ -2,7 +2,7 @@
 
 | # | Module | Status | Notes |
 |---|---|---|---|
-| 0 | Foundations | ⬜ not started | |
+| 0 | Foundations | ✅ done | 35 tests; all acceptance criteria verified 2026-11-23 |
 | 1 | Prompt panel and topic discovery | ⬜ not started | |
 | 2 | Multi-engine answer collection | ⬜ not started | |
 | 3 | Extraction and visibility metrics | ⬜ not started | |
@@ -16,3 +16,20 @@ Statuses: ⬜ not started · 🟨 in progress · ✅ done (all acceptance criter
 
 ## Log
 <!-- Claude Code: append a dated entry after each session: what was built, decisions, known gaps, what Maxx must do. -->
+
+### 2026-11-23 - Module 0 (Foundations)
+**Built:** uv/hatchling project, `citewise` CLI (`seed`, `config`), pydantic-settings config, SQLAlchemy models `brands` and `llm_calls`, Alembic migration `0001`, provider layer (protocols, mock chat and embedder, live OpenAI via the Responses API, stubs for the other three engines), `tracking.py` (one `llm_calls` row per call, including failures), `pricing.py` (checked 2026-11-23), FastAPI `/health` and `/brands`, two example brands, Dockerfile and compose, CI (ruff, mypy, pytest, docker build), pre-commit pins bumped and hook installed.
+
+**Decisions:** see the Module 0 section of docs/DECISIONS.md (Responses API, mock cost estimation, engine-aware fixture keys, snapshot pricing, strict schema check, configurable ports).
+
+**Code review:** fixed 1 High (live snapshot model IDs would have been priced at $0), 4 Medium (mock engines identical, fixtures missing from the image, no client timeout, strict-schema mismatch) and 2 Low (409 on a duplicate-insert race, truncated responses marked not ok).
+
+**Known gaps / for later modules:**
+- Brand names are unique only by exact case. Alias and competitor lists aren't deduped (fix before Module 3 entity matching).
+- On SQLite, `created_at` comes back without a timezone (Postgres keeps it). Add a UTC TypeDecorator before time-window metrics.
+- `llm_calls` has no `run_id` yet. Module 2 must add it for the per-run budget guard and idempotency.
+- Perplexity moved Sonar to its Agent API (July 2026). Verify the model ID and endpoint before the Module 2 adapter.
+- Haiku 5.5 tiered pricing (>100K-token prompts) isn't modelled. Only the base tier is recorded.
+- The live OpenAI path is untested against the real API (no key in this session).
+
+**Maxx must do:** nothing is required for Module 0. Optional: put `OPENAI_API_KEY` in `.env` and run one live smoke call (README "Live mode").
