@@ -44,14 +44,35 @@ def test_mock_chat_loads_recorded_fixture(settings: Settings) -> None:
     assert result.citations[0].url == "https://taskflow.example/pricing"
 
 
+PINNED_NEAR_DUP_COS = 0.925418
+
+
 def test_mock_embedder_is_stable_unit_vectors() -> None:
     v1, v2 = mock_vector("hello"), mock_vector("hello")
     assert v1 == v2
     assert len(v1) == 1536
     assert math.isclose(sum(x * x for x in v1), 1.0, rel_tol=1e-9)
     assert mock_vector("hello") != mock_vector("world")
-    # Pinned value guards against accidental changes to the seeding scheme.
-    assert (round(v1[0], 6), round(v1[1], 6)) == (0.026209, -0.007888)
+    # Pinned value guards against accidental changes to the hashing scheme (it would
+    # silently change mock dedup/clustering results and invalidate recorded fixtures).
+    assert round(_cos("best trail shoes for mud", "best trail running shoes for mud?"), 6) == (
+        PINNED_NEAR_DUP_COS
+    )
+
+
+def _cos(a: str, b: str) -> float:
+    return sum(x * y for x, y in zip(mock_vector(a), mock_vector(b), strict=True))
+
+
+def test_mock_embedder_is_roughly_semantic() -> None:
+    """Paraphrases > related questions > unrelated text, on a real-embedding-like scale."""
+    near_dup = _cos("best trail shoes for mud", "best trail running shoes for mud?")
+    related = _cos("best running shoes for flat feet", "best running shoes for wide feet")
+    unrelated = _cos("best running shoes for flat feet", "asana vs clickup for startups")
+    assert near_dup > 0.92 > related > unrelated
+    assert _cos("Best Running Shoes", "best running shoes!!") == pytest.approx(1.0)
+    # No content words: falls back to a random direction, still unit length and stable.
+    assert math.isclose(sum(x * x for x in mock_vector("how do i")), 1.0, rel_tol=1e-9)
 
 
 def test_registry_returns_protocol_conforming_wrappers(
