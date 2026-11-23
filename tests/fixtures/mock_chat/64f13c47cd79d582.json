@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"taskflow free trial\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow promo code\", \"funnel_stage\": \"decision\"}, {\"text\": \"cheapest project management software\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow startup discount program\", \"funnel_stage\": \"decision\"}, {\"text\": \"free project management software for startups\", \"funnel_stage\": \"consideration\"}, {\"text\": \"sign up for taskflow\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow coupon\", \"funnel_stage\": \"decision\"}, {\"text\": \"Does Asana have a startup discount?\", \"funnel_stage\": \"decision\"}, {\"text\": \"clickup free plan limits\", \"funnel_stage\": \"decision\"}, {\"text\": \"Does Taskflow give a discount for annual plans?\", \"funnel_stage\": \"decision\"}, {\"text\": \"cheap project management tool\", \"funnel_stage\": \"decision\"}, {\"text\": \"How long is the Taskflow free trial?\", \"funnel_stage\": \"decision\"}, {\"text\": \"buy taskflow for 5 seats\", \"funnel_stage\": \"decision\"}, {\"text\": \"Is Notion free for startups?\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow black friday deal\", \"funnel_stage\": \"decision\"}, {\"text\": \"lowest cost pm tool for small team\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow monthly vs annual pricing\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow nonprofit discount\", \"funnel_stage\": \"decision\"}, {\"text\": \"monday.com free trial\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow pricing page link\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "taskflow free trial",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow promo code",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "cheapest project management software",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow startup discount program",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "free project management software for startups",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "sign up for taskflow",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow coupon",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Does Asana have a startup discount?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "clickup free plan limits",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Does Taskflow give a discount for annual plans?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "cheap project management tool",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "How long is the Taskflow free trial?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "buy taskflow for 5 seats",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Is Notion free for startups?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow black friday deal",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "lowest cost pm tool for small team",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow monthly vs annual pricing",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow nonprofit discount",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "monday.com free trial",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow pricing page link",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

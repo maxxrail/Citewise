@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"taskflow agency discount\", \"funnel_stage\": \"decision\"}, {\"text\": \"How much is Taskflow for 20 users?\", \"funnel_stage\": \"decision\"}, {\"text\": \"cheapest agency project management software\", \"funnel_stage\": \"decision\"}, {\"text\": \"monday.com discount code\", \"funnel_stage\": \"decision\"}, {\"text\": \"Can I get a Taskflow free trial for my whole team?\", \"funnel_stage\": \"decision\"}, {\"text\": \"start taskflow trial\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow client seats price\", \"funnel_stage\": \"decision\"}, {\"text\": \"buy taskflow annual plan\", \"funnel_stage\": \"decision\"}, {\"text\": \"asana business plan discount\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow promo code agencies\", \"funnel_stage\": \"decision\"}, {\"text\": \"cheap project management with time tracking\", \"funnel_stage\": \"decision\"}, {\"text\": \"clickup coupon\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow pricing for 20 users\", \"funnel_stage\": \"decision\"}, {\"text\": \"How do I upgrade my Taskflow plan?\", \"funnel_stage\": \"decision\"}, {\"text\": \"teamwork vs taskflow price\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Are guest seats free on Taskflow?\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow referral discount\", \"funnel_stage\": \"decision\"}, {\"text\": \"cheapest gantt chart software\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow deal for agencies\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow coupon code\", \"funnel_stage\": \"decision\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "taskflow agency discount",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "How much is Taskflow for 20 users?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "cheapest agency project management software",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "monday.com discount code",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Can I get a Taskflow free trial for my whole team?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "start taskflow trial",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow client seats price",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "buy taskflow annual plan",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "asana business plan discount",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow promo code agencies",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "cheap project management with time tracking",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "clickup coupon",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow pricing for 20 users",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "How do I upgrade my Taskflow plan?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "teamwork vs taskflow price",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Are guest seats free on Taskflow?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow referral discount",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "cheapest gantt chart software",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow deal for agencies",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow coupon code",
+    "funnel_stage": "decision"
+   }
+  ]
+ }
+}

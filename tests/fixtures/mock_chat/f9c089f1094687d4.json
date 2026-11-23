@@ -1,0 +1,108 @@
+{
+ "purpose": "panel.classify",
+ "text": "{\"labels\": [{\"id\": 1, \"intent\": \"comparison\"}, {\"id\": 2, \"intent\": \"comparison\"}, {\"id\": 3, \"intent\": \"comparison\"}, {\"id\": 4, \"intent\": \"comparison\"}, {\"id\": 5, \"intent\": \"informational\"}, {\"id\": 6, \"intent\": \"comparison\"}, {\"id\": 7, \"intent\": \"comparison\"}, {\"id\": 8, \"intent\": \"comparison\"}, {\"id\": 9, \"intent\": \"comparison\"}, {\"id\": 10, \"intent\": \"comparison\"}, {\"id\": 11, \"intent\": \"comparison\"}, {\"id\": 12, \"intent\": \"comparison\"}, {\"id\": 13, \"intent\": \"comparison\"}, {\"id\": 14, \"intent\": \"comparison\"}, {\"id\": 15, \"intent\": \"comparison\"}, {\"id\": 16, \"intent\": \"commercial\"}, {\"id\": 17, \"intent\": \"navigational\"}, {\"id\": 18, \"intent\": \"navigational\"}, {\"id\": 19, \"intent\": \"navigational\"}, {\"id\": 20, \"intent\": \"navigational\"}, {\"id\": 21, \"intent\": \"navigational\"}, {\"id\": 22, \"intent\": \"navigational\"}, {\"id\": 23, \"intent\": \"navigational\"}, {\"id\": 24, \"intent\": \"navigational\"}, {\"id\": 25, \"intent\": \"navigational\"}]}",
+ "parsed": {
+  "labels": [
+   {
+    "id": 1,
+    "intent": "comparison"
+   },
+   {
+    "id": 2,
+    "intent": "comparison"
+   },
+   {
+    "id": 3,
+    "intent": "comparison"
+   },
+   {
+    "id": 4,
+    "intent": "comparison"
+   },
+   {
+    "id": 5,
+    "intent": "informational"
+   },
+   {
+    "id": 6,
+    "intent": "comparison"
+   },
+   {
+    "id": 7,
+    "intent": "comparison"
+   },
+   {
+    "id": 8,
+    "intent": "comparison"
+   },
+   {
+    "id": 9,
+    "intent": "comparison"
+   },
+   {
+    "id": 10,
+    "intent": "comparison"
+   },
+   {
+    "id": 11,
+    "intent": "comparison"
+   },
+   {
+    "id": 12,
+    "intent": "comparison"
+   },
+   {
+    "id": 13,
+    "intent": "comparison"
+   },
+   {
+    "id": 14,
+    "intent": "comparison"
+   },
+   {
+    "id": 15,
+    "intent": "comparison"
+   },
+   {
+    "id": 16,
+    "intent": "commercial"
+   },
+   {
+    "id": 17,
+    "intent": "navigational"
+   },
+   {
+    "id": 18,
+    "intent": "navigational"
+   },
+   {
+    "id": 19,
+    "intent": "navigational"
+   },
+   {
+    "id": 20,
+    "intent": "navigational"
+   },
+   {
+    "id": 21,
+    "intent": "navigational"
+   },
+   {
+    "id": 22,
+    "intent": "navigational"
+   },
+   {
+    "id": 23,
+    "intent": "navigational"
+   },
+   {
+    "id": 24,
+    "intent": "navigational"
+   },
+   {
+    "id": 25,
+    "intent": "navigational"
+   }
+  ]
+ }
+}

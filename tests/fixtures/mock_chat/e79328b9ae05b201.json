@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"taskflow enterprise pricing\", \"funnel_stage\": \"decision\"}, {\"text\": \"Can we get an enterprise trial of Taskflow?\", \"funnel_stage\": \"decision\"}, {\"text\": \"jira cloud discount\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow pricing per seat\", \"funnel_stage\": \"decision\"}, {\"text\": \"buy taskflow for 50 engineers\", \"funnel_stage\": \"decision\"}, {\"text\": \"Does Taskflow offer volume discounts?\", \"funnel_stage\": \"decision\"}, {\"text\": \"cheapest jira alternative\", \"funnel_stage\": \"decision\"}, {\"text\": \"Is Taskflow free for open source projects?\", \"funnel_stage\": \"decision\"}, {\"text\": \"start a taskflow trial for my team\", \"funnel_stage\": \"decision\"}, {\"text\": \"How much does Linear cost for 30 users?\", \"funnel_stage\": \"decision\"}, {\"text\": \"Is SSO included in the Taskflow price or extra?\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow annual billing discount\", \"funnel_stage\": \"decision\"}, {\"text\": \"clickup enterprise quote\", \"funnel_stage\": \"decision\"}, {\"text\": \"How do I get a procurement quote from Taskflow?\", \"funnel_stage\": \"decision\"}, {\"text\": \"request taskflow demo\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow per seat price\", \"funnel_stage\": \"decision\"}, {\"text\": \"cheap issue tracker for startups\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow education discount\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow api documentation\", \"funnel_stage\": \"consideration\"}, {\"text\": \"How long does a Jira to Taskflow migration take?\", \"funnel_stage\": \"awareness\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "taskflow enterprise pricing",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Can we get an enterprise trial of Taskflow?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "jira cloud discount",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow pricing per seat",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "buy taskflow for 50 engineers",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Does Taskflow offer volume discounts?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "cheapest jira alternative",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Is Taskflow free for open source projects?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "start a taskflow trial for my team",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "How much does Linear cost for 30 users?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Is SSO included in the Taskflow price or extra?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow annual billing discount",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "clickup enterprise quote",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "How do I get a procurement quote from Taskflow?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "request taskflow demo",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow per seat price",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "cheap issue tracker for startups",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow education discount",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow api documentation",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "How long does a Jira to Taskflow migration take?",
+    "funnel_stage": "awareness"
+   }
+  ]
+ }
+}

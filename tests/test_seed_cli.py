@@ -25,6 +25,7 @@ def test_example_brand_files_are_valid(settings: Settings) -> None:
     for b in brands:
         assert 4 <= len(b.competitors) <= 6
         assert b.aliases
+        assert len(b.personas) == 3
 
 
 def test_seed_is_idempotent(db: Session, settings: Settings) -> None:
@@ -41,6 +42,6 @@ def test_alembic_upgrade_and_downgrade_on_sqlite(tmp_path: Path) -> None:
     cfg.set_main_option("sqlalchemy.url", url)
     command.upgrade(cfg, "head")
     tables = set(inspect(create_engine(url)).get_table_names())
-    assert {"brands", "llm_calls"} <= tables
+    assert {"brands", "llm_calls", "prompts", "topics"} <= tables
     command.downgrade(cfg, "base")
     assert "brands" not in inspect(create_engine(url)).get_table_names()

@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"What's the best project management software for agencies?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best tool for managing client projects\", \"funnel_stage\": \"consideration\"}, {\"text\": \"project management with client portal\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best software for agency resource planning\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best pm tool with time tracking and invoicing\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best project management tool with time tracking and invoicing\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Can you recommend project software for a 20 person creative agency?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What's the best tool for client approvals and feedback?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"gantt chart software for agencies\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best project management for marketing agencies\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best project management for marketing agency\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Which PM tools let clients see progress without editing anything?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"top tools for agency workload management\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What's the best tool for managing retainers?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"project management software with good templates for client work\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best monday.com alternatives for agencies\", \"funnel_stage\": \"consideration\"}, {\"text\": \"monday vs asana for agencies\", \"funnel_stage\": \"consideration\"}, {\"text\": \"agency pm software reccomendations\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What's the best tool to replace spreadsheets for project tracking?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best software for managing freelancers and contractors\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "What's the best project management software for agencies?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best tool for managing client projects",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "project management with client portal",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best software for agency resource planning",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best pm tool with time tracking and invoicing",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best project management tool with time tracking and invoicing",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Can you recommend project software for a 20 person creative agency?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What's the best tool for client approvals and feedback?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "gantt chart software for agencies",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best project management for marketing agencies",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best project management for marketing agency",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Which PM tools let clients see progress without editing anything?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "top tools for agency workload management",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What's the best tool for managing retainers?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "project management software with good templates for client work",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best monday.com alternatives for agencies",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "monday vs asana for agencies",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "agency pm software reccomendations",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What's the best tool to replace spreadsheets for project tracking?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best software for managing freelancers and contractors",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

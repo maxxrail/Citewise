@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"taskflow pricing page\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Taskflow legit?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow reviews\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What is Taskflow?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow login\", \"funnel_stage\": \"consideration\"}, {\"text\": \"task flow app review\", \"funnel_stage\": \"consideration\"}, {\"text\": \"TaskFlow PM reviews from startups\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Who owns Taskflow?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Does Taskflow have a mobile app?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Taskflow good for a startup?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow reddit\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Does Taskflow have a free plan?\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow help center\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow templates for founders\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow status page\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Taskflow safe for company data?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow pm onboarding\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflw review\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow startup discount\", \"funnel_stage\": \"decision\"}, {\"text\": \"taskflow sign up\", \"funnel_stage\": \"decision\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "taskflow pricing page",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Taskflow legit?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow reviews",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What is Taskflow?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow login",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "task flow app review",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "TaskFlow PM reviews from startups",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Who owns Taskflow?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Does Taskflow have a mobile app?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Taskflow good for a startup?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow reddit",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Does Taskflow have a free plan?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow help center",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow templates for founders",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow status page",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Taskflow safe for company data?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow pm onboarding",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflw review",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow startup discount",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "taskflow sign up",
+    "funnel_stage": "decision"
+   }
+  ]
+ }
+}

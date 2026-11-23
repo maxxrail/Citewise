@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Agency and Engineering Practice\", \"description\": \"How-to and tooling questions about resource planning, story points and team metrics.\"}",
+ "parsed": {
+  "label": "Agency and Engineering Practice",
+  "description": "How-to and tooling questions about resource planning, story points and team metrics."
+ }
+}

@@ -56,9 +56,28 @@ docker compose up -d --build       # db + api; the api runs migrations on start
 docker compose exec api citewise seed
 ```
 
+### 4. Build a prompt panel (Module 1)
+
+The prompt panel is the set of questions real buyers ask AI assistants about a brand's category. Every command below works in mock mode with no keys:
+
+```bash
+uv run citewise panel generate Stridelab          # ~300 candidates per brand -> dedup -> stored with embeddings
+uv run citewise panel cluster Stridelab           # topics (PCA + KMeans, silhouette-picked k) + intent labels
+uv run citewise panel eval-intent Stridelab --golden evals/datasets/golden/intent.jsonl
+uv run citewise panel build Stridelab --size 50   # stratified topic x intent sample to scan in Module 2
+uv run citewise panel import Stridelab my_prompts.csv   # bring real prompts: a `text` column (+ optional intent, persona, funnel_stage)
+uv run python scripts/panel_report.py Stridelab   # evals/reports/panel_stridelab.md + .png (add --fresh to run it all in memory)
+```
+
+Re-running `generate` skips cells that already have prompts (add `--force` to regenerate). `generate` and `cluster` stop making LLM calls once `--max-cost` (default `MAX_COST_USD_PER_RUN`, $3) of estimated spend is reached, and print what they spent. `cluster` replaces the topics and clears the scan panel, so run `build` again afterwards.
+
+The API serves the results at `GET /brands/{id}/prompts` (filters: `topic_id`, `intent`, `in_panel`, `limit`, `offset`) and `GET /brands/{id}/topics`. Committed example reports: [Stridelab](evals/reports/panel_stridelab.md), [Taskflow](evals/reports/panel_taskflow.md).
+
+Prompt templates live in `prompts/panel/*.v1.jinja`, and every generated prompt stores its template version. In mock mode the generated prompts, intent labels and topic labels come from hand-written sources in `tests/fixtures/panel_source/`. If you change a template, the mock embedder or the clustering, re-record the fixtures with `uv run python scripts/record_panel_fixtures.py`. A test fails if they go stale.
+
 ### Live mode
 
-Set `CITEWISE_MODE=live` and `OPENAI_API_KEY` in `.env`. Only the OpenAI provider (chat + embeddings) is live in Module 0. The other engines arrive in Module 2. Model IDs are set per purpose (`MODEL_EXTRACT`, `MODEL_JUDGE`, `MODEL_GENERATE`, `MODEL_EMBED`) in `.env`.
+Set `CITEWISE_MODE=live` and `OPENAI_API_KEY` in `.env`. Only the OpenAI provider (chat + embeddings) is live so far. The other engines arrive in Module 2. A live `panel generate` + `cluster` for one brand is about 15 generation calls on `MODEL_GENERATE`, about 25 small classification and labeling calls on `MODEL_EXTRACT`, and 2 embedding batches. Check `llm_calls` for the exact cost. Model IDs are set per purpose (`MODEL_EXTRACT`, `MODEL_JUDGE`, `MODEL_GENERATE`, `MODEL_EMBED`) in `.env`.
 
 ## How it's built
 
@@ -70,6 +89,8 @@ Useful commands: `uv run ruff check .`, `uv run ruff format .`, `uv run mypy`, `
 
 ## Limitations
 Citewise uses official APIs only (with web search where available). API answers approximate, but are not identical to, what consumer apps like chatgpt.com show.
+
+The prompt panel has no search-volume data: every prompt counts equally. See docs/DECISIONS.md (Module 1) for how real volumes would plug in.
 
 ## License
 MIT

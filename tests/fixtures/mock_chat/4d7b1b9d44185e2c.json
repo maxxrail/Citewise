@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"taskflow github integration\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow api docs\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Does Taskflow support SSO?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow jira import\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What sprint planning features does Taskflow have?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Taskflow SOC 2 compliant?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"does taskflow support story points\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow pm gitlab integration\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What are the Taskflow API rate limits?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow burndown chart\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What do developers think of Taskflow?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Can Taskflow replace Jira for a 40 person eng org?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is there a self-hosted version of Taskflow?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"task flow slack integration\", \"funnel_stage\": \"consideration\"}, {\"text\": \"How do permissions work in Taskflow?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow webhooks\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow uptime history\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow changelog\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs jira\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow enterprise plan pricing\", \"funnel_stage\": \"decision\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "taskflow github integration",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow api docs",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Does Taskflow support SSO?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow jira import",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What sprint planning features does Taskflow have?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Taskflow SOC 2 compliant?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "does taskflow support story points",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow pm gitlab integration",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What are the Taskflow API rate limits?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow burndown chart",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What do developers think of Taskflow?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Can Taskflow replace Jira for a 40 person eng org?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is there a self-hosted version of Taskflow?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "task flow slack integration",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "How do permissions work in Taskflow?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow webhooks",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow uptime history",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow changelog",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs jira",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow enterprise plan pricing",
+    "funnel_stage": "decision"
+   }
+  ]
+ }
+}

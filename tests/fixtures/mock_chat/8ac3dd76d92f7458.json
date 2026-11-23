@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"cheap trail running shoes\", \"funnel_stage\": \"decision\"}, {\"text\": \"trail running shoe sale\", \"funnel_stage\": \"decision\"}, {\"text\": \"buy stridelab trail shoes\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab trail shoe discount\", \"funnel_stage\": \"decision\"}, {\"text\": \"cheapest hoka speedgoat\", \"funnel_stage\": \"decision\"}, {\"text\": \"trail shoes clearance\", \"funnel_stage\": \"decision\"}, {\"text\": \"Where can I buy Stridelab trail shoes online?\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab trail promo code\", \"funnel_stage\": \"decision\"}, {\"text\": \"Who has the best price on Brooks Cascadia right now?\", \"funnel_stage\": \"decision\"}, {\"text\": \"discounted gore tex trail shoes\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab trail shoes buy online\", \"funnel_stage\": \"decision\"}, {\"text\": \"cheap ultra running shoes\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab outlet\", \"funnel_stage\": \"decision\"}, {\"text\": \"trail shoes black friday\", \"funnel_stage\": \"decision\"}, {\"text\": \"salomon speedcross discount code\", \"funnel_stage\": \"decision\"}, {\"text\": \"Best trail shoes for ultras under $120?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"cheap trail shoes for mud\", \"funnel_stage\": \"decision\"}, {\"text\": \"cheap trail shoes for mud?\", \"funnel_stage\": \"decision\"}, {\"text\": \"Does Stridelab have a military discount?\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab trail shoe reviews\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "cheap trail running shoes",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "trail running shoe sale",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "buy stridelab trail shoes",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab trail shoe discount",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "cheapest hoka speedgoat",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "trail shoes clearance",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Where can I buy Stridelab trail shoes online?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab trail promo code",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Who has the best price on Brooks Cascadia right now?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "discounted gore tex trail shoes",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab trail shoes buy online",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "cheap ultra running shoes",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab outlet",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "trail shoes black friday",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "salomon speedcross discount code",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Best trail shoes for ultras under $120?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "cheap trail shoes for mud",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "cheap trail shoes for mud?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Does Stridelab have a military discount?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab trail shoe reviews",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

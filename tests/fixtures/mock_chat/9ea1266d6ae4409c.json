@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"How many miles a week should I run to train for my first marathon?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"whats heel drop in running shoes\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How long does it take to train for a marathon if I'm starting from zero?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"What should I eat the night before a marathon?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How often should I replace running shoes when training for a marathon?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Is it okay to run a marathon in brand new shoes?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"first marathon tips\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How long should my longest training run be before race day?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Should running shoes be a half size bigger for long runs?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"why do my toenails turn black after long runs\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Do I need different shoes for long runs and easy runs?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"How do I break in running shoes before a marathon?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"marathon training plan for beginers\", \"funnel_stage\": \"awareness\"}, {\"text\": \"What does cushioning actually do in a running shoe?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"What are carbon plate shoes and do beginners need them?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"How do I know if my running shoes are worn out?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"What's the difference between neutral and stability shoes?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"what are the best shoes for a first marathon\", \"funnel_stage\": \"consideration\"}, {\"text\": \"how to avoid chafing on long runs\", \"funnel_stage\": \"awareness\"}, {\"text\": \"does stridelab make a marathon shoe\", \"funnel_stage\": \"awareness\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "How many miles a week should I run to train for my first marathon?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "whats heel drop in running shoes",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How long does it take to train for a marathon if I'm starting from zero?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "What should I eat the night before a marathon?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How often should I replace running shoes when training for a marathon?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Is it okay to run a marathon in brand new shoes?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "first marathon tips",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How long should my longest training run be before race day?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Should running shoes be a half size bigger for long runs?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "why do my toenails turn black after long runs",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Do I need different shoes for long runs and easy runs?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "How do I break in running shoes before a marathon?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "marathon training plan for beginers",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "What does cushioning actually do in a running shoe?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "What are carbon plate shoes and do beginners need them?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "How do I know if my running shoes are worn out?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "What's the difference between neutral and stability shoes?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "what are the best shoes for a first marathon",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "how to avoid chafing on long runs",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "does stridelab make a marathon shoe",
+    "funnel_stage": "awareness"
+   }
+  ]
+ }
+}

@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"How do you manage multiple client projects at once without dropping things?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"how do agencies track billable hours\", \"funnel_stage\": \"awareness\"}, {\"text\": \"What is resource planning in an agency?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How can I get client approvals faster?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"how to scope a website project for a client\", \"funnel_stage\": \"awareness\"}, {\"text\": \"What's the best way to handle scope creep with clients?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"What should a weekly client status report include?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"how to plan team capacity across clients\", \"funnel_stage\": \"awareness\"}, {\"text\": \"agency project intake process\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do I set up a client onboarding checklist?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"what is a retainer and how do you track it\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do you reuse templates for repeat client projects?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How can I share project timelines with clients without giving them full access?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"what is a raci chart\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do agencies estimate project timelines?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"creative approval workflow steps\", \"funnel_stage\": \"awareness\"}, {\"text\": \"does taskflow have time tracking for clients\", \"funnel_stage\": \"consideration\"}, {\"text\": \"whats a gantt chart dependency\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Is Taskflow good for agencies?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"How do you manage freelancers on client projects?\", \"funnel_stage\": \"awareness\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "How do you manage multiple client projects at once without dropping things?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "how do agencies track billable hours",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "What is resource planning in an agency?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How can I get client approvals faster?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "how to scope a website project for a client",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "What's the best way to handle scope creep with clients?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "What should a weekly client status report include?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "how to plan team capacity across clients",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "agency project intake process",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do I set up a client onboarding checklist?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "what is a retainer and how do you track it",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do you reuse templates for repeat client projects?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How can I share project timelines with clients without giving them full access?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "what is a raci chart",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do agencies estimate project timelines?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "creative approval workflow steps",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "does taskflow have time tracking for clients",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "whats a gantt chart dependency",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Is Taskflow good for agencies?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "How do you manage freelancers on client projects?",
+    "funnel_stage": "awareness"
+   }
+  ]
+ }
+}

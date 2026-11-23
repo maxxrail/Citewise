@@ -1,0 +1,108 @@
+{
+ "purpose": "panel.classify",
+ "text": "{\"labels\": [{\"id\": 1, \"intent\": \"commercial\"}, {\"id\": 2, \"intent\": \"commercial\"}, {\"id\": 3, \"intent\": \"commercial\"}, {\"id\": 4, \"intent\": \"commercial\"}, {\"id\": 5, \"intent\": \"commercial\"}, {\"id\": 6, \"intent\": \"commercial\"}, {\"id\": 7, \"intent\": \"commercial\"}, {\"id\": 8, \"intent\": \"commercial\"}, {\"id\": 9, \"intent\": \"commercial\"}, {\"id\": 10, \"intent\": \"commercial\"}, {\"id\": 11, \"intent\": \"commercial\"}, {\"id\": 12, \"intent\": \"commercial\"}, {\"id\": 13, \"intent\": \"commercial\"}, {\"id\": 14, \"intent\": \"navigational\"}, {\"id\": 15, \"intent\": \"commercial\"}, {\"id\": 16, \"intent\": \"comparison\"}, {\"id\": 17, \"intent\": \"commercial\"}, {\"id\": 18, \"intent\": \"commercial\"}, {\"id\": 19, \"intent\": \"commercial\"}, {\"id\": 20, \"intent\": \"commercial\"}, {\"id\": 21, \"intent\": \"commercial\"}, {\"id\": 22, \"intent\": \"commercial\"}, {\"id\": 23, \"intent\": \"commercial\"}, {\"id\": 24, \"intent\": \"commercial\"}, {\"id\": 25, \"intent\": \"commercial\"}]}",
+ "parsed": {
+  "labels": [
+   {
+    "id": 1,
+    "intent": "commercial"
+   },
+   {
+    "id": 2,
+    "intent": "commercial"
+   },
+   {
+    "id": 3,
+    "intent": "commercial"
+   },
+   {
+    "id": 4,
+    "intent": "commercial"
+   },
+   {
+    "id": 5,
+    "intent": "commercial"
+   },
+   {
+    "id": 6,
+    "intent": "commercial"
+   },
+   {
+    "id": 7,
+    "intent": "commercial"
+   },
+   {
+    "id": 8,
+    "intent": "commercial"
+   },
+   {
+    "id": 9,
+    "intent": "commercial"
+   },
+   {
+    "id": 10,
+    "intent": "commercial"
+   },
+   {
+    "id": 11,
+    "intent": "commercial"
+   },
+   {
+    "id": 12,
+    "intent": "commercial"
+   },
+   {
+    "id": 13,
+    "intent": "commercial"
+   },
+   {
+    "id": 14,
+    "intent": "navigational"
+   },
+   {
+    "id": 15,
+    "intent": "commercial"
+   },
+   {
+    "id": 16,
+    "intent": "comparison"
+   },
+   {
+    "id": 17,
+    "intent": "commercial"
+   },
+   {
+    "id": 18,
+    "intent": "commercial"
+   },
+   {
+    "id": 19,
+    "intent": "commercial"
+   },
+   {
+    "id": 20,
+    "intent": "commercial"
+   },
+   {
+    "id": 21,
+    "intent": "commercial"
+   },
+   {
+    "id": 22,
+    "intent": "commercial"
+   },
+   {
+    "id": 23,
+    "intent": "commercial"
+   },
+   {
+    "id": 24,
+    "intent": "commercial"
+   },
+   {
+    "id": 25,
+    "intent": "commercial"
+   }
+  ]
+ }
+}

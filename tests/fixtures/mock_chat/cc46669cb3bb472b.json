@@ -1,0 +1,12 @@
+{
+ "purpose": "panel.classify",
+ "text": "{\"labels\": [{\"id\": 1, \"intent\": \"informational\"}]}",
+ "parsed": {
+  "labels": [
+   {
+    "id": 1,
+    "intent": "informational"
+   }
+  ]
+ }
+}

@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"PM Tools for Startups\", \"description\": \"Which project management tool a startup should pick, Taskflow, Asana or others.\"}",
+ "parsed": {
+  "label": "PM Tools for Startups",
+  "description": "Which project management tool a startup should pick, Taskflow, Asana or others."
+ }
+}

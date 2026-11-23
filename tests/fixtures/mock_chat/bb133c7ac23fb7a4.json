@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"What are the best running shoes for shin splints?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best running shoes for flat feet\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best shoes for flat feet\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Best stability running shoes for overpronation?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"running shoes for knee pain recommendations\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best running shoes for plantar fasciitis\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Good cushioned shoes for achilles tendinitis?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best shoes for bunions wide toe box\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What are the best running shoes for heavy runners with bad knees?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What running shoes do physios recommend?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"max cushion shoes for injury recovery\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Which running shoes work best with custom orthotics?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best running shoes for hip pain\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What shoes are supportive enough for coming back from a stress fracture?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best shoes for shin splints\", \"funnel_stage\": \"consideration\"}, {\"text\": \"good shoes for high arches and supination\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Best stability shoes for marathon training?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"cheap running shoes for bad ankles\", \"funnel_stage\": \"decision\"}, {\"text\": \"asics kayano or brooks adrenaline for overpronation\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What are the best running shoes for older runners with joint pain?\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "What are the best running shoes for shin splints?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best running shoes for flat feet",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best shoes for flat feet",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Best stability running shoes for overpronation?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "running shoes for knee pain recommendations",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best running shoes for plantar fasciitis",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Good cushioned shoes for achilles tendinitis?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best shoes for bunions wide toe box",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What are the best running shoes for heavy runners with bad knees?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What running shoes do physios recommend?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "max cushion shoes for injury recovery",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Which running shoes work best with custom orthotics?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best running shoes for hip pain",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What shoes are supportive enough for coming back from a stress fracture?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best shoes for shin splints",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "good shoes for high arches and supination",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Best stability shoes for marathon training?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "cheap running shoes for bad ankles",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "asics kayano or brooks adrenaline for overpronation",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What are the best running shoes for older runners with joint pain?",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

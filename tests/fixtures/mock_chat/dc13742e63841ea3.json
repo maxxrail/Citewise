@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"What causes shin splints in new runners?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Can the wrong running shoes cause knee pain?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"how do i know if i overpronate\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Do running shoes actually help with plantar fasciitis?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Is it bad to run with flat feet?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How often should I replace my running shoes if I keep getting injured?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Does a higher heel drop help with achilles pain?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"what is a stability shoe\", \"funnel_stage\": \"awareness\"}, {\"text\": \"wide toe box benefits for bunions\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Can max cushion shoes cause injuries?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How can I tell if my running shoes are causing my hip pain?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Should I get a gait analysis before buying new shoes?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"ankle support running shoes do they work\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do I come back from a stress fracture safely?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"running with shin splints good idea or not\", \"funnel_stage\": \"awareness\"}, {\"text\": \"whats the difference between neutral and stability running shoes\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Do orthotics fit in normal running shoes?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How many miles before running shoes lose their cushioning?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Is it okay to rotate two pairs of running shoes?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Which running shoes are best for plantar fasciitis?\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "What causes shin splints in new runners?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Can the wrong running shoes cause knee pain?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "how do i know if i overpronate",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Do running shoes actually help with plantar fasciitis?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Is it bad to run with flat feet?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How often should I replace my running shoes if I keep getting injured?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Does a higher heel drop help with achilles pain?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "what is a stability shoe",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "wide toe box benefits for bunions",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Can max cushion shoes cause injuries?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How can I tell if my running shoes are causing my hip pain?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Should I get a gait analysis before buying new shoes?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "ankle support running shoes do they work",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do I come back from a stress fracture safely?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "running with shin splints good idea or not",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "whats the difference between neutral and stability running shoes",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Do orthotics fit in normal running shoes?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How many miles before running shoes lose their cushioning?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Is it okay to rotate two pairs of running shoes?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Which running shoes are best for plantar fasciitis?",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

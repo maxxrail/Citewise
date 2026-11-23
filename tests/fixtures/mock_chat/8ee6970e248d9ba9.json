@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"jira vs linear\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Taskflow vs Jira for engineering teams?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs jira for eng teams\", \"funnel_stage\": \"consideration\"}, {\"text\": \"clickup vs jira for sprint planning\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Taskflow or Linear for a 15 person dev team?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Taskflow's GitHub integration better than Jira's?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"asana vs jira for software teams\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs clickup for agile\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Notion vs Jira for engineering docs and tickets?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"compare taskflow and jira api\", \"funnel_stage\": \"consideration\"}, {\"text\": \"jira or taskflow for scrum\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs asana for engineering\", \"funnel_stage\": \"consideration\"}, {\"text\": \"monday dev vs jira\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Taskflow vs Jira migration effort, which is easier to adopt?\", \"funnel_stage\": \"decision\"}, {\"text\": \"which is faster taskflow or jira\", \"funnel_stage\": \"consideration\"}, {\"text\": \"jira cloud vs taskflow permissions\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs jira vs linear\", \"funnel_stage\": \"consideration\"}, {\"text\": \"clickup or taskflow for bug tracking\", \"funnel_stage\": \"consideration\"}, {\"text\": \"How do I migrate from Jira to Taskflow?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"which is cheaper jira or taskflow for 50 devs\", \"funnel_stage\": \"decision\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "jira vs linear",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Taskflow vs Jira for engineering teams?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs jira for eng teams",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "clickup vs jira for sprint planning",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Taskflow or Linear for a 15 person dev team?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Taskflow's GitHub integration better than Jira's?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "asana vs jira for software teams",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs clickup for agile",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Notion vs Jira for engineering docs and tickets?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "compare taskflow and jira api",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "jira or taskflow for scrum",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs asana for engineering",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "monday dev vs jira",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Taskflow vs Jira migration effort, which is easier to adopt?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "which is faster taskflow or jira",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "jira cloud vs taskflow permissions",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs jira vs linear",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "clickup or taskflow for bug tracking",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "How do I migrate from Jira to Taskflow?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "which is cheaper jira or taskflow for 50 devs",
+    "funnel_stage": "decision"
+   }
+  ]
+ }
+}

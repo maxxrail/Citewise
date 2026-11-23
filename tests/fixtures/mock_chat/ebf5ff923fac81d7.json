@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"Monday.com vs Asana for agencies?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs monday for client work\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs asana for agencies\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs. asana for agencies\", \"funnel_stage\": \"consideration\"}, {\"text\": \"clickup vs monday for resource planning\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Taskflow or ClickUp for time tracking?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"compare taskflow and monday client portals\", \"funnel_stage\": \"consideration\"}, {\"text\": \"trello vs taskflow for creative teams\", \"funnel_stage\": \"consideration\"}, {\"text\": \"asana vs clickup for marketing agency\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Taskflow better than Asana for client approvals?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"monday or notion for agency projects\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs teamwork for agencies\", \"funnel_stage\": \"consideration\"}, {\"text\": \"ClickUp vs Asana Gantt charts, which is better?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs monday pricing for 20 users\", \"funnel_stage\": \"decision\"}, {\"text\": \"Taskflow or Asana for managing freelancers?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"which has better client sharing taskflow or trello\", \"funnel_stage\": \"consideration\"}, {\"text\": \"monday vs clickup for workload view\", \"funnel_stage\": \"consideration\"}, {\"text\": \"taskflow vs clickup for agencies\", \"funnel_stage\": \"consideration\"}, {\"text\": \"gantt view vs kanban for client projects\", \"funnel_stage\": \"awareness\"}, {\"text\": \"Is Monday.com worth it compared to Taskflow?\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "Monday.com vs Asana for agencies?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs monday for client work",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs asana for agencies",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs. asana for agencies",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "clickup vs monday for resource planning",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Taskflow or ClickUp for time tracking?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "compare taskflow and monday client portals",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "trello vs taskflow for creative teams",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "asana vs clickup for marketing agency",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Taskflow better than Asana for client approvals?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "monday or notion for agency projects",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs teamwork for agencies",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "ClickUp vs Asana Gantt charts, which is better?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs monday pricing for 20 users",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Taskflow or Asana for managing freelancers?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "which has better client sharing taskflow or trello",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "monday vs clickup for workload view",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "taskflow vs clickup for agencies",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "gantt view vs kanban for client projects",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "Is Monday.com worth it compared to Taskflow?",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

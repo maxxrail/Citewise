@@ -5,16 +5,21 @@ Chat: the response is keyed by sha256 of (purpose, messages). If
 deterministic placeholder is generated (schema-valid when a JSON schema is requested),
 so new code paths work in mock mode before anyone records a fixture.
 
-Embeddings: sha256(text) seeds a PRNG -> Gaussian vector -> unit length. Stable across
-runs, platforms and Python versions (no reliance on `hash()`).
+Embeddings: feature hashing of words, word bigrams and character trigrams into a signed
+1536-dim vector, then unit length. Texts that share words get high cosine similarity, so
+dedup and clustering behave like they would on real embeddings (random vectors would make
+every prompt equidistant). Uses sha256, never `hash()`, so it is stable across runs,
+platforms and Python versions.
 """
 
 from __future__ import annotations
 
 import hashlib
+import itertools
 import json
 import math
 import random
+import re
 from pathlib import Path
 from typing import Any
 
@@ -161,12 +166,86 @@ class MockChatProvider:
         )
 
 
-def mock_vector(text: str, dim: int = MOCK_EMBED_DIM) -> list[float]:
+_WORD = re.compile(r"[a-z0-9]+")
+# Function words carry no topic; without this "how do i" would pull unrelated prompts together.
+_STOPWORDS = frozenset(
+    {
+        *("a", "an", "and", "are", "as", "at", "be", "best", "can", "do", "does", "for"),
+        *("from", "good", "how", "i", "in", "is", "it", "me", "my", "of", "on", "or"),
+        *("should", "the", "to", "vs", "what", "whats", "which", "with", "you", "your"),
+    }
+)
+# Share of every vector put on one reserved "anchor" dimension: cos' = A + (1 - A) * cos.
+# Real embeddings (text-embedding-3-small) put paraphrases around 0.9+ and related-but-
+# different questions around 0.8-0.9; lexical features alone sit lower (~0.85 / ~0.7).
+# The anchor lifts the scale so the production dedup threshold (0.92) means roughly the
+# same thing in mock mode. It is a constant offset, so rankings and clusters don't change.
+_ANCHOR = 0.5
+_WEIGHTS = {"word": 1.0, "char3": 0.8, "bigram": 0.3}
+
+
+def _stem(word: str) -> str:
+    """Crude suffix strip so "shoes"/"shoe" and "running"/"run" share a feature."""
+    for suffix in ("ing", "es", "s"):
+        if len(word) > len(suffix) + 2 and word.endswith(suffix):
+            return word[: -len(suffix)]
+    return word
+
+
+def _features(text: str) -> dict[str, float]:
+    """Weighted sparse features: content words, character trigrams (typo-tolerant), bigrams."""
+    words = [_stem(w) for w in _WORD.findall(text.lower()) if w not in _STOPWORDS]
+    feats: dict[str, float] = {}
+
+    def add(key: str, weight: float) -> None:
+        feats[key] = feats.get(key, 0.0) + weight
+
+    for w in words:
+        add(f"w:{w}", _WEIGHTS["word"])
+        padded = f"_{w}_"
+        for i in range(len(padded) - 2):
+            add(f"c:{padded[i : i + 3]}", _WEIGHTS["char3"])
+    for a, b in itertools.pairwise(words):
+        add(f"b:{a}_{b}", _WEIGHTS["bigram"])
+    return feats
+
+
+def _random_unit_vector(text: str, dim: int) -> list[float]:
     seed = int.from_bytes(hashlib.sha256(text.encode("utf-8")).digest()[:8], "big")
     rng = random.Random(seed)
     vec = [rng.gauss(0.0, 1.0) for _ in range(dim)]
     norm = math.sqrt(sum(x * x for x in vec)) or 1.0
     return [x / norm for x in vec]
+
+
+def _hashed_vector(text: str, dim: int) -> list[float] | None:
+    """Signed feature hashing into dims 1..dim-1 (dim 0 is the anchor). None if empty."""
+    vec = [0.0] * dim
+    for feat, weight in _features(text).items():
+        digest = hashlib.sha256(feat.encode("utf-8")).digest()
+        idx = 1 + int.from_bytes(digest[:4], "big") % (dim - 1)
+        vec[idx] += weight if digest[4] & 1 else -weight
+    norm = math.sqrt(sum(x * x for x in vec))
+    if norm == 0.0:  # no content words (e.g. "how do i?") or collisions cancelled out
+        return None
+    return [x / norm for x in vec]
+
+
+def mock_vector(text: str, dim: int = MOCK_EMBED_DIM) -> list[float]:
+    """Deterministic, roughly semantic unit vector.
+
+    Texts with no content words fall back to a random vector (they match nothing).
+    """
+    base = _hashed_vector(text, dim)
+    if base is None:
+        base = _random_unit_vector(text, dim)
+        base[0] = 0.0
+        norm = math.sqrt(sum(x * x for x in base)) or 1.0
+        base = [x / norm for x in base]
+    scale = math.sqrt(1.0 - _ANCHOR)
+    vec = [x * scale for x in base]
+    vec[0] = math.sqrt(_ANCHOR)
+    return vec
 
 
 class MockEmbedder:

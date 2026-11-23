@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Tools for Small Teams\", \"description\": \"Kanban, agile and Jira-alternative tools for small or growing teams.\"}",
+ "parsed": {
+  "label": "Tools for Small Teams",
+  "description": "Kanban, agile and Jira-alternative tools for small or growing teams."
+ }
+}

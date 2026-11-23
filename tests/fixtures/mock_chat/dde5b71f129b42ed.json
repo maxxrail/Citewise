@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Choosing a PM Tool\", \"description\": \"Generic searches for the best or cheapest project management software for a team type.\"}",
+ "parsed": {
+  "label": "Choosing a PM Tool",
+  "description": "Generic searches for the best or cheapest project management software for a team type."
+ }
+}

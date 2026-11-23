@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Feature-Led Tool Search\", \"description\": \"Finding a tool by a must-have feature such as GitHub, Slack, time tracking or invoicing.\"}",
+ "parsed": {
+  "label": "Feature-Led Tool Search",
+  "description": "Finding a tool by a must-have feature such as GitHub, Slack, time tracking or invoicing."
+ }
+}

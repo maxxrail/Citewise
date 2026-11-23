@@ -12,3 +12,8 @@ competitors:
   - ASICS
   - New Balance
   - "On"  # quoted: bare On is YAML boolean true
+# Buyer personas: the prompt panel is generated per intent x persona.
+personas:
+  - marathon beginner
+  - trail runner
+  - injury-prone runner

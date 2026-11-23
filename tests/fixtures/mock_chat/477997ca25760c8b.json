@@ -1,0 +1,8 @@
+{
+ "purpose": "panel.label_topic",
+ "text": "{\"label\": \"Free Plan and Trial\", \"description\": \"Taskflow free trials, the free plan, free guest seats and time tracking basics.\"}",
+ "parsed": {
+  "label": "Free Plan and Trial",
+  "description": "Taskflow free trials, the free plan, free guest seats and time tracking basics."
+ }
+}

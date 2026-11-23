@@ -4,6 +4,34 @@ All notable changes to Citewise are documented here. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+## module-01 - Prompt panel and topic discovery (2026-11-23)
+
+### Added
+- Tables `prompts` and `topics`, and `brands.personas` (migration `0002`). Prompts are unique per brand by normalised text, so re-running jobs never duplicates rows.
+- Versioned prompt library (`src/citewise/services/prompt_library.py`, `prompts/panel/{generate,classify_intent,label_topic}.v1.jinja`). Brand values and prompts are JSON-encoded into templates as data. The template version is stored on every generated prompt.
+- `complete_structured()`: Pydantic-validated structured output with one retry that feeds back the validation error, then a recorded failure instead of a crash.
+- Panel services in `services/panel/`: generation per intent x persona, CSV import, greedy cosine dedup (default 0.92, shortest phrasing wins, also against stored prompts), PCA + KMeans with silhouette-selected k (or sklearn HDBSCAN via `--algorithm hdbscan`), topic labels (5 words or fewer) from the 8 most central prompts, LLM and embedding (logistic regression) intent classifiers with a cross-validated agreement report, and Sainte-Laguë stratified panel selection that covers every topic first.
+- CLI `citewise panel generate | import | cluster | eval-intent | build`.
+- API `GET /brands/{id}/prompts` and `GET /brands/{id}/topics`.
+- `scripts/panel_report.py` (markdown topic table, topic x intent, PCA map PNG) and committed reports for both example brands in `evals/reports/`.
+- `scripts/record_panel_fixtures.py` and hand-written sources in `tests/fixtures/panel_source/`, so the whole pipeline runs offline and gives identical clusters each run.
+- Eval data: golden intent set (`evals/datasets/golden/intent.jsonl`, 94 hand-reviewed rows), labeling rubric (`evals/rubrics/intent_labels.yaml`), Module 1 red-team cases (`evals/datasets/redteam.jsonl`).
+- Settings: `PANEL_PROMPTS_PER_CELL`, `PANEL_DEDUP_THRESHOLD`, `PANEL_K_MIN`/`PANEL_K_MAX`, `PANEL_PCA_DIMS`, `PANEL_CLASSIFY_BATCH`, `PROMPTS_DIR`.
+- Dependencies: numpy, scikit-learn, jinja2 (runtime) and matplotlib (dev).
+
+### Fixed (code review, 2026-11-23)
+- Prompt injection: templates are split at the `=== user ===` line before rendering, the brand category is JSON-encoded in every template, and brand fields reject `===`.
+- A provider error (429, timeout) no longer aborts `generate`/`cluster` and rolls back paid work. It counts as a failed attempt and the fallback runs.
+- `panel generate` skips cells already generated with the template version (`--force` regenerates), so live re-runs don't pay again or grow the panel.
+- Spend cap per command (`--max-cost`, default `MAX_COST_USD_PER_RUN`), `PANEL_IMPORT_MAX_ROWS`, and a sampled silhouette for large panels.
+- Fallback/embedding intent labels are retried with the LLM on later runs and never used as training labels.
+- Golden set review: one row reworded (it nearly duplicated a training prompt), one relabeled, 14 hard cases added. New rubric and classifier tie-breaks for contrast/exclusion ("unlike X") and for the brand name used as an ordinary word.
+- The fallback topic label is bounded. `panel build` refuses unclustered prompts. Re-clustering clears the stale scan panel. An unknown `--version` gives a clean error.
+
+### Changed
+- The mock embedder now uses calibrated feature hashing (stemmed words, char trigrams, bigrams, plus a fixed anchor dimension) instead of random vectors, so offline dedup and clustering behave like real embeddings.
+- The Docker image ships `prompts/` and sets `PROMPTS_DIR`.
+
 ## module-00 - Foundations (2026-11-23)
 
 ### Added

@@ -7,11 +7,12 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from citewise import __version__
-from citewise.api import brands
+from citewise.api import brands, panel
 from citewise.core.db import get_db, ping
 
 app = FastAPI(title="Citewise", version=__version__)
 app.include_router(brands.router)
+app.include_router(panel.router)
 
 
 @app.get("/health")

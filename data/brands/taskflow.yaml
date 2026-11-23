@@ -12,3 +12,8 @@ competitors:
   - ClickUp
   - Notion
   - Jira
+# Buyer personas: the prompt panel is generated per intent x persona.
+personas:
+  - startup founder
+  - agency project manager
+  - engineering lead

@@ -1,0 +1,108 @@
+{
+ "purpose": "panel.classify",
+ "text": "{\"labels\": [{\"id\": 1, \"intent\": \"comparison\"}, {\"id\": 2, \"intent\": \"comparison\"}, {\"id\": 3, \"intent\": \"comparison\"}, {\"id\": 4, \"intent\": \"comparison\"}, {\"id\": 5, \"intent\": \"navigational\"}, {\"id\": 6, \"intent\": \"comparison\"}, {\"id\": 7, \"intent\": \"comparison\"}, {\"id\": 8, \"intent\": \"comparison\"}, {\"id\": 9, \"intent\": \"comparison\"}, {\"id\": 10, \"intent\": \"comparison\"}, {\"id\": 11, \"intent\": \"comparison\"}, {\"id\": 12, \"intent\": \"comparison\"}, {\"id\": 13, \"intent\": \"comparison\"}, {\"id\": 14, \"intent\": \"comparison\"}, {\"id\": 15, \"intent\": \"comparison\"}, {\"id\": 16, \"intent\": \"comparison\"}, {\"id\": 17, \"intent\": \"comparison\"}, {\"id\": 18, \"intent\": \"comparison\"}, {\"id\": 19, \"intent\": \"comparison\"}, {\"id\": 20, \"intent\": \"comparison\"}, {\"id\": 21, \"intent\": \"comparison\"}, {\"id\": 22, \"intent\": \"comparison\"}, {\"id\": 23, \"intent\": \"commercial\"}, {\"id\": 24, \"intent\": \"comparison\"}, {\"id\": 25, \"intent\": \"comparison\"}]}",
+ "parsed": {
+  "labels": [
+   {
+    "id": 1,
+    "intent": "comparison"
+   },
+   {
+    "id": 2,
+    "intent": "comparison"
+   },
+   {
+    "id": 3,
+    "intent": "comparison"
+   },
+   {
+    "id": 4,
+    "intent": "comparison"
+   },
+   {
+    "id": 5,
+    "intent": "navigational"
+   },
+   {
+    "id": 6,
+    "intent": "comparison"
+   },
+   {
+    "id": 7,
+    "intent": "comparison"
+   },
+   {
+    "id": 8,
+    "intent": "comparison"
+   },
+   {
+    "id": 9,
+    "intent": "comparison"
+   },
+   {
+    "id": 10,
+    "intent": "comparison"
+   },
+   {
+    "id": 11,
+    "intent": "comparison"
+   },
+   {
+    "id": 12,
+    "intent": "comparison"
+   },
+   {
+    "id": 13,
+    "intent": "comparison"
+   },
+   {
+    "id": 14,
+    "intent": "comparison"
+   },
+   {
+    "id": 15,
+    "intent": "comparison"
+   },
+   {
+    "id": 16,
+    "intent": "comparison"
+   },
+   {
+    "id": 17,
+    "intent": "comparison"
+   },
+   {
+    "id": 18,
+    "intent": "comparison"
+   },
+   {
+    "id": 19,
+    "intent": "comparison"
+   },
+   {
+    "id": 20,
+    "intent": "comparison"
+   },
+   {
+    "id": 21,
+    "intent": "comparison"
+   },
+   {
+    "id": 22,
+    "intent": "comparison"
+   },
+   {
+    "id": 23,
+    "intent": "commercial"
+   },
+   {
+    "id": 24,
+    "intent": "comparison"
+   },
+   {
+    "id": 25,
+    "intent": "comparison"
+   }
+  ]
+ }
+}

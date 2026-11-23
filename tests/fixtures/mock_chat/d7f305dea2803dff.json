@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"is stridelab good for flat feet\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Stridelab good for flat feet?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Does Stridelab make stability shoes?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab shoes for plantar fasciitis review\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Are Stridelab shoes podiatrist approved?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab wide sizes\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Do Stridelab shoes have removable insoles?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stride lab arch support\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Stridelab reviews from runners with injuries\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What's the heel drop on Stridelab shoes?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Can I use my orthotics in Stridelab shoes?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab toe box width\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Stridelab good for shin splints?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab customer reviews knee pain\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Does Stridelab offer gait analysis?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab wide fit discount\", \"funnel_stage\": \"decision\"}, {\"text\": \"Can I return Stridelab shoes if they hurt my feet?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Stridelab worth the money for bad knees?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab vs hoka for flat feet\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridlab wide fit\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "is stridelab good for flat feet",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Stridelab good for flat feet?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Does Stridelab make stability shoes?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab shoes for plantar fasciitis review",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Are Stridelab shoes podiatrist approved?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab wide sizes",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Do Stridelab shoes have removable insoles?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stride lab arch support",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Stridelab reviews from runners with injuries",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What's the heel drop on Stridelab shoes?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Can I use my orthotics in Stridelab shoes?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab toe box width",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Stridelab good for shin splints?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab customer reviews knee pain",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Does Stridelab offer gait analysis?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab wide fit discount",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Can I return Stridelab shoes if they hurt my feet?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Stridelab worth the money for bad knees?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab vs hoka for flat feet",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridlab wide fit",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

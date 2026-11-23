@@ -10,6 +10,8 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 # cheapest way to smuggle a fake instruction or section break into a prompt template).
 MAX_LIST_ITEMS = 20
 MAX_TERM_LEN = 100
+# Personas multiply generation calls (intents x personas), so they get a tighter cap.
+MAX_PERSONAS = 6
 _CONTROL_CHARS = re.compile(r"[\x00-\x1f\x7f]")
 _HOSTNAME = re.compile(r"^(?=.{1,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9-]{2,63}$")
 
@@ -20,6 +22,8 @@ def _clean_line(v: str) -> str:
         raise ValueError("must not be blank")
     if _CONTROL_CHARS.search(v):
         raise ValueError("must be a single line without control characters")
+    if "===" in v:  # looks like a prompt-template section marker (e.g. "=== user ===")
+        raise ValueError("must not contain '==='")
     return v
 
 
@@ -29,6 +33,7 @@ class BrandCreate(BaseModel):
     category: str = Field(min_length=1, max_length=200)
     aliases: list[str] = Field(default_factory=list, max_length=MAX_LIST_ITEMS)
     competitors: list[str] = Field(default_factory=list, max_length=MAX_LIST_ITEMS)
+    personas: list[str] = Field(default_factory=list, max_length=MAX_PERSONAS)
 
     @field_validator("name", "category")
     @classmethod
@@ -47,7 +52,7 @@ class BrandCreate(BaseModel):
             raise ValueError(f"{v!r} is not a valid domain (expected e.g. example.com)")
         return v
 
-    @field_validator("aliases", "competitors")
+    @field_validator("aliases", "competitors", "personas")
     @classmethod
     def _clean_terms(cls, v: list[str]) -> list[str]:
         """Strip, bound length, and drop case-insensitive duplicates (first spelling wins)."""
@@ -75,4 +80,5 @@ class BrandRead(BaseModel):
     category: str
     aliases: list[str]
     competitors: list[str]
+    personas: list[str] = []
     created_at: datetime

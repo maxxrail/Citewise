@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"stridelab promo code\", \"funnel_stage\": \"decision\"}, {\"text\": \"buy stridelab marathon shoes\", \"funnel_stage\": \"decision\"}, {\"text\": \"cheapest marathon shoes\", \"funnel_stage\": \"decision\"}, {\"text\": \"running shoes black friday deals\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab discount code\", \"funnel_stage\": \"decision\"}, {\"text\": \"Where can I find marathon shoes on sale?\", \"funnel_stage\": \"decision\"}, {\"text\": \"where to buy running shoes near me\", \"funnel_stage\": \"decision\"}, {\"text\": \"Does Stridelab have a student discount?\", \"funnel_stage\": \"decision\"}, {\"text\": \"cheap carbon plate shoes for race day\", \"funnel_stage\": \"decision\"}, {\"text\": \"best deals on hoka clifton\", \"funnel_stage\": \"decision\"}, {\"text\": \"Does Stridelab offer free shipping?\", \"funnel_stage\": \"decision\"}, {\"text\": \"buy brooks ghost size 10\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab coupon\", \"funnel_stage\": \"decision\"}, {\"text\": \"What's the cheapest place to buy ASICS Novablast?\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab first order discount\", \"funnel_stage\": \"decision\"}, {\"text\": \"running shoe deals for beginners\", \"funnel_stage\": \"decision\"}, {\"text\": \"Does Stridelab do a bundle deal on two pairs?\", \"funnel_stage\": \"decision\"}, {\"text\": \"buy marathon shoes under 100 dollars\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab refurbished shoes\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab returns policy\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "stridelab promo code",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "buy stridelab marathon shoes",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "cheapest marathon shoes",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "running shoes black friday deals",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab discount code",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Where can I find marathon shoes on sale?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "where to buy running shoes near me",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Does Stridelab have a student discount?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "cheap carbon plate shoes for race day",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "best deals on hoka clifton",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Does Stridelab offer free shipping?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "buy brooks ghost size 10",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab coupon",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "What's the cheapest place to buy ASICS Novablast?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab first order discount",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "running shoe deals for beginners",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "Does Stridelab do a bundle deal on two pairs?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "buy marathon shoes under 100 dollars",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab refurbished shoes",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab returns policy",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

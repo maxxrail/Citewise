@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"What's the best project management tool for software teams?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best jira alternative\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best jira alternatives for engineering teams\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best sprint planning tool with github integration\", \"funnel_stage\": \"consideration\"}, {\"text\": \"lightweight issue tracker for a 10 person dev team\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What's the best tool for engineering roadmaps?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"project management tool with a good api\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Best agile tool for remote engineering teams?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Which PM tool has the best GitHub integration?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best tool for tracking bugs and features together\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What project tool works well for a platform team?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Can you recommend a tool for sprint planning and retros?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best project management software with sso\", \"funnel_stage\": \"consideration\"}, {\"text\": \"fast issue tracker that devs actually like\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What's the best tool for managing cross-team dependencies?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What tools do engineering managers use to track velocity?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"linear or jira for a growing team\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best self hosted project management tool\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Project management software with SOC 2 compliance?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"does taskflow integrate with github actions\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "What's the best project management tool for software teams?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best jira alternative",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best jira alternatives for engineering teams",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best sprint planning tool with github integration",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "lightweight issue tracker for a 10 person dev team",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What's the best tool for engineering roadmaps?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "project management tool with a good api",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Best agile tool for remote engineering teams?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Which PM tool has the best GitHub integration?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best tool for tracking bugs and features together",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What project tool works well for a platform team?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Can you recommend a tool for sprint planning and retros?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best project management software with sso",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "fast issue tracker that devs actually like",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What's the best tool for managing cross-team dependencies?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What tools do engineering managers use to track velocity?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "linear or jira for a growing team",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best self hosted project management tool",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Project management software with SOC 2 compliance?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "does taskflow integrate with github actions",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

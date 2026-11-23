@@ -1,0 +1,86 @@
+"""Versioned prompt templates (`prompts/<family>/<name>.<version>.jinja`).
+
+A template has a system part and a user part, split by a line containing only
+`=== user ===`. The version string (e.g. "panel/generate.v1") is stored on whatever the
+prompt produced, so results can be traced to the exact wording and A/B tested (Module 6).
+
+Values interpolated into templates are data, not instructions: callers pass user- or
+brand-supplied text through `as_data()` (JSON-encoded), never raw.
+"""
+
+from __future__ import annotations
+
+import json
+import re
+from dataclasses import dataclass
+from functools import lru_cache
+from pathlib import Path
+from typing import Any
+
+from jinja2 import Environment, FileSystemLoader, StrictUndefined, Template, Undefined
+
+from citewise.core.config import get_settings
+from citewise.providers.base import Message
+
+USER_MARKER = "=== user ==="
+_MARKER_LINE = re.compile(r"^=== user ===[ \t]*\n", re.MULTILINE)
+
+
+def as_data(value: Any) -> str:
+    """JSON-encode a value for a template so quotes/newlines can't break out of it."""
+    if isinstance(value, Undefined):
+        # Raise jinja's own "'x' is undefined" instead of an opaque JSON serialization error.
+        value._fail_with_undefined_error()
+    return json.dumps(value, ensure_ascii=False)
+
+
+@dataclass(frozen=True)
+class RenderedPrompt:
+    version: str  # "panel/generate.v1"
+    messages: list[Message]
+
+
+@lru_cache
+def _env(prompts_dir: Path) -> Environment:
+    # Not HTML, so no autoescape; StrictUndefined turns a missing variable into an error
+    # instead of silently rendering an empty string into a live prompt.
+    env = Environment(
+        loader=FileSystemLoader(str(prompts_dir)),
+        undefined=StrictUndefined,
+        autoescape=False,
+        keep_trailing_newline=False,
+        trim_blocks=True,
+        lstrip_blocks=True,
+    )
+    env.filters["data"] = as_data
+    return env
+
+
+@lru_cache
+def _parts(prompts_dir: Path, filename: str) -> tuple[Template, Template]:
+    """Split the template *source* at the marker line, then compile each half.
+
+    Splitting before rendering means no interpolated value (a brand category, an imported
+    prompt) can contain a fake marker and move the system/user boundary.
+    """
+    env = _env(prompts_dir)
+    assert env.loader is not None
+    source, _, _ = env.loader.get_source(env, filename)
+    # Mock fixture keys hash the rendered messages: a CRLF checkout must not change them.
+    source = source.replace("\r\n", "\n")
+    pieces = _MARKER_LINE.split(source, maxsplit=1)
+    if len(pieces) != 2:
+        raise ValueError(f"Template {filename} needs a line containing only {USER_MARKER!r}")
+    return env.from_string(pieces[0]), env.from_string(pieces[1])
+
+
+def render(name: str, version: str, prompts_dir: Path | None = None, **ctx: Any) -> RenderedPrompt:
+    """Render `prompts/<name>.<version>.jinja`, e.g. render("panel/generate", "v1", ...)."""
+    prompts_dir = prompts_dir or get_settings().prompts_dir
+    system_tpl, user_tpl = _parts(prompts_dir, f"{name}.{version}.jinja")
+    system, user = system_tpl.render(**ctx).strip(), user_tpl.render(**ctx).strip()
+    messages: list[Message] = []
+    if system:
+        messages.append({"role": "system", "content": system})
+    messages.append({"role": "user", "content": user})
+    return RenderedPrompt(version=f"{name}.{version}", messages=messages)

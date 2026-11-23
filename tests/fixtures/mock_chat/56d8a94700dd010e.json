@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"How do I run sprint planning for a team of 12 engineers?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"what is story point estimation\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do you measure engineering velocity without people gaming it?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do you migrate off Jira without losing ticket history?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"what is a burndown chart\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do I link pull requests to tickets automatically?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"how to structure a backlog for a platform team\", \"funnel_stage\": \"awareness\"}, {\"text\": \"scrum vs kanban for engineering teams\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do you run a retro that isn't boring?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"how to track tech debt in a project tool\", \"funnel_stage\": \"awareness\"}, {\"text\": \"What metrics should an engineering manager report upward?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do you balance on-call work with sprint commitments?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"how to organize bugs vs features in a backlog\", \"funnel_stage\": \"awareness\"}, {\"text\": \"whats the difference between epics and stories\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How should I plan a quarterly engineering roadmap?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"how to automate ticket status from github\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How many story points per sprint is normal?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"How do you handle cross-team dependencies?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"jira alternatives for engineering teams\", \"funnel_stage\": \"consideration\"}, {\"text\": \"what is cycle time\", \"funnel_stage\": \"awareness\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "How do I run sprint planning for a team of 12 engineers?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "what is story point estimation",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do you measure engineering velocity without people gaming it?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do you migrate off Jira without losing ticket history?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "what is a burndown chart",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do I link pull requests to tickets automatically?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "how to structure a backlog for a platform team",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "scrum vs kanban for engineering teams",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do you run a retro that isn't boring?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "how to track tech debt in a project tool",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "What metrics should an engineering manager report upward?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do you balance on-call work with sprint commitments?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "how to organize bugs vs features in a backlog",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "whats the difference between epics and stories",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How should I plan a quarterly engineering roadmap?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "how to automate ticket status from github",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How many story points per sprint is normal?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "How do you handle cross-team dependencies?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "jira alternatives for engineering teams",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "what is cycle time",
+    "funnel_stage": "awareness"
+   }
+  ]
+ }
+}

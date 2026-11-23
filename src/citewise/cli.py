@@ -8,8 +8,10 @@ import typer
 
 from citewise.core.config import get_settings
 from citewise.core.logging import configure_logging
+from citewise.panel_cli import panel_app
 
 app = typer.Typer(help="Citewise: AI-search visibility platform.", no_args_is_help=True)
+app.add_typer(panel_app, name="panel")
 
 
 @app.callback()

@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"Brooks Adrenaline vs ASICS Kayano for flat feet?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab vs brooks for shin splints\", \"funnel_stage\": \"consideration\"}, {\"text\": \"hoka vs brooks for plantar fasciitis\", \"funnel_stage\": \"consideration\"}, {\"text\": \"hoka vs brooks for plantar fasciitis?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Stridelab or ASICS for overpronation?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"new balance 860 vs brooks adrenaline\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Stridelab or Hoka better for bad knees?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Stability shoe vs neutral shoe for knee pain?\", \"funnel_stage\": \"awareness\"}, {\"text\": \"compare stridelab and new balance for wide feet\", \"funnel_stage\": \"consideration\"}, {\"text\": \"On vs Hoka for achilles problems\", \"funnel_stage\": \"consideration\"}, {\"text\": \"nike vs brooks for injury prone runners\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Stridelab vs Hoka cushioning for heavy runners\", \"funnel_stage\": \"consideration\"}, {\"text\": \"asics gel nimbus vs hoka bondi\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab vs asics for heel pain\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Which is more supportive, Stridelab or Brooks?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Hoka Bondi or New Balance 1080 for joint pain?\", \"funnel_stage\": \"decision\"}, {\"text\": \"stridelab vs on running for flat feet\", \"funnel_stage\": \"consideration\"}, {\"text\": \"brooks vs asics stability shoes\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab vs nike for shin splints\", \"funnel_stage\": \"consideration\"}, {\"text\": \"best stability shoe for flat feet\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "Brooks Adrenaline vs ASICS Kayano for flat feet?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab vs brooks for shin splints",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "hoka vs brooks for plantar fasciitis",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "hoka vs brooks for plantar fasciitis?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Stridelab or ASICS for overpronation?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "new balance 860 vs brooks adrenaline",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Stridelab or Hoka better for bad knees?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Stability shoe vs neutral shoe for knee pain?",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "compare stridelab and new balance for wide feet",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "On vs Hoka for achilles problems",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "nike vs brooks for injury prone runners",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Stridelab vs Hoka cushioning for heavy runners",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "asics gel nimbus vs hoka bondi",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab vs asics for heel pain",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Which is more supportive, Stridelab or Brooks?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Hoka Bondi or New Balance 1080 for joint pain?",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "stridelab vs on running for flat feet",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "brooks vs asics stability shoes",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab vs nike for shin splints",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "best stability shoe for flat feet",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}

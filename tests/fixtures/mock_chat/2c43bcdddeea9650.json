@@ -1,0 +1,88 @@
+{
+ "purpose": "panel.generate",
+ "text": "{\"prompts\": [{\"text\": \"stridelab trail vs hoka speedgoat\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Salomon vs Hoka for trail running?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Stridelab vs Brooks Cascadia on muddy trails\", \"funnel_stage\": \"consideration\"}, {\"text\": \"hoka or brooks trail shoes for ultras\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab vs on cloudultra\", \"funnel_stage\": \"consideration\"}, {\"text\": \"New Balance Hierro vs Hoka Speedgoat, which grips better?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"asics trabuco vs nike pegasus trail\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab vs hoka for rocky trails\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stride lab vs hoka for rocky trails\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Which has better grip, Stridelab or Salomon?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"nike vs asics trail shoes\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Is Stridelab trail grip better than Hoka?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Compare Stridelab and Brooks for a 50k\", \"funnel_stage\": \"decision\"}, {\"text\": \"hoka vs on trail shoes durability\", \"funnel_stage\": \"consideration\"}, {\"text\": \"stridelab or new balance for wide feet on trails\", \"funnel_stage\": \"consideration\"}, {\"text\": \"gore tex vs non gore tex trail shoes\", \"funnel_stage\": \"awareness\"}, {\"text\": \"brooks cascadia vs catamount\", \"funnel_stage\": \"consideration\"}, {\"text\": \"Stridelab vs ASICS for winter trail running?\", \"funnel_stage\": \"consideration\"}, {\"text\": \"whats better for ultras hoka or brooks\", \"funnel_stage\": \"consideration\"}, {\"text\": \"What's the best trail shoe brand for ultras?\", \"funnel_stage\": \"consideration\"}]}",
+ "parsed": {
+  "prompts": [
+   {
+    "text": "stridelab trail vs hoka speedgoat",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Salomon vs Hoka for trail running?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Stridelab vs Brooks Cascadia on muddy trails",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "hoka or brooks trail shoes for ultras",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab vs on cloudultra",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "New Balance Hierro vs Hoka Speedgoat, which grips better?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "asics trabuco vs nike pegasus trail",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab vs hoka for rocky trails",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stride lab vs hoka for rocky trails",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Which has better grip, Stridelab or Salomon?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "nike vs asics trail shoes",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Is Stridelab trail grip better than Hoka?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Compare Stridelab and Brooks for a 50k",
+    "funnel_stage": "decision"
+   },
+   {
+    "text": "hoka vs on trail shoes durability",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "stridelab or new balance for wide feet on trails",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "gore tex vs non gore tex trail shoes",
+    "funnel_stage": "awareness"
+   },
+   {
+    "text": "brooks cascadia vs catamount",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "Stridelab vs ASICS for winter trail running?",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "whats better for ultras hoka or brooks",
+    "funnel_stage": "consideration"
+   },
+   {
+    "text": "What's the best trail shoe brand for ultras?",
+    "funnel_stage": "consideration"
+   }
+  ]
+ }
+}
