@@ -1,0 +1,14 @@
+# Fictional project-management SaaS (example brand for demos and tests).
+name: Taskflow
+domain: taskflow.example
+category: project management software
+aliases:
+  - TaskFlow
+  - Taskflow PM
+competitors:
+  - Asana
+  - Monday.com
+  - Trello
+  - ClickUp
+  - Notion
+  - Jira
