@@ -8,6 +8,7 @@ Last checked against provider pricing pages: 2026-11-23. Prices change; update t
 from __future__ import annotations
 
 import logging
+import re
 
 log = logging.getLogger(__name__)
 
@@ -36,16 +37,33 @@ PRICES_PER_MTOK: dict[str, tuple[float, float]] = {
 _warned: set[str] = set()
 
 
-def price_for(model: str) -> tuple[float, float] | None:
-    """Exact match, else the longest table key that `model` extends with a `-suffix`.
+# Dated snapshot suffixes: `-2026-11-01` (OpenAI style) or `-20261101` (Anthropic style).
+_SNAPSHOT_SUFFIX = re.compile(r"-(\d{4}-\d{2}-\d{2}|\d{8})$")
 
-    Providers often resolve an alias to a dated snapshot (`gpt-6-luna-2026-11-01`); those
-    must be priced like the alias, or live runs would look free and dodge the budget guard.
+
+class UnpricedModelError(RuntimeError):
+    """Raised in live mode for a model with no price, so spend is never recorded as $0."""
+
+
+def price_for(model: str) -> tuple[float, float] | None:
+    """Exact match, else the alias of a dated snapshot (`gpt-6-luna-2026-11-01`).
+
+    Only date suffixes are stripped: a generic prefix match would price a different model
+    (`gpt-6-luna-mini`) as its namesake and silently under- or over-count spend.
     """
     if model in PRICES_PER_MTOK:
         return PRICES_PER_MTOK[model]
-    matches = [k for k in PRICES_PER_MTOK if model.startswith(k + "-")]
-    return PRICES_PER_MTOK[max(matches, key=len)] if matches else None
+    alias = _SNAPSHOT_SUFFIX.sub("", model)
+    return PRICES_PER_MTOK.get(alias) if alias != model else None
+
+
+def require_price(model: str) -> None:
+    """Fail closed before a live call whose cost we couldn't record."""
+    if price_for(model) is None:
+        raise UnpricedModelError(
+            f"No price for model {model!r} in providers/pricing.py. Add its per-1M-token "
+            "prices (and update PRICES_LAST_CHECKED) before using it in live mode."
+        )
 
 
 def estimate_cost(model: str, tokens_in: int, tokens_out: int) -> float:

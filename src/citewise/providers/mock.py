@@ -49,23 +49,46 @@ def estimate_tokens(text: str) -> int:
     return max(1, math.ceil(len(text) / 4))
 
 
-def _example_for_schema(schema: dict[str, Any], seed: str) -> Any:
-    """Build a minimal instance satisfying a simple JSON schema (deterministic)."""
+def _resolve_ref(ref: str, root: dict[str, Any]) -> dict[str, Any]:
+    """Resolve a local `#/$defs/Name` pointer (what Pydantic's `model_json_schema` emits)."""
+    if not ref.startswith("#/"):
+        raise ValueError(f"Mock only supports local $refs, got {ref!r}")
+    node: Any = root
+    for part in ref[2:].split("/"):
+        node = node[part]
+    return node
+
+
+def _example_for_schema(
+    schema: dict[str, Any], seed: str, root: dict[str, Any] | None = None
+) -> Any:
+    """Build a minimal instance satisfying a JSON schema (deterministic).
+
+    `root` is the top-level schema, needed to resolve `$ref`s: Pydantic puts every nested
+    model in `$defs`, so without this nested objects would come back as strings.
+    """
+    root = root if root is not None else schema
+    if "$ref" in schema:
+        return _example_for_schema(_resolve_ref(schema["$ref"], root), seed, root)
     if "enum" in schema:
         return schema["enum"][0]
     if "const" in schema:
         return schema["const"]
     if "anyOf" in schema:
-        return _example_for_schema(schema["anyOf"][0], seed)
+        # Prefer a non-null branch so optional nested objects are exercised in mock mode.
+        branches = schema["anyOf"]
+        branch = next((b for b in branches if b.get("type") != "null"), branches[0])
+        return _example_for_schema(branch, seed, root)
     typ = schema.get("type", "string")
     if isinstance(typ, list):
         typ = next((t for t in typ if t != "null"), "null")
     if typ == "object":
         props: dict[str, Any] = schema.get("properties", {})
-        return {k: _example_for_schema(v, f"{seed}.{k}") for k, v in props.items()}
+        return {k: _example_for_schema(v, f"{seed}.{k}", root) for k, v in props.items()}
     if typ == "array":
         n = max(1, int(schema.get("minItems", 1)))
-        return [_example_for_schema(schema.get("items", {}), f"{seed}[{i}]") for i in range(n)]
+        items = schema.get("items", {})
+        return [_example_for_schema(items, f"{seed}[{i}]", root) for i in range(n)]
     if typ == "integer":
         return int(schema.get("minimum", 0))
     if typ == "number":
