@@ -1,0 +1,2 @@
+# Fingerprints of known false positives (fake keys in tests/fixtures or .env.example).
+# Format: <commit>:<file>:<rule>:<line>  (copy from gitleaks output)

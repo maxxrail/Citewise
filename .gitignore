@@ -1,0 +1,34 @@
+# secrets
+.env
+.env.*
+!.env.example
+.claude/settings.local.json
+
+# python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# local data / outputs
+*.db
+*.sqlite
+reports/
+data/logs/*.log
+!data/logs/.gitkeep
+
+# web
+web/node_modules/
+web/.next/
+web/out/
+
+# os / editors
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json

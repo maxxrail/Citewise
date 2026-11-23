@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(uv:*)",
+      "Bash(uv run:*)",
+      "Bash(python:*)",
+      "Bash(pytest:*)",
+      "Bash(ruff:*)",
+      "Bash(alembic:*)",
+      "Bash(docker compose:*)",
+      "Bash(docker ps:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Read(**)",
+      "Edit(**)",
+      "Write(**)",
+      "WebFetch(domain:platform.openai.com)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:docs.claude.com)",
+      "WebFetch(domain:ai.google.dev)",
+      "WebFetch(domain:docs.perplexity.ai)",
+      "WebFetch(domain:fastapi.tiangolo.com)",
+      "WebFetch(domain:docs.sqlalchemy.org)",
+      "WebFetch(domain:nextjs.org)",
+      "Bash(citewise:*)",
+      "Bash(uv run citewise:*)",
+      "WebFetch(domain:docs.astral.sh)",
+      "WebFetch(domain:docs.pydantic.dev)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(docker compose down -v:*)",
+      "Bash(citewise scan run:*)",
+      "Bash(uv run citewise scan run:*)",
+      "Bash(uv run citewise crawl ingest:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.local)",
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)",
+      "Bash(git reset --hard:*)",
+      "Read(./.env.*)",
+      "Edit(./.env)",
+      "Bash(git push --force-with-lease:*)"
+    ]
+  },
+  "env": {
+    "CITEWISE_MODE": "mock"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run --quiet ruff format --quiet src tests 2>/dev/null || true",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git status --short 2>/dev/null | head -20 || true",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
