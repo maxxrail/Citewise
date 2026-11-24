@@ -24,6 +24,7 @@ updates rows rather than duplicating them. Open ones that no longer appear are m
 
 from __future__ import annotations
 
+import hashlib
 import re
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
@@ -149,6 +150,9 @@ def _gaps(session: Session, brand: Brand, run_id: int, topics: dict[int, str]) -
                         dict.fromkeys(r["prompt_id"] for r in missed if r["prompt_id"])
                     )[:10],
                     "target_prompts": prompts[:10],
+                    # Every prompt in the slice: the measurement baseline (the targets alone
+                    # were chosen *because* the brand was missing, so they regress upward).
+                    "slice_prompt_ids": sorted({r["prompt_id"] for r in rows if r["prompt_id"]}),
                 },
             )
         )
@@ -252,7 +256,7 @@ def _fact_fixes(session: Session, brand: Brand, run_id: int) -> list[Found]:
         engines = sorted({e for _, e in items})
         out.append(
             Found(
-                key=f"fact:{norm[:180]}",
+                key=f"fact:{norm[:150]}:{hashlib.sha1(norm.encode()).hexdigest()[:12]}",
                 kind="fact_fix",
                 title=f'Correct: "{first.claim_text[:120]}"',
                 reason=(

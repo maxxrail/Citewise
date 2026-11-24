@@ -32,6 +32,7 @@ from citewise.models.brand import Brand
 from citewise.models.content import ContentItem, ContentOpportunity, ContentReview, ContentVersion
 from citewise.models.kb import KBChunk, KBDoc
 from citewise.providers.base import ChatProvider, EmbeddingProvider
+from citewise.providers.budget import BudgetExceededError
 from citewise.schemas.content import (
     CRITERIA,
     BriefOut,
@@ -168,16 +169,24 @@ def run_item(
                 item.error = None
                 session.commit()
             except StepFailed as exc:
-                session.rollback()
-                item = session.get(ContentItem, item_id)
-                assert item is not None
-                item.error = str(exc)
-                session.commit()
-                return item
+                _record_error(session, item_id, str(exc))
+                return session.get(ContentItem, item_id)  # type: ignore[return-value]
+            except (BudgetExceededError, ContentError) as exc:
+                # Nothing of the step is kept; say why on the item (the API polls it).
+                _record_error(session, item_id, f"{type(exc).__name__}: {exc}")
+                raise
     with factory() as session:
         item = session.get(ContentItem, item_id)
         assert item is not None
         return item
+
+
+def _record_error(session: Session, item_id: int, error: str) -> None:
+    session.rollback()
+    item = session.get(ContentItem, item_id)
+    assert item is not None
+    item.error = error[:2000]
+    session.commit()
 
 
 def advance(session: Session, item: ContentItem, deps: Deps) -> None:
@@ -232,6 +241,17 @@ def _call(deps: Deps, name: str, out: type[Any], model: str, **ctx: Any) -> Any:
     if result is None:
         raise StepFailed(f"content.{name}: no valid output after a retry (see llm_calls)")
     return result
+
+
+def _checks(brand: Brand, item: ContentItem, draft: dict[str, Any], deps: Deps) -> chk.Checks:
+    return chk.run_checks(
+        draft,
+        passages=_passages(item),
+        brief=item.brief or {},
+        voice=load_voice(brand.name, deps.settings.brands_dir),
+        competitors=list(brand.competitors),
+        brand_names=[brand.name, *brand.aliases],
+    )
 
 
 def _current(session: Session, item: ContentItem) -> ContentVersion:
@@ -331,6 +351,7 @@ def _brief(session: Session, item: ContentItem, deps: Deps) -> None:
         "unsupported_requests": out.unsupported_requests,
         "targets": targets,
         "target_prompt_ids": details.get("target_prompt_ids", []),
+        "slice_prompt_ids": details.get("slice_prompt_ids", []),
         "rival": rival,
         "notes": notes,
         "passages": passages,
@@ -383,13 +404,7 @@ def _critique(session: Session, item: ContentItem, deps: Deps) -> None:
     brand = _brand(session, item)
     voice = load_voice(brand.name, deps.settings.brands_dir)
     version = _current(session, item)
-    checks = chk.run_checks(
-        version.draft,
-        passages=_passages(item),
-        brief=item.brief or {},
-        voice=voice,
-        competitors=list(brand.competitors),
-    )
+    checks = _checks(brand, item, version.draft, deps)
     comments = [f["comment"] for f in version.feedback if f.get("source") == "reviewer"]
     out: CritiqueOut = _call(
         deps,
@@ -404,28 +419,36 @@ def _critique(session: Session, item: ContentItem, deps: Deps) -> None:
         passages=_passage_list(item),
         draft=version.markdown,
     )
-    version.scores = score(out, checks)
+    version.scores = score(judged(out), checks)
     version.checks = checks.as_dict()
     transition(item, "critique")
 
 
-def score(judge: CritiqueOut, checks: chk.Checks) -> dict[str, Any]:
+def judged(judge: CritiqueOut) -> dict[str, dict[str, Any]]:
+    """The judge's view per criterion; a criterion it skipped counts as a 1."""
+    by: dict[str, CriterionScore] = {x.criterion: x for x in judge.scores}
+    return {
+        c: {"judge": by[c].score, "judge_issues": by[c].issues, "rationale": by[c].rationale}
+        if c in by
+        else {"judge": 1, "judge_issues": ["not scored"], "rationale": ""}
+        for c in CRITERIA
+    }
+
+
+def score(judge: dict[str, dict[str, Any]], checks: chk.Checks) -> dict[str, Any]:
     """Combine the judge's scores with the deterministic caps (min of the two)."""
-    by: dict[str, CriterionScore] = {s.criterion: s for s in judge.scores}
     limits = thresholds()
     criteria: dict[str, Any] = {}
     for c in CRITERIA:
-        j = by.get(c)
-        judged = j.score if j else 1  # a criterion the judge skipped counts as failing
-        final = min(judged, checks.caps.get(c, 5))
-        issues = list(dict.fromkeys([*(j.issues if j else ["not scored"]), *checks.issues[c]]))
+        j = judge[c]
+        final = min(j["judge"], checks.caps.get(c, 5))
+        issues = list(dict.fromkeys([*j["judge_issues"], *checks.issues[c]]))
         criteria[c] = {
-            "judge": judged,
+            **j,
             "cap": checks.caps.get(c, 5),
             "score": final,
             "passed": final >= limits[c],
             "issues": issues if final < limits[c] or checks.issues[c] else [],
-            "rationale": j.rationale if j else "",
         }
     overall = round(sum(v["score"] for v in criteria.values()) / len(criteria), 3)
     return {
@@ -506,16 +529,9 @@ def _finalize(session: Session, item: ContentItem, deps: Deps) -> None:
     brand = _brand(session, item)
     version = _current(session, item)
     if not version.scores.get("guardrails_ok", False):
-        voice = load_voice(brand.name, deps.settings.brands_dir)
-        passages = _passages(item)
-        before = chk.run_checks(
-            version.draft,
-            passages=passages,
-            brief=item.brief or {},
-            voice=voice,
-            competitors=list(brand.competitors),
-        )
-        cleaned = chk.redact(version.draft, before)
+        before = _checks(brand, item, version.draft, deps)
+        title = chk.strip_markers(((item.brief or {}).get("questions") or [item.title])[0])
+        cleaned = chk.redact(version.draft, before, fallback_title=title.rstrip("?"))
         redacted = _new_version(
             session,
             item,
@@ -523,17 +539,12 @@ def _finalize(session: Session, item: ContentItem, deps: Deps) -> None:
             "redacted",
             [{"source": "guardrail", "removed": sorted(before.offending())}],
         )
-        after = chk.run_checks(
-            cleaned,
-            passages=passages,
-            brief=item.brief or {},
-            voice=voice,
-            competitors=list(brand.competitors),
-        )
+        after = _checks(brand, item, cleaned, deps)
         redacted.checks = after.as_dict()
         # The judge's view of the pre-redaction draft is the best estimate left; the caps
-        # are recomputed on what will actually be published.
-        redacted.scores = _rescore(version.scores, after)
+        # are recomputed on what will actually be published. If a guardrail still fails,
+        # the page goes to the reviewer flagged and approve() refuses it.
+        redacted.scores = score(version.scores["criteria"], after)
         version = redacted
     jsonld = faq_jsonld(version.draft)
     errors = validate_faq_jsonld(jsonld)
@@ -550,32 +561,19 @@ def _finalize(session: Session, item: ContentItem, deps: Deps) -> None:
     transition(item, "final")
 
 
-def _rescore(previous: dict[str, Any], checks: chk.Checks) -> dict[str, Any]:
-    limits = thresholds()
-    criteria = {}
-    for c, v in previous.get("criteria", {}).items():
-        final = min(v["judge"], checks.caps.get(c, 5))
-        criteria[c] = {
-            **v,
-            "cap": checks.caps.get(c, 5),
-            "score": final,
-            "passed": final >= limits[c],
-        }
-    overall = round(sum(v["score"] for v in criteria.values()) / max(len(criteria), 1), 3)
-    return {
-        "criteria": criteria,
-        "overall": overall,
-        "guardrails_ok": checks.guardrails_ok,
-        "passed": all(v["passed"] for v in criteria.values()) and checks.guardrails_ok,
-    }
-
-
 # ---------------------------------------------------------------- human in the loop
 
 
 def approve(session: Session, item: ContentItem, comment: str = "") -> ContentItem:
     if item.status != "awaiting_approval":
         raise TransitionError(f"content {item.id} is {item.status}, not awaiting_approval")
+    current = _current(session, item)
+    failing = [g for g, ok in current.checks.get("guardrails", {}).items() if not ok]
+    if failing:
+        raise ContentError(
+            f"content {item.id} v{current.version} fails guardrails ({', '.join(failing)}): "
+            "reject it with a comment to revise"
+        )
     session.add(
         ContentReview(
             item_id=item.id, action="approve", comment=comment, version=item.current_version

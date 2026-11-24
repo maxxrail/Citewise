@@ -111,14 +111,15 @@ def approve_content(item_id: int, payload: ReviewIn, db: Session = Depends(get_d
     item = _item(db, item_id)
     try:
         approve(db, item, payload.comment)
-    except TransitionError as exc:
+    except (TransitionError, ContentError) as exc:  # wrong state, or a guardrail still fails
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
     db.commit()
     return item_detail(db, item)
 
 
 def _revise_in_background(item_id: int, factory: sessionmaker[Session]) -> None:
-    """Sync on purpose (runs in Starlette's threadpool). Failures land on item.error."""
+    """Runs the item onward (revision or resume). Sync on purpose: it runs in Starlette's
+    threadpool. Failures land on item.error."""
     from citewise.providers import get_chat_provider, get_embedder
     from citewise.providers.budget import BudgetedChatProvider
 
@@ -154,4 +155,23 @@ def reject_content(
         ) from exc
     db.commit()
     background.add_task(_revise_in_background, item.id, factory)
-    return {**item_summary(item), "revision": "queued"}
+    return {**item_summary(item, versions_of(db, item.id)), "revision": "queued"}
+
+
+@router.post("/content/{item_id}/resume", status_code=status.HTTP_202_ACCEPTED)
+def resume_content(
+    item_id: int,
+    background: BackgroundTasks,
+    db: Session = Depends(get_db),
+    factory: sessionmaker[Session] = Depends(get_session_factory),
+) -> dict:
+    """Continue an item from its last good state (after `error` was set, e.g. the spend
+    cap or an invalid model output). Poll GET /content/{id}."""
+    item = _item(db, item_id)
+    if item.status in ("awaiting_approval", "approved"):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"content {item_id} is {item.status}: nothing to resume",
+        )
+    background.add_task(_revise_in_background, item.id, factory)
+    return {**item_summary(item, versions_of(db, item.id)), "resume": "queued"}

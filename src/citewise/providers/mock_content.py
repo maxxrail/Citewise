@@ -179,12 +179,12 @@ def _question(text: str) -> str:
 # questions some passage can answer are asked, as a writer reading the passages would.
 _QUESTION_CUES = (
     (re.compile(r"\$\d|costs?\b|priced", re.I), "How much does {brand} cost?"),
-    (re.compile(r"\bsells? (?:through|on|in)\b", re.I), "Where can I buy {brand}?"),
-    (re.compile(r"manufactured|made in", re.I), "Where are {brand} products made?"),
+    (re.compile(r"\bsells? (?:through|on|in)\b", re.I), "Where does {brand} sell its products?"),
+    (re.compile(r"manufactured|made in", re.I), "Where are {brand} products manufactured?"),
     (re.compile(r"\btrial\b|\breturns?\b", re.I), "What is {brand}'s trial and return policy?"),
     (re.compile(r"warranty", re.I), "What warranty does {brand} offer?"),
     (re.compile(r"\bships?\b|shipping", re.I), "Where does {brand} ship?"),
-    (re.compile(r"integrat|import", re.I), "Which tools does {brand} work with?"),
+    (re.compile(r"integrat|import", re.I), "Which integrations does {brand} offer?"),
     (re.compile(r"\bplans?\b", re.I), "Which {brand} plan is right for me?"),
     (re.compile(r"soc ?2|encrypt|gdpr|security", re.I), "How does {brand} keep data secure?"),
 )
@@ -203,7 +203,13 @@ def simulate_brief(messages: list[Message]) -> dict[str, Any]:
     notes = _field(user, "Notes") or ""
     fmt = _field(user, "Suggested format") or "guide"
     brand = _field(user, "Brand") or ""
+    # The main target always; the others only if some passage speaks to them.
     questions = [_question(t) for t in targets[:4]]
+    questions = questions[:1] + [
+        q
+        for q in questions[1:]
+        if any(_relevant(q, s) for p in passages for s in _sentences(p["text"]))
+    ]
     for q in _answerable_questions(brand, passages):
         if len(questions) >= 4:
             break
@@ -372,8 +378,16 @@ def simulate_revise(messages: list[Message]) -> dict[str, Any]:
     for issue in flat:
         if issue.startswith("Answer this question: "):
             q = issue.removeprefix("Answer this question: ")
-            sections.append(_section(q, passages, used))
-            changes.append(f"Added a section answering: {q}")
+            fresh = _section(q, passages, set())  # reuse a sentence rather than miss the answer
+            existing = next((sec for sec in sections if sec["heading"] == q), None)
+            if existing is not None:
+                existing["body"] = fresh["body"]
+            else:
+                sections.append(fresh)
+            for qa in faq:
+                if qa["question"] == q:
+                    qa.update(_faq(q, passages))
+            changes.append(f"Answered: {q}")
         elif issue.startswith("Use must-cover passage [kb:"):
             key = issue.removeprefix("Use must-cover passage [kb:").rstrip("]")
             p = next((p for p in passages if p["id"] == key), None)

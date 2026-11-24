@@ -1,11 +1,13 @@
 """Measurement hook: did approved content move the needle?
 
 Method (see docs/DECISIONS.md, "Content measurement"):
-- On approval we snapshot a baseline from the latest extracted scan, restricted to the
-  item's *target prompts* (the panel prompts in the gap where the brand was missing):
-  answers to those prompts, and how many mention the brand.
-- For a fact fix we instead count answers repeating the wrong claim (contradicted claims
-  with the same normalized text).
+- On approval we snapshot a baseline from the latest extracted scan over the *whole*
+  topic x intent slice the gap came from: answers to those prompts, and how many mention
+  the brand. The headline delta uses the slice. The targeted prompts (the ones where the
+  brand was missing) are reported alongside, but they were selected for a low rate, so
+  they would "improve" on the next scan by regression to the mean alone.
+- For a fact fix we instead count answers repeating the wrong claim: contradicted claims
+  refuted by the same KB chunk that share at least half their words with it.
 - `measure()` repeats the same computation on the newest extracted scan *after* approval
   and reports the difference. Same prompts, same engines, so the comparison is like for
   like; but it's one before/after pair with no control group, so a change is a signal to
@@ -14,6 +16,7 @@ Method (see docs/DECISIONS.md, "Content measurement"):
 
 from __future__ import annotations
 
+import json
 import re
 from typing import Any
 
@@ -21,6 +24,7 @@ from sqlalchemy import bindparam, text
 from sqlalchemy.orm import Session
 
 from citewise.models.content import ContentItem
+from citewise.services.content.checks import terms
 
 _MENTION_SQL = text(
     """
@@ -40,6 +44,11 @@ _RUNS_SQL = text(
        JOIN answer_extractions x ON x.answer_id = a.id
        WHERE r.brand_id = :brand_id ORDER BY a.run_id"""
 )
+
+
+def _overlap(a: str, b: str) -> float:
+    ta, tb = terms(a), terms(b)
+    return len(ta & tb) / max(len(ta | tb), 1)
 
 
 def _norm(s: str) -> str:
@@ -63,25 +72,45 @@ def _mention_rate(session: Session, run_id: int, prompt_ids: list[int]) -> dict[
     }
 
 
-def _claim_repeats(session: Session, run_id: int, claim: str) -> dict[str, Any]:
+def _claim_repeats(
+    session: Session, run_id: int, claim: str, evidence_keys: list[str]
+) -> dict[str, Any]:
+    """Contradicted claims refuted by the same KB chunk and saying the same thing (at
+    least half the words), so a reworded repeat still counts."""
     rows = session.execute(
         text(
-            """SELECT c.claim_text FROM claims c JOIN answers a ON a.id = c.answer_id
+            """SELECT c.claim_text, c.evidence_chunk_keys FROM claims c
+               JOIN answers a ON a.id = c.answer_id
                WHERE a.run_id = :run_id AND c.verdict = 'contradicted'"""
         ),
         {"run_id": run_id},
-    ).scalars()
-    return {"run_id": run_id, "repeats": sum(_norm(t) == _norm(claim) for t in rows)}
+    ).all()
+    want = set(evidence_keys)
+    repeats = 0
+    for claim_text, keys in rows:
+        keys = json.loads(keys) if isinstance(keys, str) else (keys or [])
+        same_fact = not want or bool(want & set(keys))
+        if same_fact and (_norm(claim_text) == _norm(claim) or _overlap(claim, claim_text) >= 0.5):
+            repeats += 1
+    return {"run_id": run_id, "repeats": repeats}
 
 
 def _snapshot(session: Session, item: ContentItem, run_id: int) -> dict[str, Any]:
     brief = item.brief or {}
     opp = brief.get("opportunity", {})
     if opp.get("kind") == "fact_fix":
-        claim = opp.get("details", {}).get("claim", "")
-        return {"metric": "wrong_claim_repeats", **_claim_repeats(session, run_id, claim)}
-    ids = [int(p) for p in brief.get("target_prompt_ids", []) if p]
-    return {"metric": "mention_rate", "prompt_ids": ids, **_mention_rate(session, run_id, ids)}
+        d = opp.get("details", {})
+        out = _claim_repeats(session, run_id, d.get("claim", ""), d.get("evidence_chunk_keys", []))
+        return {"metric": "wrong_claim_repeats", **out}
+    targeted = [int(p) for p in brief.get("target_prompt_ids", []) if p]
+    slice_ids = [int(p) for p in brief.get("slice_prompt_ids", []) if p] or targeted
+    whole = _mention_rate(session, run_id, slice_ids)
+    return {
+        "metric": "mention_rate",
+        "prompt_ids": slice_ids,
+        **whole,
+        "targeted": _mention_rate(session, run_id, targeted),
+    }
 
 
 def baseline(session: Session, item: ContentItem) -> dict[str, Any] | None:
