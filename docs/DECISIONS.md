@@ -175,3 +175,33 @@ Format: **Decision** — why — alternative rejected.
 - **Mock FactCheck is a simulated reader, not a lookup of the truth flags.** `providers/mock_factcheck.py` reads only the rendered prompt (the claim and the passages) and applies general rules: a different amount for the same plan or product; "no X" or "discontinued X" against a passage that affirms X; "only X" against a passage that lists more; a different place of manufacture. It never reads `world.yaml`'s `true:` flags. Its rules were refined against its own mistakes on the simulated answers (a trailing comma in "$140,", plural stems, heading lines), so on those answers it is 8/8 by construction. That shows the pipeline works, not how good a model is. Real-model numbers need a live run or recorded fixtures, as in Module 3.
 - **Sentiment narrative = KMeans (k ≤ 3) over each engine's positive and negative brand-mention snippets (Module 3), clusters labelled by the LLM.** Mixed snippets count as negative: they carry a criticism, and the criticism is what a brand needs to see. Cheap (one label call per cluster), and the example shown is the snippet nearest the centroid.
 - **Linear is the first real brand.** Its KB comes only from Linear's official pages (pricing, about, integrations, security, billing docs), quoted and dated 2026-11-24. Facts the pages don't state (monthly prices, funding amounts, competitors) are written as "not stated" rather than filled in. "Linear" is also an ordinary word, so it joins the ambiguous-name list for mention extraction. The fictional brands remain for deterministic offline demos and CI.
+
+### Module 4 code review (2026-11-24)
+
+- **The held-out verifier eval is the honest mock number, and it is low.** `evals/datasets/golden/factcheck_claims.jsonl` holds 45 claims across the three brands, written by a separate agent without seeing the verifier's rules or the planted claims: wrong years, cities, percentages, limits, plan mismatches, misattributed numbers, true negations, paraphrases. On it, the simulated verifier scores **37.8% accuracy, with a 29.6% false-contradiction rate** (`evals/reports/factcheck_eval.md`). Its rules cover the planted claim shapes, not facts in general. The 8/8 on planted claims is a pipeline test, and is reported as such. Rejected: growing the rule set until the held-out score rises (it would be fitting the eval). The real verifier is the LLM; its held-out score needs a live run (`CITEWISE_MODE=live citewise eval factcheck`, about $0.03).
+- **No false contradiction from a sloppy match.** The reviewer found three paths to a wrong "contradicted", all closed:
+  1. A fuzzy span match may differ in wording or punctuation, never in numbers, prices, percentages or negations; the matched window must carry exactly the span's.
+  2. A quote backing a verdict must be at least 5 words, come from the passage *body* (not its "Title > Section" heading), and share a content term with the claim (the brand name doesn't count). A "..." may elide words within one sentence, never stitch two sentences together ("The Pro plan costs ... $25" can't pair Pro with Enterprise's price).
+  3. A claim must say what its span says: same numbers and negations, and at least half its content terms.
+- **Product-name hints are scoped to the brand.** The claim extractor is told the brand's product names (from Module 3 mentions) so "the Tempo costs $140" counts as a Stridelab claim. That list now comes only from the brand's own runs. Unscoped, Taskflow's names were offered to Linear's extractor and Taskflow claims were checked against Linear's KB.
+- **A verdict is valid for the KB it was checked against.** The fact-check version now ends in `+kb:<fingerprint>` (sha of the brand's doc content hashes), so re-ingesting the KB re-checks every answer on the next run. A failed re-check keeps the previous claims (marked for retry) instead of deleting them.
+- **Source tracing hardening.**
+  - Markers after the full stop ("month. [2]") belong to the sentence, and "e.g." doesn't end it.
+  - Brand and alias terms don't count as title overlap, so the brand's own homepage isn't blamed for every claim about it.
+  - Perplexity's `[web:N]` refer to its result ids, which our URL deduplication renumbers, so markers are mapped through the stored payload by URL.
+  - Page-text tracing exists as an opt-in in live mode (`factcheck run --fetch-sources`, at most 5 cited pages per answer, cached across answers), because it costs a fetch per page.
+- **URL fetching is SSRF-safe** (`services/kb/fetch.py`, used by `kb ingest <url>` and `--fetch-sources`):
+  - On every hop, every resolved address must be public: no loopback, RFC 1918, link-local (169.254.169.254) or unique-local addresses.
+  - Redirects are followed by hand, at most 3, with robots.txt re-checked per host; a 401 or 403 on robots.txt means disallow.
+  - Bodies are streamed and capped at 2 MB, and only text/html and text/plain are accepted.
+  - DNS rebinding between the check and the connect remains possible. Pinning the IP would break TLS SNI; for read-only public pages the per-hop check is the accepted trade-off.
+- **Smaller fixes.**
+  - Chunk overlap must be under half the chunk size (otherwise the KB balloons about 4×).
+  - Duplicate slugs in one folder are refused ("pricing.md" + "pricing.pdf").
+  - Docs missing from an ingest are reported as orphaned rather than silently kept as truth.
+  - BOM-tolerant reads (Windows Notepad).
+  - Front matter must be a mapping.
+  - PDFs are capped at 20 MB and 300 pages.
+  - The embedding space is checked before any paid call.
+  - The narrative and `kb search --rerank` respect `--max-cost`.
+  - The retrieval eval chunks with the configured settings.
