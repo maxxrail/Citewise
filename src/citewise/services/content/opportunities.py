@@ -224,6 +224,15 @@ def _citations(session: Session, brand: Brand, run_id: int, topics: dict[int, st
     return out
 
 
+def _clip(text: str, n: int) -> str:
+    """At most n characters, cut after a full sentence where possible."""
+    if len(text) <= n:
+        return text
+    cut = text[:n]
+    end = cut.rfind(". ")
+    return cut[: end + 1] if end > n // 3 else cut.rsplit(" ", 1)[0] + "..."
+
+
 def _norm_claim(s: str) -> str:
     return re.sub(r"\W+", " ", s.casefold()).strip()
 
@@ -248,7 +257,7 @@ def _fact_fixes(session: Session, brand: Brand, run_id: int) -> list[Found]:
                 title=f'Correct: "{first.claim_text[:120]}"',
                 reason=(
                     f'{len(items)} answer(s) from {", ".join(engines)} say "{first.claim_text}"; '
-                    f'the knowledge base says "{(first.evidence_quote or "")[:160]}".'
+                    f'the knowledge base says "{_clip(first.evidence_quote or "", 220)}".'
                 ),
                 impact=round(len(items) * (1 + 0.25 * (len(engines) - 1)), 4),
                 confidence=FACT_CONFIDENCE,

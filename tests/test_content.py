@@ -458,7 +458,8 @@ def test_a_comment_asking_for_defamation_or_fake_stats_is_declined(
     final = versions[-1]
     assert "scam" not in final.markdown.casefold() and "95%" not in final.markdown
     writer = [f for v in versions for f in v.feedback if f.get("source") == "writer"]
-    assert any(d["request"] == comment for f in writer for d in f["declined"])
+    declined = " | ".join(d["request"] for f in writer for d in f["declined"])
+    assert "scam" in declined and "95%" in declined
     assert final.scores["guardrails_ok"]
 
 

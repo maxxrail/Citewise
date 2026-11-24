@@ -88,8 +88,8 @@ _INSTRUCTION = re.compile(
     re.IGNORECASE,
 )
 _FORBIDDEN_ASK = re.compile(
-    r"\b(?:scam|fraud|rip-?off|quote|testimonial|review|stars?|rated|#\s?1|number one|"
-    r"\d+ ?%|\d+ out of \d+|keyword|\d{4,} words)\b",
+    r"\b(?:scam|fraud|rip-?off|quote|testimonial|review|stars?|rated|number one|"
+    r"\d+ out of \d+|keyword|\d{1,3}(?:,\d{3})+ words|\d{4,} words)\b|#\s?1\b|\d+ ?%",
     re.IGNORECASE,
 )
 
@@ -112,12 +112,14 @@ def _terms(text: str) -> set[str]:
     return {w.rstrip("s") for w in _WORD.findall(text.casefold()) if w not in _STOP}
 
 
-def _sentences(passage: str) -> list[str]:
+def _sentences(passage: str, *, facts_only: bool = True) -> list[str]:
     body = passage.split("\n", 1)[-1]  # drop the "Doc title > Section" line
     out = []
     for s in re.split(r"(?<=[.!?])\s+", " ".join(body.split())):
         s = s.strip()
-        if len(s.split()) >= 4 and _FACT.search(s) and not _INSTRUCTION.search(s):
+        if len(s.split()) < 4 or _INSTRUCTION.search(s):
+            continue
+        if _FACT.search(s) or not facts_only:
             out.append(s)
     return out
 
@@ -132,15 +134,37 @@ def _best(
 ) -> list[tuple[str, str]]:
     """(sentence, key) pairs from the passages that overlap the query most."""
     q = _terms(query)
+    all_sents = [(s, p["id"]) for p in passages for s in _sentences(p["text"])]
+    df: dict[str, int] = {}
+    for s, _ in all_sents:
+        for t in _terms(s):
+            df[t] = df.get(t, 0) + 1
     scored = []
-    for p in passages:
-        for i, s in enumerate(_sentences(p["text"])):
-            if avoid and s in avoid:
-                continue
-            overlap = len(q & _terms(s))
-            scored.append((overlap, -i, s, p["id"]))
+    for i, (s, key) in enumerate(all_sents):
+        if avoid and s in avoid:
+            continue
+        overlap = sum(1.0 / df[t] for t in q & _terms(s))
+        scored.append((overlap, -i, s, key))
     scored.sort(key=lambda t: (-t[0], -t[1]))
     return [(s, k) for o, _, s, k in scored[:n] if o > 0] or [(s, k) for _, _, s, k in scored[:1]]
+
+
+def _relevant(query: str, sentence: str) -> bool:
+    return bool(_terms(query) & _terms(sentence))
+
+
+_REQUEST_SPLIT = re.compile(
+    r"(?<=[.!?;])\s+|,\s*(?:and\s+)?(?=(?:say|add|call|include|mention|make|remove|use|"
+    r"put|repeat|write)\b)|\s+and\s+(?=(?:say|add|call|include|mention|make|remove|use|"
+    r"put|repeat|write)\b)",
+    re.IGNORECASE,
+)
+
+
+def split_requests(comment: str) -> list[str]:
+    """'Mention the trial, and say X is a scam.' -> two requests, judged separately."""
+    parts = [p.strip(" ,.;") for p in _REQUEST_SPLIT.split(comment)]
+    return [p for p in parts if len(p.split()) >= 2]
 
 
 def _question(text: str) -> str:
@@ -149,6 +173,26 @@ def _question(text: str) -> str:
 
 
 # ---------------------------------------------------------------- steps
+
+
+# Questions a reader would ask, keyed by what a passage sentence talks about. Only
+# questions some passage can answer are asked, as a writer reading the passages would.
+_QUESTION_CUES = (
+    (re.compile(r"\$\d|costs?\b|priced", re.I), "How much does {brand} cost?"),
+    (re.compile(r"\bsells? (?:through|on|in)\b", re.I), "Where can I buy {brand}?"),
+    (re.compile(r"manufactured|made in", re.I), "Where are {brand} products made?"),
+    (re.compile(r"\btrial\b|\breturns?\b", re.I), "What is {brand}'s trial and return policy?"),
+    (re.compile(r"warranty", re.I), "What warranty does {brand} offer?"),
+    (re.compile(r"\bships?\b|shipping", re.I), "Where does {brand} ship?"),
+    (re.compile(r"integrat|import", re.I), "Which tools does {brand} work with?"),
+    (re.compile(r"\bplans?\b", re.I), "Which {brand} plan is right for me?"),
+    (re.compile(r"soc ?2|encrypt|gdpr|security", re.I), "How does {brand} keep data secure?"),
+)
+
+
+def _answerable_questions(brand: str, passages: list[dict[str, str]]) -> list[str]:
+    text = " ".join(s for p in passages for s in _sentences(p["text"]))
+    return [q.format(brand=brand) for cue, q in _QUESTION_CUES if cue.search(text)]
 
 
 def simulate_brief(messages: list[Message]) -> dict[str, Any]:
@@ -160,8 +204,11 @@ def simulate_brief(messages: list[Message]) -> dict[str, Any]:
     fmt = _field(user, "Suggested format") or "guide"
     brand = _field(user, "Brand") or ""
     questions = [_question(t) for t in targets[:4]]
-    extra = [f"What does {brand} cost?", f"What is {brand}'s return or refund policy?"]
-    questions += [q for q in extra if len(questions) < 3]
+    for q in _answerable_questions(brand, passages):
+        if len(questions) >= 4:
+            break
+        if q not in questions:
+            questions.append(q)
     ranked = []
     for q in questions:
         ranked += [k for _, k in _best(q, passages, n=2)]
@@ -194,12 +241,19 @@ def simulate_outline(messages: list[Message]) -> dict[str, Any]:
     brief = _field(user, "Brief") or {}
     passages = _line_after(user, "Passages (JSON list") or []
     questions = brief.get("questions") or ["Overview"]
+    brand = _field(user, "Brand") or ""
+    rival = brief.get("rival") or ""
+    title = (
+        f"{brand} vs {rival}: what to know"
+        if rival and brief.get("format") == "comparison"
+        else questions[0].rstrip("?")
+    )
     sections = [
         {"heading": q, "purpose": f"Answer: {q}", "chunk_ids": [k for _, k in _best(q, passages)]}
         for q in questions[1:] or questions
     ]
     return {
-        "title": questions[0].rstrip("?"),
+        "title": title,
         "direct_answer": f"Answer '{questions[0]}' in the first sentence.",
         "sections": sections,
         "faq_questions": questions[:4],
@@ -216,6 +270,8 @@ def _faq(
     question: str, passages: list[dict[str, str]], used: set[str] | None = None
 ) -> dict[str, str]:
     [(s, k)] = _best(question, passages, n=1, avoid=used)
+    if not _relevant(question, s):
+        [(s, k)] = _best(question, passages, n=1)  # a repeat beats an off-topic answer
     if used is not None:
         used.add(s)
     return {"question": question, "answer": _cited(s, k)}
@@ -229,7 +285,7 @@ def _table(passages: list[dict[str, str]]) -> str:
     rows: list[tuple[str, str, str]] = []
     for p in passages:
         name = ""
-        for sent in _sentences(p["text"]):
+        for sent in _sentences(p["text"], facts_only=False):
             m = _NAMED.match(sent)
             name = m.group(1).strip() if m else name
             if "$" in sent and name:
@@ -250,7 +306,8 @@ def simulate_draft(messages: list[Message]) -> dict[str, Any]:
     [(s, k)] = _best(questions[0], passages, n=1)
     used.add(s)
     sections = [_section(sec["heading"], passages, used) for sec in outline.get("sections", [])[:2]]
-    faq = [_faq(q, passages, used) for q in outline.get("faq_questions", questions)[:2]]
+    faq_used = set(used)
+    faq = [_faq(q, passages, faq_used) for q in outline.get("faq_questions", questions)[:2]]
     return {
         "title": outline.get("title") or questions[0],
         "summary": _cited(s, k),
@@ -266,9 +323,8 @@ def simulate_critique(messages: list[Message]) -> dict[str, Any]:
     comments = _field(user, "Reviewer comments") or []
     draft = _line_after(user, "Draft:") or ""
     dterms = _terms(draft)
-    unaddressed = [
-        c for c in comments if not _FORBIDDEN_ASK.search(c) and len(_terms(c) & dterms) < 2
-    ]
+    parts = [part for c in comments for part in split_requests(c)]
+    unaddressed = [c for c in parts if not _FORBIDDEN_ASK.search(c) and len(_terms(c) & dterms) < 2]
     scores = []
     for c in ("factuality", "coverage", "tone", "aeo_structure", "originality"):
         issues = (
@@ -298,7 +354,8 @@ def simulate_revise(messages: list[Message]) -> dict[str, Any]:
     changes: list[str] = []
     declined: list[dict[str, str]] = []
     flat = [i for v in issues.values() for i in v]
-    used = {s for sec in sections for s in re.split(r"(?<=\.)\s+", sec["body"])}
+    page = json.dumps(draft)
+    used = {s for p in passages for s in _sentences(p["text"]) if s.rstrip(".") in page}
 
     for issue in flat:  # drop sentences a check rejected
         m = re.match(
@@ -358,13 +415,23 @@ def simulate_revise(messages: list[Message]) -> dict[str, Any]:
             summary = f"On {question[:1].lower() + question[1:]}: {_cited(s, k)}"
             changes.append("Rewrote the opening as a direct answer")
         elif issue.startswith("Remove repeated sentences"):
-            seen_answers: set[str] = {summary}
+            body = summary + " ".join(sec["body"] for sec in sections)
+            brand = _field(user, "Brand") or ""
+            spare = [
+                q
+                for q in _answerable_questions(brand, passages)
+                if q not in {x["question"] for x in faq}
+            ]
+            seen_answers: set[str] = set()
             for qa in faq:
-                if qa["answer"] in seen_answers:
-                    qa.update(_faq(qa["question"], passages, used))
+                if qa["answer"] in seen_answers or qa["answer"].split(" [kb:")[0] in body:
+                    fresh = _faq(qa["question"], passages, used)
+                    while fresh["answer"].split(" [kb:")[0] in body and spare:
+                        fresh = _faq(spare.pop(0), passages, used)  # ask something new
+                    qa.update(fresh)
                 seen_answers.add(qa["answer"])
             changes.append("Replaced repeated FAQ answers")
-    for comment in comments:
+    for comment in (part for c in comments for part in split_requests(c)):
         if _FORBIDDEN_ASK.search(comment):
             declined.append(
                 {
