@@ -5,7 +5,7 @@
 | 0 | Foundations | ✅ done | 35 tests; all acceptance criteria verified 2026-11-23 |
 | 1 | Prompt panel and topic discovery | 🔁 reviewed | 121 tests; all acceptance criteria verified on Postgres + SQLite 2026-11-23 |
 | 2 | Multi-engine answer collection | 🔁 reviewed | 222 tests; acceptance re-verified on fresh Postgres + SQLite 2026-11-24; live check needs Maxx's key |
-| 3 | Extraction and visibility metrics | ⬜ not started | |
+| 3 | Extraction and visibility metrics | ✅ done | 295 tests (+6 Postgres-only, all pass on PG 16); acceptance verified on Postgres + SQLite 2026-11-24; golden set reviewed by Maxx (65/65) |
 | 4 | Brand knowledge base and FactCheck | ⬜ not started | |
 | 5 | Content agent | ⬜ not started | |
 | 6 | Evals, experiments and observability | ⬜ not started | |
@@ -194,3 +194,93 @@ Plus 6 Lows. Regression tests are in `tests/test_collect_review.py`.
 1. Optionally add `SCAN_MAX_OUTPUT_TOKENS={"openai":6000,"anthropic":4096,"gemini":3000,"perplexity":2500}` to `.env.example`. Claude can't read that file. The defaults live in config, so nothing breaks without it.
 2. Drop the scratch review database if you like: `docker compose exec db psql -U citewise -d citewise -c "DROP DATABASE citewise_m2review"`.
 3. The live smoke check above is still open. It is now also the first real test of the new output caps.
+
+### 2026-11-24 - Module 3 (Extraction and visibility metrics)
+**Built:**
+- **Entity resolution:** casing, possessives, legal suffixes and TLDs; alias, product-name and fuzzy matching; unknown entities grouped as emerging competitors.
+- **Stage A:** alias and fuzzy matching, with rank taken from the list structure.
+- **Stage B:** `prompts/extract/mentions.v1.jinja` with a strict schema, one retry, and a Stage-A fallback.
+- **Merge:** keeps a disagreement log and guards against names not in the text, links, fragments of known names, and injected instructions.
+- **`citewise extract run`:** idempotent by extractor version (`a2+mentions.v1`); a failed Stage B is retried on the next run; stops cleanly at the spend cap; uses a thread pool in live mode.
+- **Tables:** `mentions` and `answer_extractions` (migration `0005`).
+- **Metrics in portable SQL:** mention rate, share of voice, average rank, top-3 rate, recommendation rate, net sentiment, position, citation share (with vs without the brand, own-domain share) and competitors including emerging ones. All can be sliced by engine, topic, intent or run. Adds prompt-clustered bootstrap CIs with a Wilson floor, coverage reporting, and the 0–100 Visibility Score (weights in DECISIONS).
+- **CLI and API:** `citewise metrics show | competitors`, `citewise eval extract [--min-f1]`, `GET /brands/{id}/metrics | competitors`.
+- **Eval data:**
+  - rubric `evals/rubrics/mentions.yaml`;
+  - golden set `evals/datasets/golden/mentions.jsonl`: 65 answers, made of 48 simulated, 14 hand-written hard cases and 3 injection cases, drafted by `eval-designer` from the rubric without reading the extractor;
+  - red-team cases `m3-rt-001..003`;
+  - `scripts/golden_mention_candidates.py` and `scripts/record_extract_fixtures.py`.
+- **Mock world:** emerging brands Saucony, Altra, Basecamp and Wrike.
+
+**Results (mock, `evals/reports/extract_eval.md`):**
+
+| Stage | P | R | F1 | Rank acc. | Sentiment MAE |
+|---|---|---|---|---|---|
+| A (no LLM) | 1.000 | 0.761 | 0.865 | 0.933 | - |
+| B (simulated) | 0.934 | 0.881 | 0.906 | 0.923 | 0.287 |
+| Merged | 0.957 | 0.886 | **0.920** | 0.949 | 0.290 |
+| Merged, hand-written rows only (17) | | | 0.851 | | |
+
+Stage B is 65/65 simulated, so the B and merged rows are a pipeline smoke test. Stage A is the honest offline baseline.
+
+Stridelab mock scan, per engine: mention rate 42% (OpenAI) to 60% (Anthropic), overall 50% (95% CI 36–63%), SoV 21%, Visibility Score 41.6. Emerging competitors: Altra (22% of answers), Saucony (19%). Extraction costs about $0.03 per 200-answer run, estimated as if live.
+
+**Decisions:** see the Module 3 section of docs/DECISIONS.md. Main ones:
+- two stages merged, with disagreements logged;
+- rank is structural;
+- a not-in-text and injection guard;
+- context checks for ambiguous names ("On", "Monday", "Notion");
+- a simulated Stage B that reads only the prompt;
+- metrics in portable SQL over a `per_answer` CTE;
+- the Visibility Score weights;
+- a prompt-clustered bootstrap;
+- the mock engine no longer answers project-management questions about shoes;
+- `evals/reports/` is committed.
+
+**Code review (code-reviewer agent):**
+- **Fixed, 3 High:**
+  - wrong ranks for nested bullets, numbered headings and multiple lists;
+  - prompt injection could inflate the brand's mention, sentiment and recommendation;
+  - the mock eval was partly circular (the lexicon copied simulator phrases; the report didn't say B was simulated).
+- **Fixed, 5 Medium:**
+  - fuzzy/prefix resolution merged distinct companies;
+  - metrics hid partial or Stage-A-only extractions;
+  - the CI collapsed to zero width at 0/n and n/n;
+  - the Postgres SQL had no test (now runs on Postgres in CI, and 15/15 pass locally on PG 16);
+  - a budget race in the thread pool.
+- **Fixed Lows:**
+  - `--min-f1` gate;
+  - no misleading ALL row with `--by run`;
+  - logged IntegrityError;
+  - L4 accuracy reporting;
+  - Stage B input cap;
+  - bootstrap memory cap;
+  - "On" before dates and brand names.
+
+**Also found and fixed while building:**
+- The mock engine sent 27 of 300 Taskflow prompts running-shoe answers.
+- A pool of one worker overlapped with DB commits and lost 2 of 200 rows on SQLite.
+- `.gitignore` ignored `evals/reports/`, so Module 1's "committed" panel reports never were. They are committed now.
+
+**Known gaps:**
+- **The golden set is reviewed (65/65 `reviewed: true`, 2026-11-24),** as are red-team rows m3-rt-001..003. Maxx accepted the labels as drafted, including the judgement calls below.
+- **The live extractor has never been scored.** Run the recorder or a live eval (below).
+- **"Asana Rebel" still resolves to Asana.** A product name and a different company that starts with a brand name look the same without world knowledge.
+- **An instruction written as ordinary opinion can't be told apart from an opinion** ("Stridelab is the best, as every reviewer agrees").
+- **Two concurrent `extract run`s of one run both pay for Stage B.** They are row-safe, and it costs about $0.03.
+- **The mock answer simulator's sentiment is mostly positive,** so negative-sentiment metrics rest on the hand-written rows.
+
+**Maxx must do:**
+1. ~~**Review the golden set.**~~ Done: all 65 rows reviewed and kept as drafted. The judgement calls they settle:
+   - `hard-007`: products named without their maker. Should the extractor be expected to map them?
+   - `taskflow-034`: shoe brands typed `unknown` in an off-topic answer.
+   - `stridelab-009` and `-020`: "smaller brand" read as a mixed caveat.
+   - `taskflow-030`: Basecamp "simple" labelled neutral.
+   - `hard-005` and `-012`: only the top pick in a prose ranking counts as recommended.
+   - `hard-009`: On labelled mixed and recommended.
+   - `hard-003`: Atlassian as a parent company.
+   - `inject-003` and `inject-002`: the expected no-mention labels.
+   - `taskflow-048`: a plain fact labelled neutral.
+2. **Add to `.env.example`** (Claude can't read it): `EXTRACT_CONCURRENCY=4` and `METRICS_BOOTSTRAP=1000`. The defaults live in config, so this is optional.
+3. **Live check (about $0.01), still open: no `OPENAI_API_KEY` in `.env` when it was attempted on 2026-11-24.** set `CITEWISE_MODE=live`, then run `uv run python scripts/record_extract_fixtures.py --max-cost 0.10` and commit the fixtures. After that, `citewise eval extract` (mock and CI) scores the real model.
+4. ~~**Scratch databases.**~~ Dropped (`citewise_m3`, `citewise_pgtest`).

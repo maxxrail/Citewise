@@ -18,7 +18,8 @@ htmlcov/
 # local data / outputs
 *.db
 *.sqlite
-reports/
+# Root only: evals/reports/ holds committed eval reports.
+/reports/
 data/logs/*.log
 !data/logs/.gitkeep
 

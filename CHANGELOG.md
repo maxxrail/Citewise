@@ -4,6 +4,49 @@ All notable changes to Citewise are documented here. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+## module-03 - Extraction and visibility metrics (2026-11-24)
+
+### Added
+- Mention extraction (`services/extract/`):
+  - Entity resolution (`resolve.py`): case, possessives, legal suffixes and TLDs; alias, product-name and fuzzy matching; unknown entities grouped by key.
+  - Stage A alias + fuzzy matching with structural rank.
+  - Stage B LLM extraction (`prompts/extract/mentions.v1.jinja`, strict `MentionExtraction` schema).
+  - A merge with a disagreement log and guards: not in text, inside a link, fragment of a known name.
+  - `extract run`: idempotent by extractor version, failed Stage B retried, clean stop at the spend cap.
+- A simulated Stage B extractor for mock mode (`providers/mock_extract.py`).
+- Tables `mentions` and `answer_extractions` (migration `0005`).
+- Visibility metrics in SQL (`services/metrics/visibility.py`): mention rate, share of voice, average rank, top-3 rate, recommendation rate, net sentiment, position score, citation share (with vs without the brand, own-domain share) and competitors including emerging ones. Every metric can be sliced by engine, topic, intent or run. Adds prompt-clustered bootstrap 95% CIs and the 0-100 Visibility Score.
+- Extractor eval (`evals/extract.py`): P/R/F1, rank accuracy, type accuracy, sentiment MAE and label accuracy, and recommendation accuracy, for Stage A, Stage B and the merge, with errors broken down by type and by tag.
+- CLI `citewise extract run`, `metrics show`, `metrics competitors`, `eval extract`.
+- API `GET /brands/{id}/metrics` and `GET /brands/{id}/competitors`.
+- Eval data:
+  - `evals/rubrics/mentions.yaml`;
+  - `evals/datasets/golden/mentions.jsonl` (65 answers) plus its README;
+  - red-team cases `m3-rt-001..003`;
+  - `evals/reports/extract_eval.md/.json`;
+  - `scripts/golden_mention_candidates.py`.
+- Settings `EXTRACT_CONCURRENCY` and `METRICS_BOOTSTRAP`. Dependency `rapidfuzz`.
+- Emerging brands in the mock world: Saucony, Altra, Basecamp and Wrike.
+
+### Fixed
+- The mock engine answered prompts with no category keyword from the first category, so 27 of 300 Taskflow prompts got running-shoe answers.
+- Code review (extractor version is now `a2+mentions.v1`, so existing extractions re-run):
+  - Nested bullets, numbered headings and multiple lists no longer produce wrong ranks.
+  - Planted instructions, HTML comments, code blocks and schema-like JSON can no longer create or inflate a brand mention. They are masked from matching and redacted before Stage B.
+  - Fuzzy and product-prefix resolution no longer merge distinct companies ("LinearB", "Monday Morning Co").
+  - Recommendation rate and sentiment use only answers where Stage B ran. Slices report `coverage` and `llm_ok_share`, and `metrics show` warns when they are below 100%.
+  - Mention-rate CIs no longer collapse to zero width at 0/n and n/n (Wilson floor).
+  - The spend cap is thread-safe.
+  - `--by run` shows no misleading ALL row.
+- The mock extractor's lexicon no longer copies the answer simulator's phrases.
+
+### Added (code review)
+- `scripts/record_extract_fixtures.py`: record real Stage B responses so the offline eval replays a real model.
+- `eval extract --min-f1` (exit 1 below it).
+- The report shows a hand-written-rows table and the Stage B source (simulated vs replayed).
+- CI runs the metrics SQL tests on a `postgres:16` service (`CITEWISE_TEST_PG_URL`).
+- `.gitignore` ignored `evals/reports/`, so the Module 1 panel reports were never committed. They are now.
+
 ## module-02 review (2026-11-24)
 
 ### Added

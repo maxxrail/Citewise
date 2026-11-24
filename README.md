@@ -103,6 +103,24 @@ uv run citewise worker                        # runs the schedules; picks up cha
 
 API: `POST /brands/{id}/runs` (body `{"engines": [...], "size": 50, "max_cost": 3, "system_prompt": null}`; 202, runs in the background; 422 with the estimate if it's over budget), `GET /runs/{id}` (status, progress, cost), `GET /brands/{id}/runs`.
 
+### 6. Extract mentions and measure visibility (Module 3)
+
+Extraction turns each stored answer into structured mentions: which companies it names (including ones you don't track yet), their rank in any list, sentiment, and whether the answer recommends them. Then the metrics are computed in SQL:
+
+```bash
+uv run citewise extract run 1                 # all ok answers in run 1; safe to re-run (--force to redo)
+uv run citewise metrics show Stridelab        # per engine: mention rate (95% CI), SoV, rank, top-3, recommended, sentiment, score
+uv run citewise metrics show Stridelab --by topic      # or intent, run (trend across scans), all; --engine gemini; --json
+uv run citewise metrics competitors Stridelab # tracked competitors + EMERGING ones engines name that you don't track
+uv run citewise eval extract                  # P/R/F1, rank accuracy, sentiment MAE vs the golden set -> evals/reports/extract_eval.md
+```
+
+- **Two stages.** Stage A is deterministic alias and fuzzy matching (free, precise, blind to sentiment and unknown brands). Stage B is an LLM with a strict JSON schema (`prompts/extract/mentions.v1.jinja`). They are merged, and every disagreement is stored for evals. Rank is computed from the answer's list structure, not taken from the model.
+- **Metric definitions** are in `src/citewise/services/metrics/visibility.py`. The Visibility Score weights are in docs/DECISIONS.md. Confidence intervals are bootstrapped over *prompts* (the four engines' answers to one prompt aren't independent), and slices under 30 answers are starred.
+- **Eval:** the golden set is `evals/datasets/golden/mentions.jsonl` (65 answers; labelling rules in `evals/rubrics/mentions.yaml`). In mock mode Stage B is a simulated extractor, so the [committed report](evals/reports/extract_eval.md) is a smoke test of the pipeline, not a model score; it reports the 17 hand-written rows separately. For real numbers run `eval extract` with `CITEWISE_MODE=live`, or record real Stage B responses once (`uv run python scripts/record_extract_fixtures.py --max-cost 0.10`, live mode) so the offline eval and CI replay them. `eval extract --min-f1 0.85` exits 1 below the bar.
+
+API: `GET /brands/{id}/metrics` (query: `run_id`, `engine`, `topic`, `intent`, `by=engine|topic|intent|run|all`; 409 until a run is extracted) and `GET /brands/{id}/competitors`.
+
 ### Live mode
 
 Set `CITEWISE_MODE=live` and `OPENAI_API_KEY` in `.env`. Each answer engine needs its own key (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `PERPLEXITY_API_KEY`); only the engines you scan need one. A live `panel generate` + `cluster` for one brand is about 15 generation calls on `MODEL_GENERATE`, about 25 small classification and labeling calls on `MODEL_EXTRACT`, and 2 embedding batches. Check `llm_calls` for the exact cost. If the database already holds a mock-mode panel, run `citewise panel reset <brand>` first, because `generate` skips cells that already have prompts. Each stored embedding records its embedder (`mock:` vs `openai:`), and stale ones are re-embedded automatically. **First live scan (end to end, about $0.06):**
@@ -111,6 +129,8 @@ Set `CITEWISE_MODE=live` and `OPENAI_API_KEY` in `.env`. Each answer engine need
 $env:CITEWISE_MODE="live"   # or set CITEWISE_MODE=live in .env; needs OPENAI_API_KEY
 uv run citewise scan run Stridelab --size 5 --engines openai --max-cost 1
 uv run citewise scan status <run id printed above>
+uv run citewise extract run <run id> --max-cost 0.10   # Stage B on MODEL_EXTRACT, about $0.0002 per answer
+uv run citewise eval extract --max-cost 0.10            # live extractor F1 on the 65-answer golden set
 ```
 
 Live answers are never served from mock answers cached the same day (the cache key includes the mode). Engine model IDs are `ENGINE_MODEL_OPENAI`, `ENGINE_MODEL_ANTHROPIC`, `ENGINE_MODEL_GEMINI` (default `gemini-3.5-flash-lite`) and `ENGINE_MODEL_PERPLEXITY` (default `perplexity/sonar`; the old `sonar` ID is refused because Perplexity retired it). Model IDs are set per purpose (`MODEL_EXTRACT`, `MODEL_JUDGE`, `MODEL_GENERATE`, `MODEL_EMBED`) in `.env`.
@@ -127,6 +147,8 @@ Useful commands: `uv run ruff check .`, `uv run ruff format .`, `uv run mypy`, `
 Citewise uses official APIs only (with web search where available). API answers approximate, but are not identical to, what consumer apps like chatgpt.com show.
 
 The prompt panel has no search-volume data: every prompt counts equally. See docs/DECISIONS.md (Module 1) for how real volumes would plug in.
+
+Visibility metrics are only as good as the extractor. Its mock-mode scores measure a simulator; the golden set is hand-reviewed, but the live score needs a run with a key.
 
 ## License
 MIT

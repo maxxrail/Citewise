@@ -19,6 +19,7 @@ dependencies = [
     "pydantic>=2.8",
     "pydantic-settings>=2.4",
     "pyyaml>=6.0",
+    "rapidfuzz>=3.9",
     "rich>=13",
     "scikit-learn>=1.5",
     "sqlalchemy>=2.0.30",
@@ -54,6 +55,8 @@ extend-exclude = ["web"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
 ignore = ["B008"]  # FastAPI/Typer use calls in defaults by design
+# Curly apostrophes are deliberate: entity matching must handle "Hoka’s" as "Hoka's".
+allowed-confusables = ["’", "‘"]
 
 [tool.mypy]
 python_version = "3.11"

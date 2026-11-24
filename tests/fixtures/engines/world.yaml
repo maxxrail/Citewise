@@ -63,6 +63,19 @@ categories:
         products: [On Cloudmonster, On Cloudsurfer]
         positives: ["distinctive design and a firm, snappy ride"]
         negatives: [can feel firm for heavier runners]
+      # Not in Stridelab's competitor list: Module 3 surfaces these as emerging competitors.
+      Saucony:
+        aliases: [Saucony]
+        domain: saucony.com
+        products: [Saucony Endorphin Speed, Saucony Ride]
+        positives: [a lively, well-rounded trainer]
+        negatives: [the fit can feel snug in the midfoot]
+      Altra:
+        aliases: [Altra]
+        domain: altrarunning.com
+        products: [Altra Lone Peak, Altra Torin]
+        positives: [zero-drop with a foot-shaped toe box]
+        negatives: [zero drop takes time to adapt to]
     publishers:
       - {domain: runnersworld.com, path: /gear/a2/best-running-shoes, title: "Best Running Shoes | Runner's World"}
       - {domain: runrepeat.com, path: /catalog/running-shoes, title: "Running shoe reviews and lab tests | RunRepeat"}
@@ -73,7 +86,7 @@ categories:
       - {domain: youtube.com, path: "/watch?v=abc123", title: "Running shoe review - YouTube"}
 
   project management software:
-    keywords: [project, task, tasks, pm, kanban, sprint, scrum, agile, gantt, roadmap, team, workflow, tool, software, app, jira, backlog, agency, client]
+    keywords: [project, task, tasks, pm, kanban, sprint, scrum, agile, gantt, roadmap, team, teams, workflow, tool, tools, software, app, jira, backlog, agency, client, clients, tracker, tracking, issue, issues, workspace, wiki, docs, users, seats, startup, startups, devs, developers, engineering, collaboration, planning, linear, saas, remote]
     brands:
       Taskflow:
         aliases: [TaskFlow, Taskflow PM, Task Flow, taskflow]
@@ -127,6 +140,19 @@ categories:
         products: [Jira Software]
         positives: [the standard for software teams running scrum]
         negatives: [heavy for non-technical teams]
+      # Not in Taskflow's competitor list: emerging competitors for Module 3.
+      Basecamp:
+        aliases: [Basecamp]
+        domain: basecamp.com
+        products: [Basecamp]
+        positives: [simple, flat-priced project communication]
+        negatives: [light on reporting and dependencies]
+      Wrike:
+        aliases: [Wrike]
+        domain: wrike.com
+        products: [Wrike]
+        positives: [strong resource planning for larger teams]
+        negatives: [has a steeper learning curve]
     publishers:
       - {domain: g2.com, path: /categories/project-management, title: "Best Project Management Software | G2"}
       - {domain: capterra.com, path: /project-management-software/, title: "Project Management Software | Capterra"}
