@@ -1,0 +1,47 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Brooks Ghost\", \"canonical\": \"Brooks\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"1. **Brooks Ghost**: a dependable choice for beginners [1].\"}, {\"entity\": \"ASICS Novablast\", \"canonical\": \"ASICS\", \"rank\": 2, \"sentiment\": 0.3, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"2. **ASICS Novablast**: durable outsoles, although some models feel firm at first [2].\"}, {\"entity\": \"New Balance 880\", \"canonical\": \"New Balance\", \"rank\": 3, \"sentiment\": 0.3, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"3. **New Balance 880**: comfortable on long easy runs, although model names can be confusing [2].\"}, {\"entity\": \"Hoka Clifton\", \"canonical\": \"Hoka\", \"rank\": 4, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"4. **Hoka Clifton**: known for max cushioning on long runs [2].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Brooks Ghost",
+        "canonical": "Brooks",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "1. **Brooks Ghost**: a dependable choice for beginners [1]."
+      },
+      {
+        "entity": "ASICS Novablast",
+        "canonical": "ASICS",
+        "rank": 2,
+        "sentiment": 0.3,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "2. **ASICS Novablast**: durable outsoles, although some models feel firm at first [2]."
+      },
+      {
+        "entity": "New Balance 880",
+        "canonical": "New Balance",
+        "rank": 3,
+        "sentiment": 0.3,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "3. **New Balance 880**: comfortable on long easy runs, although model names can be confusing [2]."
+      },
+      {
+        "entity": "Hoka Clifton",
+        "canonical": "Hoka",
+        "rank": 4,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "4. **Hoka Clifton**: known for max cushioning on long runs [2]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-039"
+  }
+}

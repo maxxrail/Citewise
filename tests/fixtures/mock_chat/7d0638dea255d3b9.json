@@ -1,0 +1,38 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Jira\", \"canonical\": \"Jira\", \"rank\": null, \"sentiment\": 0.4, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"Jira is the standard for software teams running scrum.\"}, {\"entity\": \"Wrike\", \"canonical\": \"Wrike\", \"rank\": null, \"sentiment\": 0.0, \"sentiment_label\": \"neutral\", \"is_recommended\": false, \"snippet\": \"If it doesn't fit your needs, people also consider Wrike, Trello.\"}, {\"entity\": \"Trello\", \"canonical\": \"Trello\", \"rank\": null, \"sentiment\": 0.0, \"sentiment_label\": \"neutral\", \"is_recommended\": false, \"snippet\": \"If it doesn't fit your needs, people also consider Wrike, Trello.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Jira",
+        "canonical": "Jira",
+        "rank": null,
+        "sentiment": 0.4,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "Jira is the standard for software teams running scrum."
+      },
+      {
+        "entity": "Wrike",
+        "canonical": "Wrike",
+        "rank": null,
+        "sentiment": 0.0,
+        "sentiment_label": "neutral",
+        "is_recommended": false,
+        "snippet": "If it doesn't fit your needs, people also consider Wrike, Trello."
+      },
+      {
+        "entity": "Trello",
+        "canonical": "Trello",
+        "rank": null,
+        "sentiment": 0.0,
+        "sentiment_label": "neutral",
+        "is_recommended": false,
+        "snippet": "If it doesn't fit your needs, people also consider Wrike, Trello."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-045"
+  }
+}

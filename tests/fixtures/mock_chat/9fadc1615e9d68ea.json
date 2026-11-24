@@ -1,0 +1,47 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Nike Invincible\", \"canonical\": \"Nike\", \"rank\": 1, \"sentiment\": 0.2, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"1. **Nike Invincible**: a popular choice for race day, although can run narrow for wide feet [1].\"}, {\"entity\": \"Brooks Glycerin\", \"canonical\": \"Brooks\", \"rank\": 2, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"2. **Brooks Glycerin**: well regarded stability options for overpronation [2].\"}, {\"entity\": \"Altra Lone Peak\", \"canonical\": \"Altra\", \"rank\": 3, \"sentiment\": 0.1, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"3. **Altra Lone Peak**: zero-drop with a foot-shaped toe box, although zero drop takes time to adapt to [3].\"}, {\"entity\": \"On Cloudmonster\", \"canonical\": \"On\", \"rank\": 4, \"sentiment\": 0.2, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"4. **On Cloudmonster**: distinctive design and a firm, snappy ride, although can feel firm for heavier runners [4].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Nike Invincible",
+        "canonical": "Nike",
+        "rank": 1,
+        "sentiment": 0.2,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "1. **Nike Invincible**: a popular choice for race day, although can run narrow for wide feet [1]."
+      },
+      {
+        "entity": "Brooks Glycerin",
+        "canonical": "Brooks",
+        "rank": 2,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "2. **Brooks Glycerin**: well regarded stability options for overpronation [2]."
+      },
+      {
+        "entity": "Altra Lone Peak",
+        "canonical": "Altra",
+        "rank": 3,
+        "sentiment": 0.1,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "3. **Altra Lone Peak**: zero-drop with a foot-shaped toe box, although zero drop takes time to adapt to [3]."
+      },
+      {
+        "entity": "On Cloudmonster",
+        "canonical": "On",
+        "rank": 4,
+        "sentiment": 0.2,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "4. **On Cloudmonster**: distinctive design and a firm, snappy ride, although can feel firm for heavier runners [4]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "stridelab-013"
+  }
+}

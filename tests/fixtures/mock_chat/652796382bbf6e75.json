@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Asana\", \"canonical\": \"Asana\", \"rank\": 1, \"sentiment\": 0.2, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"**Asana**: strong for cross-team work management, although can get expensive as teams grow [1].\"}, {\"entity\": \"Monday.com\", \"canonical\": \"Monday.com\", \"rank\": 2, \"sentiment\": 0.5, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"**monday work management**: highly visual and customizable boards, although pricing tiers can be confusing [3].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Asana",
+        "canonical": "Asana",
+        "rank": 1,
+        "sentiment": 0.2,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "**Asana**: strong for cross-team work management, although can get expensive as teams grow [1]."
+      },
+      {
+        "entity": "Monday.com",
+        "canonical": "Monday.com",
+        "rank": 2,
+        "sentiment": 0.5,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "**monday work management**: highly visual and customizable boards, although pricing tiers can be confusing [3]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-028"
+  }
+}

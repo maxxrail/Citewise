@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"ClickUp\", \"canonical\": \"ClickUp\", \"rank\": null, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"ClickUp is packs many features into one app.\"}, {\"entity\": \"Basecamp\", \"canonical\": \"Basecamp\", \"rank\": null, \"sentiment\": 0.0, \"sentiment_label\": \"neutral\", \"is_recommended\": false, \"snippet\": \"If it doesn't fit your needs, people also consider Basecamp.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "ClickUp",
+        "canonical": "ClickUp",
+        "rank": null,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "ClickUp is packs many features into one app."
+      },
+      {
+        "entity": "Basecamp",
+        "canonical": "Basecamp",
+        "rank": null,
+        "sentiment": 0.0,
+        "sentiment_label": "neutral",
+        "is_recommended": false,
+        "snippet": "If it doesn't fit your needs, people also consider Basecamp."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-047"
+  }
+}

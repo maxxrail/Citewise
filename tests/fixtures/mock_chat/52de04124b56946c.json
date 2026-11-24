@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Nike\", \"canonical\": \"Nike\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"- **Nike Pegasus**: a versatile daily trainer with wide availability, although can run narrow for wide feet [3].\"}, {\"entity\": \"ASICS\", \"canonical\": \"ASICS\", \"rank\": 2, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"- **ASICS Gel-Nimbus**: durable outsoles [3].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Nike",
+        "canonical": "Nike",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "- **Nike Pegasus**: a versatile daily trainer with wide availability, although can run narrow for wide feet [3]."
+      },
+      {
+        "entity": "ASICS",
+        "canonical": "ASICS",
+        "rank": 2,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "- **ASICS Gel-Nimbus**: durable outsoles [3]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "stridelab-001"
+  }
+}

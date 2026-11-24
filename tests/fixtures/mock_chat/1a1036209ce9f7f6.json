@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Notion\", \"canonical\": \"Notion\", \"rank\": null, \"sentiment\": -0.1, \"sentiment_label\": \"mixed\", \"is_recommended\": false, \"snippet\": \"Notion is a flexible workspace: great for wikis and briefs, but you'll be building your own project system from scratch, and clients often get lost in it.\"}, {\"entity\": \"Basecamp\", \"canonical\": \"Basecamp\", \"rank\": null, \"sentiment\": 0.7, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"for most agencies I'd go with Basecamp.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Notion",
+        "canonical": "Notion",
+        "rank": null,
+        "sentiment": -0.1,
+        "sentiment_label": "mixed",
+        "is_recommended": false,
+        "snippet": "Notion is a flexible workspace: great for wikis and briefs, but you'll be building your own project system from scratch, and clients often get lost in it."
+      },
+      {
+        "entity": "Basecamp",
+        "canonical": "Basecamp",
+        "rank": null,
+        "sentiment": 0.7,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "for most agencies I'd go with Basecamp."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "hard-008"
+  }
+}

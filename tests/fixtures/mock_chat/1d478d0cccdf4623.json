@@ -1,0 +1,38 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Hoka's\", \"canonical\": \"Hoka\", \"rank\": null, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"On the max-cushion end, Hoka's Bondi 9 is the plushest shoe most testers have tried, and Runner's World named it a top pick for recovery days.\"}, {\"entity\": \"On\", \"canonical\": \"On\", \"rank\": null, \"sentiment\": -0.1, \"sentiment_label\": \"mixed\", \"is_recommended\": false, \"snippet\": \"On makes the Cloudmonster, which feels bouncier but firmer underfoot; on the other hand, some runners find it harsh past 20 miles.\"}, {\"entity\": \"Brooks'\", \"canonical\": \"Brooks\", \"rank\": null, \"sentiment\": 0.7, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"Brooks' Glycerin sits in the middle and is the safest choice if you're unsure. For most first-time marathoners I'd go with the Glycerin.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Hoka's",
+        "canonical": "Hoka",
+        "rank": null,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "On the max-cushion end, Hoka's Bondi 9 is the plushest shoe most testers have tried, and Runner's World named it a top pick for recovery days."
+      },
+      {
+        "entity": "On",
+        "canonical": "On",
+        "rank": null,
+        "sentiment": -0.1,
+        "sentiment_label": "mixed",
+        "is_recommended": false,
+        "snippet": "On makes the Cloudmonster, which feels bouncier but firmer underfoot; on the other hand, some runners find it harsh past 20 miles."
+      },
+      {
+        "entity": "Brooks'",
+        "canonical": "Brooks",
+        "rank": null,
+        "sentiment": 0.7,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "Brooks' Glycerin sits in the middle and is the safest choice if you're unsure. For most first-time marathoners I'd go with the Glycerin."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "hard-001"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"ClickUp\", \"canonical\": \"ClickUp\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"- **ClickUp**: packs many features into one app [3].\"}, {\"entity\": \"Jira\", \"canonical\": \"Jira\", \"rank\": 2, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"- **Jira Software**: the standard for software teams running scrum [1].\"}, {\"entity\": \"Basecamp\", \"canonical\": \"Basecamp\", \"rank\": 3, \"sentiment\": 0.1, \"sentiment_label\": \"neutral\", \"is_recommended\": false, \"snippet\": \"- **Basecamp**: simple [3].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "ClickUp",
+        "canonical": "ClickUp",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "- **ClickUp**: packs many features into one app [3]."
+      },
+      {
+        "entity": "Jira",
+        "canonical": "Jira",
+        "rank": 2,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "- **Jira Software**: the standard for software teams running scrum [1]."
+      },
+      {
+        "entity": "Basecamp",
+        "canonical": "Basecamp",
+        "rank": 3,
+        "sentiment": 0.1,
+        "sentiment_label": "neutral",
+        "is_recommended": false,
+        "snippet": "- **Basecamp**: simple [3]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-030"
+  }
+}

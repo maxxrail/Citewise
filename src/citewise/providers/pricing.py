@@ -26,6 +26,9 @@ PRICES_PER_MTOK: dict[str, tuple[float, float]] = {
     # Haiku 5.5 is tiered: prompts >100K tokens cost $0.50/$2.50; we only record the base tier.
     "claude-haiku-5-5": (0.10, 0.50),
     "claude-sonnet-5-5": (2.00, 10.00),
+    "claude-opus-5-5": (4.00, 20.00),  # checked 2026-11-24 (claude-api reference)
+    # Local embedding model (fastembed, runs on CPU): no per-token charge.
+    "BAAI/bge-small-en-v1.5": (0.0, 0.0),
     # Google - aistudio.google.com/docs/pricing (text)
     "gemini-3.1-flash-lite": (0.25, 1.50),
     "gemini-3.5-flash-lite": (0.30, 2.50),

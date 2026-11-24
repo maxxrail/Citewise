@@ -1,0 +1,47 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"New Balance\", \"canonical\": \"New Balance\", \"rank\": null, \"sentiment\": 0.8, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"New Balance is the easiest win here: the 880 comes in 2E and 4E and is a comfortable, no-drama daily trainer.\"}, {\"entity\": \"Stridelabs\", \"canonical\": \"Stridelab\", \"rank\": null, \"sentiment\": 0.3, \"sentiment_label\": \"positive\", \"is_recommended\": false, \"snippet\": \"Stridelabs (the direct-to-consumer brand) has a roomy toe box in its standard width, and early reviews on Reddit are positive.\"}, {\"entity\": \"HOKA\", \"canonical\": \"Hoka\", \"rank\": null, \"sentiment\": -0.1, \"sentiment_label\": \"mixed\", \"is_recommended\": false, \"snippet\": \"HOKA's Clifton is available in wide but still runs snug through the midfoot for a lot of people.\"}, {\"entity\": \"Nike\", \"canonical\": \"Nike\", \"rank\": null, \"sentiment\": -0.8, \"sentiment_label\": \"negative\", \"is_recommended\": false, \"snippet\": \"I'd steer clear of Nike's racing shoes for this; the Vaporfly is narrow and unstable for a first half.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "New Balance",
+        "canonical": "New Balance",
+        "rank": null,
+        "sentiment": 0.8,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "New Balance is the easiest win here: the 880 comes in 2E and 4E and is a comfortable, no-drama daily trainer."
+      },
+      {
+        "entity": "Stridelabs",
+        "canonical": "Stridelab",
+        "rank": null,
+        "sentiment": 0.3,
+        "sentiment_label": "positive",
+        "is_recommended": false,
+        "snippet": "Stridelabs (the direct-to-consumer brand) has a roomy toe box in its standard width, and early reviews on Reddit are positive."
+      },
+      {
+        "entity": "HOKA",
+        "canonical": "Hoka",
+        "rank": null,
+        "sentiment": -0.1,
+        "sentiment_label": "mixed",
+        "is_recommended": false,
+        "snippet": "HOKA's Clifton is available in wide but still runs snug through the midfoot for a lot of people."
+      },
+      {
+        "entity": "Nike",
+        "canonical": "Nike",
+        "rank": null,
+        "sentiment": -0.8,
+        "sentiment_label": "negative",
+        "is_recommended": false,
+        "snippet": "I'd steer clear of Nike's racing shoes for this; the Vaporfly is narrow and unstable for a first half."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "hard-004"
+  }
+}

@@ -36,8 +36,8 @@ You are building **Citewise**, an open-source AI-search visibility platform (a s
 | API | FastAPI + Pydantic v2 |
 | DB | Postgres 16 (prod/dev), SQLite (tests), SQLAlchemy 2.0 + Alembic |
 | Jobs | Simple async worker + APScheduler (no Celery/Redis unless a module needs it) |
-| LLM / engines | Thin provider layer over official SDKs: OpenAI, Anthropic, Google Gemini, Perplexity (OpenAI-compatible) |
-| Embeddings | OpenAI `text-embedding-3-small` (configurable); mock embedder for tests |
+| LLM / engines | Thin provider layer over official SDKs. Citewise's own LLM calls use Anthropic (Claude) by default (`LLM_PROVIDER`; OpenAI optional). Answer engines: OpenAI, Anthropic, Google Gemini, Perplexity |
+| Embeddings | Local `BAAI/bge-small-en-v1.5` via fastembed by default (`EMBED_PROVIDER`; OpenAI `text-embedding-3-small` optional); mock embedder for tests |
 | ML | scikit-learn, numpy, umap-learn/hdbscan (optional), pandas |
 | Frontend | Next.js (App Router) + TypeScript + Tailwind + Recharts, in `web/` |
 | Tooling | uv, ruff, mypy (lenient), pytest, GitHub Actions CI |

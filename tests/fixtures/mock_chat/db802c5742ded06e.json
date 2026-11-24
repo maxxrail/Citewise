@@ -1,0 +1,47 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Notion Projects\", \"canonical\": \"Notion\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"1. **Notion Projects**: great for docs and wikis alongside tasks [1].\"}, {\"entity\": \"Trello\", \"canonical\": \"Trello\", \"rank\": 2, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"2. **Trello**: simple kanban boards that are easy to start with [2].\"}, {\"entity\": \"ClickUp\", \"canonical\": \"ClickUp\", \"rank\": 3, \"sentiment\": 0.4, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"3. **ClickUp**: packs many features into one app [3].\"}, {\"entity\": \"Asana\", \"canonical\": \"Asana\", \"rank\": 4, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"4. **Asana**: strong for cross-team work management [3].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Notion Projects",
+        "canonical": "Notion",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "1. **Notion Projects**: great for docs and wikis alongside tasks [1]."
+      },
+      {
+        "entity": "Trello",
+        "canonical": "Trello",
+        "rank": 2,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "2. **Trello**: simple kanban boards that are easy to start with [2]."
+      },
+      {
+        "entity": "ClickUp",
+        "canonical": "ClickUp",
+        "rank": 3,
+        "sentiment": 0.4,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "3. **ClickUp**: packs many features into one app [3]."
+      },
+      {
+        "entity": "Asana",
+        "canonical": "Asana",
+        "rank": 4,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "4. **Asana**: strong for cross-team work management [3]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-037"
+  }
+}
