@@ -408,3 +408,27 @@ def test_api_factcheck(client_db: TestClient, checked: sessionmaker[Session]) ->
     assert client_db.get(f"/brands/{lid}/factcheck").status_code == 409  # never checked
     assert client_db.get("/brands/999/factcheck").status_code == 404
     assert client_db.get(f"/brands/{sid}/factcheck", params={"verdict": "x"}).status_code == 422
+
+
+EXPECTED_EVIDENCE = {  # planted claim -> the KB fact that refutes it
+    "Stridelab only sells through Amazon": "does not sell on Amazon",
+    "Stridelab shoes are made in Italy": "manufactured in Vietnam",
+    "The Stridelab Tempo costs $220": "It costs $140",
+    "Stridelab discontinued the Trail line in 2025": "still in production",
+    "Taskflow has no Jira import": "importers for Jira",
+    "Taskflow is only available as a desktop app": "runs in the browser",
+    "Taskflow Pro costs $25 per user per month": "$12 per user per month",
+    "Taskflow discontinued its free plan": "Free plan is for up to 3 users",
+}
+
+
+def test_contradictions_quote_the_kb_fact_that_refutes_them(checked: sessionmaker[Session]) -> None:
+    """The verdict being right isn't enough: the quote is what a brand acts on."""
+    with checked() as s:
+        rows = s.execute(select(Claim.claim_text, Claim.evidence_quote)
+                         .where(Claim.verdict == "contradicted")).all()  # fmt: skip
+    seen = {text for text, _ in rows if text in EXPECTED_EVIDENCE}
+    assert len(seen) >= 5
+    for text, quote in rows:
+        if text in EXPECTED_EVIDENCE:
+            assert EXPECTED_EVIDENCE[text] in (quote or ""), (text, quote)

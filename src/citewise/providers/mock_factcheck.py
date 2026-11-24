@@ -90,8 +90,24 @@ def _block(user: str, header: str) -> Any:
     return json.loads(m.group(1).strip()) if m else None
 
 
+def _stem(w: str) -> str:
+    """Crude suffix stripping so "apps"/"app" and "importers"/"import" match. Prices and
+    numbers are left alone."""
+    if w[0] == "$" or w[0].isdigit():
+        return w
+    for suffix in ("ers", "ing", "er", "ed", "s"):
+        if len(w) - len(suffix) >= 3 and w.endswith(suffix) and not w.endswith("ss"):
+            return w[: -len(suffix)]
+    return w
+
+
 def _terms(text: str) -> list[str]:
-    return [w for w in _WORD.findall(text.lower()) if w not in _STOP]
+    return [_stem(w) for w in _WORD.findall(text.lower()) if w not in _STOP]
+
+
+def _bigrams(text: str) -> set[tuple[str, str]]:
+    t = _terms(text)
+    return set(itertools.pairwise(t))
 
 
 def _sentences(text: str) -> list[str]:
@@ -155,8 +171,10 @@ def simulate_verify(messages: list[Message]) -> dict[str, Any]:
     passages = _block(user, 'Passages (JSON list of {"id", "text"}):') or []
     brand_terms = set(_terms(brand))
     scored: list[tuple[int, int, str, str]] = []  # (overlap, -order, passage id, sentence)
-    for order, p in enumerate(passages):
-        sents = _sentences(p["text"])
+    for _order, p in enumerate(passages):
+        # Skip the "Doc title > Section" prefix line: it locates the passage, it isn't a fact.
+        head, _, body = p["text"].partition("\n")
+        sents = _sentences(body if body and " > " in head else p["text"])
         # Single sentences and adjacent pairs: "The Stridelab Tempo is ... It costs $140."
         # (a reader resolves "It"; the pair is still a verbatim quote of the passage).
         windows = sents + [f"{a} {b}" for a, b in itertools.pairwise(sents)]
@@ -165,7 +183,10 @@ def simulate_verify(messages: list[Message]) -> dict[str, Any]:
                 continue
             shared = _subject_overlap(claim, sentence, brand_terms)
             if shared:
-                scored.append((len(shared), -order, p["id"], sentence))
+                # Shared word pairs ("free plan") outweigh scattered single words, and a
+                # shorter sentence wins a tie (it is about this, not about everything).
+                score = len(shared) + 2 * len(_bigrams(claim) & _bigrams(sentence))
+                scored.append((score, -len(sentence), p["id"], sentence))
     scored.sort(reverse=True)
     claim_money = set(m.replace(" ", "") for m in _MONEY.findall(claim))
     claim_terms = set(_terms(claim)) - brand_terms
@@ -200,7 +221,8 @@ def simulate_verify(messages: list[Message]) -> dict[str, Any]:
             return verdict("contradicted", pid, sentence,
                            f"Made in {sp.group(1)}, not {cp.group(1)}.")  # fmt: skip
         # "only X" against a passage that says not-X or lists alternatives.
-        if _ONLY.search(claim) and shared and (_NEG_TEXT.search(sentence) or "," in sentence):
+        lists_more = re.search(r",|\band\b|\bor\b", sentence)  # "browser and desktop and mobile"
+        if _ONLY.search(claim) and shared and (_NEG_TEXT.search(sentence) or lists_more):
             why = "The documentation describes more than the one option claimed."
             return verdict("contradicted", pid, sentence, why)
         # "no X" / "discontinued X" against a passage that affirms X.
@@ -208,10 +230,11 @@ def simulate_verify(messages: list[Message]) -> dict[str, Any]:
         if _NEG_CLAIM.search(claim) and not _ONLY.search(claim) and shared and affirms:
             return verdict("contradicted", pid, sentence, "The documentation says this exists.")
     if scored:
-        best_overlap, _, pid, sentence = scored[0]
+        _, _, pid, sentence = scored[0]
+        overlap = len(_subject_overlap(claim, sentence, brand_terms))  # without the pair bonus
         sent_money = set(m.replace(" ", "") for m in _MONEY.findall(sentence))
         money_ok = not claim_money or claim_money <= sent_money
-        if claim_terms and best_overlap / len(claim_terms) >= 0.5 and money_ok:
+        if claim_terms and overlap / len(claim_terms) >= 0.5 and money_ok:
             return verdict("supported", pid, sentence, "The documentation states this.")
     return verdict("not_in_kb", None, None, "The passages don't settle this claim.")
 
