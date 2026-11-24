@@ -1,0 +1,60 @@
+{
+  "id": "resp_1",
+  "object": "response",
+  "model": "perplexity/sonar",
+  "status": "completed",
+  "output": [
+    {
+      "type": "search_results",
+      "queries": [
+        "best CRM small business Toronto"
+      ],
+      "results": [
+        {
+          "id": 1,
+          "title": "HubSpot CRM",
+          "url": "https://www.hubspot.com/products/crm",
+          "source": "web"
+        },
+        {
+          "id": 2,
+          "title": "Zoho CRM",
+          "url": "https://www.zoho.com/crm/",
+          "source": "web"
+        },
+        {
+          "id": 3,
+          "title": "Unused",
+          "url": "https://example.com/unused",
+          "source": "web"
+        }
+      ]
+    },
+    {
+      "type": "message",
+      "role": "assistant",
+      "status": "completed",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "Zoho [web:2] and HubSpot [web:1] are common picks [web:2].",
+          "annotations": []
+        }
+      ]
+    }
+  ],
+  "usage": {
+    "input_tokens": 1200,
+    "output_tokens": 150,
+    "total_tokens": 1350,
+    "cost": {
+      "currency": "USD",
+      "total_cost": 0.003175
+    },
+    "tool_calls_details": {
+      "search_web": {
+        "invocation": 1
+      }
+    }
+  }
+}

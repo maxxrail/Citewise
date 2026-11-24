@@ -43,15 +43,24 @@ class CallRecorder:
         latency_ms: int,
         ok: bool,
         error: str | None = None,
+        run_id: int | None = None,
+        cost_usd: float | None = None,
     ) -> None:
+        """Write one row. `cost_usd` overrides the token-based estimate (e.g. to add
+        per-search fees for answer engines)."""
         row = LLMCall(
             purpose=purpose,
+            run_id=run_id,
             kind=kind,
             provider=provider,
             model=model,
             tokens_in=usage.tokens_in,
             tokens_out=usage.tokens_out,
-            cost_usd=estimate_cost(model, usage.tokens_in, usage.tokens_out),
+            cost_usd=(
+                estimate_cost(model, usage.tokens_in, usage.tokens_out)
+                if cost_usd is None
+                else cost_usd
+            ),
             latency_ms=latency_ms,
             ok=ok,
             error=error[:2000] if error else None,

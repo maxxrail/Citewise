@@ -1,0 +1,56 @@
+{
+  "id": "resp_1",
+  "status": "completed",
+  "model": "gpt-6-luna-2026-11-01",
+  "output": [
+    {
+      "type": "web_search_call",
+      "id": "ws_1",
+      "status": "completed",
+      "action": {
+        "type": "search",
+        "query": "best CRM Toronto"
+      }
+    },
+    {
+      "type": "message",
+      "id": "msg_1",
+      "role": "assistant",
+      "status": "completed",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "Popular options include HubSpot and Zoho.",
+          "annotations": [
+            {
+              "type": "url_citation",
+              "start_index": 24,
+              "end_index": 31,
+              "url": "https://www.hubspot.com/products/crm?utm_source=openai",
+              "title": "HubSpot CRM"
+            },
+            {
+              "type": "url_citation",
+              "start_index": 36,
+              "end_index": 40,
+              "url": "https://www.zoho.com/crm/",
+              "title": "Zoho CRM"
+            },
+            {
+              "type": "url_citation",
+              "start_index": 36,
+              "end_index": 40,
+              "url": "https://www.zoho.com/crm/",
+              "title": "Zoho CRM"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "usage": {
+    "input_tokens": 1834,
+    "output_tokens": 212,
+    "total_tokens": 2046
+  }
+}
