@@ -1,0 +1,65 @@
+{
+  "rows": 65,
+  "reviewed": 0,
+  "mode": "mock",
+  "stages": {
+    "A": {
+      "precision": 0.9853,
+      "recall": 0.7614,
+      "f1": 0.859,
+      "tp": 134,
+      "fp": 2,
+      "fn": 42,
+      "rank_accuracy": 0.9328,
+      "type_accuracy": 1.0,
+      "sentiment_mae": null,
+      "sentiment_label_accuracy": null,
+      "recommended_accuracy": null,
+      "errors": {
+        "false_negative": 42,
+        "rank": 9,
+        "false_positive": 2
+      }
+    },
+    "B": {
+      "precision": 0.9226,
+      "recall": 0.8807,
+      "f1": 0.9012,
+      "tp": 155,
+      "fp": 13,
+      "fn": 21,
+      "rank_accuracy": 0.9226,
+      "type_accuracy": 1.0,
+      "sentiment_mae": 0.223,
+      "sentiment_label_accuracy": 0.7484,
+      "recommended_accuracy": 0.8452,
+      "errors": {
+        "sentiment_label": 39,
+        "recommended": 24,
+        "false_negative": 21,
+        "false_positive": 13,
+        "rank": 12
+      }
+    },
+    "merged": {
+      "precision": 0.9455,
+      "recall": 0.8864,
+      "f1": 0.915,
+      "tp": 156,
+      "fp": 9,
+      "fn": 20,
+      "rank_accuracy": 0.9487,
+      "type_accuracy": 1.0,
+      "sentiment_mae": 0.2261,
+      "sentiment_label_accuracy": 0.7436,
+      "recommended_accuracy": 0.8462,
+      "errors": {
+        "sentiment_label": 40,
+        "recommended": 24,
+        "false_negative": 20,
+        "false_positive": 9,
+        "rank": 8
+      }
+    }
+  }
+}
