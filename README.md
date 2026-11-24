@@ -143,6 +143,39 @@ uv run citewise eval retrieval                           # recall@1/@5 + MRR: BM
 
 API: `GET /brands/{id}/factcheck` (query: `run_id`, `verdict=contradicted|supported|not_in_kb|all`; 409 until a run is checked).
 
+### 8. Content agent (Module 5)
+
+The content agent turns visibility gaps and wrong facts into grounded, publish-ready pages, and a human approves each one. It needs a scanned, extracted and fact-checked run (sections 4–7) and the brand's KB:
+
+```bash
+uv run citewise content opportunities Stridelab    # ranked: gaps, citation gaps (pitch only), fact fixes; each with "why"
+uv run citewise content create <opportunity id>    # brief -> outline -> draft -> critique -> revise (<=2) -> awaiting approval
+uv run citewise content show <item id>             # versions with rubric scores, the page, guardrails, "why this should help"
+uv run citewise content list --status awaiting_approval
+uv run citewise content reject <item id> --comment "Mention the 60-day trial."   # the comment drives a revision
+uv run citewise content approve <item id>          # records a baseline on the target prompts
+uv run citewise content export <item id>           # Markdown with source footnotes + FAQPage JSON-LD + why-note
+uv run citewise content measure <item id>          # baseline vs the newest scan since approval
+uv run citewise content resume <item id>           # continue after an error or the spend cap
+```
+
+- **Opportunities** are scored as impact × confidence, in one unit ("answers affected"):
+  - **gap:** a topic × intent slice where the brand's mention rate trails a rival's by ≥ 20 points;
+  - **citation:** a domain the engines cite in answers that skip the brand. This is a get-listed / pitch suggestion; outreach is manual;
+  - **fact fix:** a claim FactCheck marked contradicted.
+- **Every factual sentence is checked against the KB automatically.** It must end with a `[kb:<chunk>]` marker to a retrieved passage. Every number in it must be in that passage, as must any ranking or superlative, and most of its words must come from it. An invented price fails, even with a real-looking marker.
+- **Other guardrails:** competitor defamation, fake reviews and testimonials, text copied from an injected instruction, and max length or keyword stuffing. A page that still trips a guardrail after 2 revisions has the offending sentences removed before anyone reviews it.
+- **Scoring:** an LLM judge scores the rubric in `evals/rubrics/content.yaml` (factuality, coverage, tone, AEO structure, originality). Deterministic checks can only lower those scores. Each version is stored with its scores and the feedback that produced it.
+- **Brand voice** (tone, banned words, reading level, max words) lives in `data/brands/<brand>/voice.md`. Prompt templates are versioned in `prompts/content/`.
+- **Mock mode:** the writer and judge are simulated. The writer's first draft is thin and only fixes what the critique names, so rising scores show the loop working, not writing quality. For a real page, run `create` with `CITEWISE_MODE=live` (about $0.15–0.30 per page).
+
+API:
+- `GET /brands/{id}/content/opportunities`
+- `GET /content?status=awaiting_approval` (the review queue)
+- `GET /content/{id}`
+- `POST /content/{id}/approve` and `POST /content/{id}/reject`, with body `{"comment": "..."}`. Reject returns 202; the revision runs in the background. Approve returns 409 if a guardrail still fails.
+- `POST /content/{id}/resume` continues after an error or the spend cap.
+
 ### Live mode
 
 Set `CITEWISE_MODE=live` and `ANTHROPIC_API_KEY` in `.env`. That one key runs everything Citewise does itself:

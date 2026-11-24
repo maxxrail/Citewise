@@ -4,6 +4,37 @@ All notable changes to Citewise are documented here. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+## module-05 - Content agent (2026-11-24)
+
+### Added
+- Tables `content_opportunities`, `content_items`, `content_versions` and `content_reviews` (migration `0007`).
+- Opportunity finder (`services/content/opportunities.py`):
+  - visibility gaps by topic × intent;
+  - citation gaps (get-listed / pitch suggestions; outreach stays manual);
+  - fact fixes from contradicted claims;
+  - ranked by impact × confidence with a reason each.
+- Content pipeline state machine (`services/content/pipeline.py`):
+  - brief → outline → draft → critique → revise (≤2) → final → awaiting_approval → approved/rejected;
+  - every version is stored with its scores, checks and feedback;
+  - resumable after errors or the spend cap.
+- Deterministic guardrails and rubric caps (`services/content/checks.py`):
+  - KB grounding of every factual sentence, title and heading (`[kb:<chunk>]` markers, numbers, superlatives, word overlap);
+  - competitor defamation, fake reviews and testimonials, injected instructions, and length / keyword stuffing;
+  - last-resort redaction.
+- Outputs (`services/content/outputs.py`): Markdown with source footnotes, FAQPage JSON-LD with a JSON Schema, and a "why this should help" note.
+- Measurement hook (`services/content/measure.py`): an approval baseline and before/after against later scans.
+- Brand voice files `data/brands/{stridelab,taskflow,linear}/voice.md`.
+- Versioned prompts `prompts/content/{brief,outline,draft,critique,revise}.v1.jinja`.
+- Rubric `evals/rubrics/content.yaml` and red-team rows m5-rt-001…006.
+- `providers/mock_content.py`: a simulated writer and judge for mock mode.
+- API:
+  - `GET /brands/{id}/content/opportunities`
+  - `GET /content`
+  - `GET /content/{id}`
+  - `POST /content/{id}/approve|reject|resume`
+- CLI: `citewise content opportunities | create | resume | list | show | approve | reject | export | measure`.
+- Dev dependency `jsonschema`.
+
 ## module-04 - Brand knowledge base and FactCheck (2026-11-24)
 
 ### Added

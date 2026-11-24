@@ -7,7 +7,7 @@
 | 2 | Multi-engine answer collection | 🔁 reviewed | 222 tests; acceptance re-verified on fresh Postgres + SQLite 2026-11-24; live check needs Maxx's key |
 | 3 | Extraction and visibility metrics | ✅ done | 295 tests (+6 Postgres-only, all pass on PG 16); acceptance verified on Postgres + SQLite 2026-11-24; golden set reviewed by Maxx (65/65) |
 | 4 | Brand knowledge base and FactCheck | ✅ done | 366 tests; acceptance verified on Postgres + SQLite; live verifier 95.6% / 0% false contradictions on held-out claims; live Linear run done 2026-11-24 |
-| 5 | Content agent | ⬜ not started | |
+| 5 | Content agent | ✅ done | 411 tests; acceptance verified on Postgres + SQLite (mock) 2026-11-24; live content run not done yet |
 | 6 | Evals, experiments and observability | ⬜ not started | |
 | 7 | AI crawler analytics | ⬜ not started | |
 | 8 | Dashboard and ship | ⬜ not started | |
@@ -419,3 +419,66 @@ See DECISIONS, "Module 4 live run".
 **Still for Maxx:**
 - Review `kb_qa.jsonl` and `factcheck_claims.jsonl`.
 - Spot-check `data/kb/linear/`.
+
+### 2026-11-24 - Module 5 (Content agent)
+**Built:**
+- **Tables** `content_opportunities`, `content_items`, `content_versions` and `content_reviews` (migration `0007`).
+- **Opportunity finder** (`services/content/opportunities.py`): gaps, citation gaps (pitch only) and fact fixes, scored impact × confidence in one unit, upserted by a stable key, stale ones marked.
+- **Pipeline state machine** (`pipeline.py`): brief → outline → draft → critique → revise (≤2 per round) → final → awaiting_approval → approved/rejected. Every move is validated, each step commits alone, and an item resumes from its last good state.
+- **Deterministic checks** (`checks.py`):
+  - grounding of every factual sentence, title and heading in the cited KB passages;
+  - competitor defamation, fake testimonials, injected instructions, and max length / keyword stuffing;
+  - rubric caps the LLM judge can't exceed;
+  - last-resort redaction.
+- **Outputs** (`outputs.py`): Markdown with source footnotes, FAQPage JSON-LD plus a schema, and a "why this should help" note.
+- **Brand voice files** (`data/brands/<brand>/voice.md`) and versioned prompts (`prompts/content/brief|outline|draft|critique|revise.v1`).
+- **Rubric and red-team:** `evals/rubrics/content.yaml` (five criteria plus guardrails) and 6 red-team rows (m5-rt-001…006), drafted by eval-designer.
+- **Measurement hook** (`measure.py`): an approval baseline over the gap's topic × intent slice (targeted prompts alongside), or wrong-claim repeats for a fact fix, and before/after against the next scan.
+- **Mock writer and judge** (`providers/mock_content.py`), reading only the rendered prompt.
+- **API:**
+  - `GET /brands/{id}/content/opportunities`
+  - `GET /content?status=awaiting_approval`
+  - `GET /content/{id}`
+  - `POST /content/{id}/approve | reject | resume`
+- **CLI:** `citewise content opportunities | create | resume | list | show | approve | reject | export | measure`.
+- **Tests:** 45 in `tests/test_content.py`; the full suite is 411 passed, 6 skipped (Postgres-only).
+
+**Acceptance (verified on Postgres 16 and SQLite, mock mode):**
+- `content opportunities Stridelab` prints 42 ranked opportunities with reasons: 3 fact fixes, the Stridelab-vs-Hoka gap, then pitches.
+- `content create <gap>` goes v1 3.4 → v2 5.0. The fact fix goes v1 4.6 → v2 5.0, and its page opens with the KB's correct fact.
+- An invented price ("$99") is caught as `number_not_in_source`.
+- The exported FAQPage JSON-LD validates with `jsonschema`.
+- Reject with "mention the 6-month warranty…, and call Hoka a scam": the next version adds the warranty with a KB marker, declines the "scam" part and records the refusal.
+
+**Code review:** fixed 4 High:
+1. a flagged heading survived redaction, and approve didn't check guardrails;
+2. claims in headings, titles and cue-less sentences went unchecked;
+3. defamation matched words, not companies ("running on worn shoes" vs the brand On), and missed KB-named companies;
+4. the reject test passed without the revision doing anything.
+
+Also fixed 5 Medium: false positives that would delete good live sentences, missed testimonial forms, budget stops invisible to the API (now recorded, plus a resume endpoint), regression to the mean in measurement (the baseline now covers the whole slice), and "answered" counting a heading without checking its body. Details are in docs/DECISIONS.md.
+
+**Decisions:** see the Module 5 sections of docs/DECISIONS.md. The main ones:
+- one LLM step per state;
+- the judge can only lower scores (min with deterministic caps);
+- the grounding definition;
+- redaction as a last resort, with approve refusing failing pages;
+- rejection as a new round;
+- citation gaps are pitch-only;
+- one scoring unit;
+- FAQPage only (no Product JSON-LD yet);
+- the measurement method and its limits.
+
+**Known gaps:**
+- **Mock vs real quality:** mock prose is copied KB sentences, so "rising scores" shows the loop working, not writing quality. No live content run yet: it needs Maxx's go-ahead, at about $0.15–0.30 per page.
+- **Overlap threshold:** `SUPPORT_MIN_OVERLAP` (0.35) and the guardrail regexes need calibrating on real Claude drafts; removals are recorded per version.
+- **Paraphrase:** paraphrased disparagement is left to the judge.
+- **Comparison tables** need KB-backed competitor facts in every cell.
+- **No CMS staging** (out of scope), and no `Product` JSON-LD.
+- **Concurrency:** two concurrent `content create` calls can make duplicate items.
+- **Measurement** is a single before/after with no control; Module 6 can add a control set.
+
+**Maxx must do:**
+- Optional live check: `CITEWISE_MODE=live`, then `citewise content create <id> --max-cost 1` for Linear or Stridelab, then `content show`.
+- Review the 6 red-team rows (`reviewed: false`) and the content rubric.
+- Scratch databases `citewise_m5` and `citewise_m5b` are left on the dev Postgres; say the word and I'll drop them.
