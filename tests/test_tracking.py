@@ -119,11 +119,12 @@ def test_stub_provider_failure_is_tracked_in_live_mode(
     session_factory: sessionmaker[Session], db: Session
 ) -> None:
     live = Settings(citewise_mode="live", _env_file=None)  # type: ignore[call-arg]
-    provider = get_chat_provider("anthropic", settings=live, session_factory=session_factory)
+    # Gemini/Perplexity have no chat backend for Citewise's own calls (engines only).
+    provider = get_chat_provider("gemini", settings=live, session_factory=session_factory)
     with pytest.raises(NotImplementedError):
-        provider.complete(MSGS, model="claude-haiku-5-5", purpose="engine")
+        provider.complete(MSGS, model="gemini-3.5-flash-lite", purpose="engine")
     (row,) = _rows(db)
-    assert row.ok is False and row.provider == "anthropic"
+    assert row.ok is False and row.provider == "gemini"
 
 
 class _Snapshot:

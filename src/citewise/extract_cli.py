@@ -207,7 +207,8 @@ def eval_extract(
     chat = _budgeted_chat(max_cost)
     report = evaluate(rows, load_brand_configs(settings.brands_dir), chat,
                       model=settings.model_extract, mode=settings.citewise_mode,
-                      fixtures_dir=settings.fixtures_dir)  # fmt: skip
+                      fixtures_dir=settings.fixtures_dir,
+                      provider=settings.llm_provider)  # fmt: skip
     for stage, s in report.stages.items():
         typer.echo(
             f"{stage:<7} P {s.precision:.3f}  R {s.recall:.3f}  F1 {s.f1:.3f}  "

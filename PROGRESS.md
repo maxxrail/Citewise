@@ -284,3 +284,28 @@ Stridelab mock scan, per engine: mention rate 42% (OpenAI) to 60% (Anthropic), o
 2. **Add to `.env.example`** (Claude can't read it): `EXTRACT_CONCURRENCY=4` and `METRICS_BOOTSTRAP=1000`. The defaults live in config, so this is optional.
 3. **Live check (about $0.01), still open: no `OPENAI_API_KEY` in `.env` when it was attempted on 2026-11-24.** set `CITEWISE_MODE=live`, then run `uv run python scripts/record_extract_fixtures.py --max-cost 0.10` and commit the fixtures. After that, `citewise eval extract` (mock and CI) scores the real model.
 4. ~~**Scratch databases.**~~ Dropped (`citewise_m3`, `citewise_pgtest`).
+
+### 2026-11-24 - Provider switch: Claude for Citewise's own LLM calls
+**Why:** Maxx has Anthropic API credit and no OpenAI account.
+
+**Changed:**
+- `LLM_PROVIDER=anthropic` is the default:
+  - `claude-haiku-5-5` for extraction, labelling and judging;
+  - `claude-opus-5-5` for generation;
+  - new `providers/anthropic_client.py`: Messages API with structured outputs, constraint stripping, and system prompt hoisting.
+- `EMBED_PROVIDER=local` (`BAAI/bge-small-en-v1.5` via fastembed, CPU, free), because Anthropic has no embeddings API.
+- A live command refuses to start when `MODEL_*` doesn't match `LLM_PROVIDER`.
+- OpenAI remains available for both, via `LLM_PROVIDER=openai` and `EMBED_PROVIDER=openai`.
+
+**Verified:**
+- 305 tests pass, including offline tests of the Anthropic request and response shapes, the structured-output retry, the stale-`.env` check and the local embedder.
+- The real local model ran on Windows: 384 dimensions, normalized vectors, paraphrase 0.975 vs related 0.75–0.85, so the 0.92 dedup threshold holds.
+
+**Not yet verified:**
+- Live Claude calls. There is no `ANTHROPIC_API_KEY` in `.env` yet.
+
+**Maxx must do:**
+1. Put `ANTHROPIC_API_KEY=...` in `.env`.
+2. If your `.env` has `MODEL_EXTRACT`, `MODEL_JUDGE`, `MODEL_GENERATE` or `MODEL_EMBED` lines with OpenAI models, delete them; a live command will tell you if any remain.
+3. Optionally add to `.env.example`: `LLM_PROVIDER=anthropic`, `EMBED_PROVIDER=local`, `MODEL_EXTRACT=claude-haiku-5-5`, `MODEL_JUDGE=claude-haiku-5-5`, `MODEL_GENERATE=claude-opus-5-5`, `MODEL_EMBED=BAAI/bge-small-en-v1.5`. Claude can't edit that file.
+4. Then run the Module 3 live check with the Claude key: `$env:CITEWISE_MODE="live"`, then `uv run python scripts/record_extract_fixtures.py --max-cost 0.10`.

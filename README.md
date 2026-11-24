@@ -123,17 +123,25 @@ API: `GET /brands/{id}/metrics` (query: `run_id`, `engine`, `topic`, `intent`, `
 
 ### Live mode
 
-Set `CITEWISE_MODE=live` and `OPENAI_API_KEY` in `.env`. Each answer engine needs its own key (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `PERPLEXITY_API_KEY`); only the engines you scan need one. A live `panel generate` + `cluster` for one brand is about 15 generation calls on `MODEL_GENERATE`, about 25 small classification and labeling calls on `MODEL_EXTRACT`, and 2 embedding batches. Check `llm_calls` for the exact cost. If the database already holds a mock-mode panel, run `citewise panel reset <brand>` first, because `generate` skips cells that already have prompts. Each stored embedding records its embedder (`mock:` vs `openai:`), and stale ones are re-embedded automatically. **First live scan (end to end, about $0.06):**
+Set `CITEWISE_MODE=live` and `ANTHROPIC_API_KEY` in `.env`. That one key runs everything Citewise does itself:
+- **LLM calls on Claude** (`LLM_PROVIDER=anthropic`, the default): generation on `MODEL_GENERATE` (`claude-opus-5-5`), and labelling, extraction and judging on `MODEL_EXTRACT` / `MODEL_JUDGE` (`claude-haiku-5-5`).
+- **Embeddings run locally** (`EMBED_PROVIDER=local`, `MODEL_EMBED=BAAI/bge-small-en-v1.5`), because Anthropic has no embeddings API. They are free, and the ~130 MB model downloads once to `~/.cache/citewise/fastembed`.
+
+To use OpenAI instead, set `LLM_PROVIDER=openai` and OpenAI model IDs (`MODEL_EXTRACT=gpt-6-luna`, `MODEL_GENERATE=gpt-6.2-sol`), and/or `EMBED_PROVIDER=openai` with `MODEL_EMBED=text-embedding-3-small`. A live command refuses to start if a model doesn't belong to `LLM_PROVIDER` (for example, a `.env` left pinning `gpt-*` models).
+
+Scanning an answer engine needs *that* engine's key (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, `PERPLEXITY_API_KEY`), because measuring ChatGPT means asking ChatGPT. With only a Claude key, scan with `--engines anthropic`.
+
+A live `panel generate` + `cluster` for one brand is about 15 generation calls, about 25 small classification and labelling calls, and 2 local embedding batches. Check `llm_calls` for the exact cost. If the database already holds a mock-mode panel, run `citewise panel reset <brand>` first, because `generate` skips cells that already have prompts. Each stored embedding records its embedder (`mock:`, `local:` or `openai:`), and stale ones are re-embedded automatically. **First live run with only a Claude key (end to end, about $0.06):**
 
 ```powershell
-$env:CITEWISE_MODE="live"   # or set CITEWISE_MODE=live in .env; needs OPENAI_API_KEY
-uv run citewise scan run Stridelab --size 5 --engines openai --max-cost 1
-uv run citewise scan status <run id printed above>
-uv run citewise extract run <run id> --max-cost 0.10   # Stage B on MODEL_EXTRACT, about $0.0002 per answer
+$env:CITEWISE_MODE="live"   # or set CITEWISE_MODE=live in .env; needs ANTHROPIC_API_KEY
+uv run python scripts/record_extract_fixtures.py --max-cost 0.10   # real Stage B on the golden set
+uv run citewise scan run Stridelab --size 5 --engines anthropic --max-cost 1
+uv run citewise extract run <run id printed above> --max-cost 0.10
 uv run citewise eval extract --max-cost 0.10            # live extractor F1 on the 65-answer golden set
 ```
 
-Live answers are never served from mock answers cached the same day (the cache key includes the mode). Engine model IDs are `ENGINE_MODEL_OPENAI`, `ENGINE_MODEL_ANTHROPIC`, `ENGINE_MODEL_GEMINI` (default `gemini-3.5-flash-lite`) and `ENGINE_MODEL_PERPLEXITY` (default `perplexity/sonar`; the old `sonar` ID is refused because Perplexity retired it). Model IDs are set per purpose (`MODEL_EXTRACT`, `MODEL_JUDGE`, `MODEL_GENERATE`, `MODEL_EMBED`) in `.env`.
+Live answers are never served from mock answers cached the same day (the cache key includes the mode). Engine model IDs are `ENGINE_MODEL_OPENAI`, `ENGINE_MODEL_ANTHROPIC`, `ENGINE_MODEL_GEMINI` (default `gemini-3.5-flash-lite`) and `ENGINE_MODEL_PERPLEXITY` (default `perplexity/sonar`; the old `sonar` ID is refused because Perplexity retired it). Model IDs are set per purpose (`MODEL_EXTRACT`, `MODEL_JUDGE`, `MODEL_GENERATE`, `MODEL_EMBED`) in `.env`, and the providers by `LLM_PROVIDER` / `EMBED_PROVIDER`.
 
 ## How it's built
 

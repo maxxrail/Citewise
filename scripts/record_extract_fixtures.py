@@ -4,7 +4,7 @@ In mock mode Stage B is a simulator unless a recorded response exists for the ex
 prompt. Run this once with a key and the offline eval (`citewise eval extract`, and CI)
 replays a *real model's* answers on the golden set instead of the simulator's:
 
-    $env:CITEWISE_MODE="live"   # PowerShell; needs OPENAI_API_KEY
+    $env:CITEWISE_MODE="live"   # PowerShell; needs ANTHROPIC_API_KEY
     uv run python scripts/record_extract_fixtures.py --max-cost 0.10
 
 Each golden answer costs about $0.0002 on the default MODEL_EXTRACT. Fixtures are written
@@ -37,7 +37,7 @@ def main() -> None:
     settings = get_settings()
     if settings.is_mock:
         raise SystemExit("Set CITEWISE_MODE=live: recording needs the real model.")
-    chat = BudgetedChatProvider(get_chat_provider("openai"), args.max_cost)
+    chat = BudgetedChatProvider(get_chat_provider(), args.max_cost)
     brands = load_brand_configs(settings.brands_dir)
     out_dir = settings.fixtures_dir / "mock_chat"
     written = failed = 0

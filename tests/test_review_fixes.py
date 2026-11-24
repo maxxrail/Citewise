@@ -88,7 +88,7 @@ def test_mock_mode_allows_any_model(
 
 
 def test_live_registry_turns_the_guard_on(session_factory: sessionmaker[Session]) -> None:
-    live = Settings(citewise_mode="live", openai_api_key="sk-test", _env_file=None)  # type: ignore[call-arg]
+    live = Settings(citewise_mode="live", anthropic_api_key="sk-ant-test", _env_file=None)  # type: ignore[call-arg]
     chat = get_chat_provider("anthropic", settings=live, session_factory=session_factory)
     with pytest.raises(UnpricedModelError):
         chat.complete(MSGS, model="claude-typo")

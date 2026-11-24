@@ -125,3 +125,26 @@ Format: **Decision** — why — alternative rejected.
 - **Accepted as-is:**
   - Two concurrent `extract run`s of one run are row-safe but both pay for Stage B, at about $0.03 per run (no lock until jobs go parallel).
   - Normalization edge cases like "The Group" -> "the".
+
+## Provider switch: Claude for Citewise's own LLM calls (2026-11-24)
+
+- **`LLM_PROVIDER=anthropic` is the default for every call Citewise makes itself** (panel generation, intent and topic labels, mention extraction, and later the judge and content drafts). Maxx has Anthropic API credit and no OpenAI account, and one paid account is simpler to run, budget and explain. `providers/anthropic_client.py` implements the same `ChatProvider` protocol as the OpenAI backend, so nothing above `providers/` changed. The Messages API is called with structured outputs (`output_config.format` with a JSON schema), and the shape was checked against the Claude API reference on 2026-11-24. Rejected: removing the OpenAI backend (`LLM_PROVIDER=openai` still works and is tested).
+- **Default models: `claude-haiku-5-5` for extraction, labelling and judging; `claude-opus-5-5` for generation.** CLAUDE.md's cost guardrail asks for small, cheap models on the bulk paths. Haiku 5.5 is priced like the old `gpt-6-luna` default ($0.10 / $0.50 per MTok), so live cost estimates are unchanged. Opus 5.5 ($4 / $20) covers only about 15 panel-generation calls per brand.
+- **Structured-output details.**
+  - Pydantic's `$ref`/`$defs` are sent as-is (supported).
+  - Numeric and length constraints (`minimum`, `maxLength`, `minItems`, ...) are stripped before sending, because structured outputs rejects them; `complete_structured` re-validates them with Pydantic. Property *names* such as `pattern` are never stripped.
+  - System messages are hoisted into the `system` parameter.
+  - The retry turn ends with a user message, since current Claude models don't accept assistant prefill.
+  - `stop_reason` `max_tokens` or `refusal` marks the call not ok in `llm_calls`.
+  - `max_tokens` is 16000, because adaptive thinking (on by default for Haiku and Opus 5.5) counts against it.
+- **Embeddings are local (`EMBED_PROVIDER=local`, `BAAI/bge-small-en-v1.5` via fastembed/ONNX on CPU).**
+  - **Why:** Anthropic has no embeddings API.
+  - **Model:** a small local model costs nothing, needs no key, and is strong for short-text similarity, which is what dedup, clustering and retrieval need.
+  - **Threshold check:** on a quick check, an exact paraphrase scores 0.975, related questions 0.75–0.85 and unrelated 0.40, so Module 1's 0.92 dedup threshold still separates duplicates from merely similar prompts.
+  - **Cache:** the model (about 130 MB) downloads once to `~/.cache/citewise/fastembed`, not the OS temp dir, which Windows cleans.
+  - **Existing vectors:** embeddings record their space (`local:<model>`), so vectors from an older embedder are re-embedded automatically.
+  - **Rejected:**
+    - Voyage AI, which Anthropic recommends: a second account and key, against the point of the switch.
+    - sentence-transformers: pulls in PyTorch, about 2 GB.
+- **A live command refuses to start when a model doesn't belong to `LLM_PROVIDER`.** An `.env` copied from the old `.env.example` would pin `MODEL_EXTRACT=gpt-6-luna` while the provider is Anthropic, and fail on the first paid call, mid-run. `check_models_match_provider` raises with the offending lines instead.
+- **Answer engines are unchanged and independent.** Measuring ChatGPT, Gemini or Perplexity needs that provider's key; with only a Claude key, scans use `--engines anthropic`. Mock fixtures are keyed without the provider, so mock mode and CI behave identically.
