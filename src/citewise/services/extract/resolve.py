@@ -34,7 +34,7 @@ WEB_TLD = re.compile(r"\.(?:com|io|so|app|co|ai|net|org)\b")
 # Brand names that are also ordinary English words. Stage A only matches these with the
 # brand's own capitalization and outside contexts that make them a word ("on the",
 # "on Monday"); Stage B (which reads context) has the final say.
-AMBIGUOUS_KEYS = frozenset({"on", "monday", "notion"})
+AMBIGUOUS_KEYS = frozenset({"on", "monday", "notion", "linear"})
 FUZZY_MIN_LEN = 5  # shorter keys fuzzy-match too much ("hoka" ~ "hook")
 FUZZY_THRESHOLD = 88.0
 

@@ -98,35 +98,40 @@ def scanned_client(scanned_factory: sessionmaker[Session]) -> Iterator[TestClien
 def test_api_metrics_and_competitors(
     scanned_client: TestClient, scanned_factory: sessionmaker[Session], settings: Settings
 ) -> None:
-    assert scanned_client.get("/brands/1/metrics").status_code == 409  # nothing extracted
+    from citewise.services.panel.common import resolve_brand
+
+    with scanned_factory() as s:
+        bid = resolve_brand(s, "Stridelab").id  # ids follow seed order; don't hardcode
+    base = f"/brands/{bid}"
+    assert scanned_client.get(f"{base}/metrics").status_code == 409  # nothing extracted
     extract_run(scanned_factory, 1, get_chat_provider(settings=settings,
                 session_factory=scanned_factory), settings)  # fmt: skip
 
-    body = scanned_client.get("/brands/1/metrics").json()
+    body = scanned_client.get(f"{base}/metrics").json()
     [overall] = body["slices"]
     assert overall["slice"] == "all" and overall["answers"] == 200
     assert body["citations"]["total"] > 200
 
-    by_engine = scanned_client.get("/brands/1/metrics", params={"by": "engine"}).json()
+    by_engine = scanned_client.get(f"{base}/metrics", params={"by": "engine"}).json()
     assert {s["slice"] for s in by_engine["slices"]} == {"openai", "anthropic", "gemini",
                                                         "perplexity"}  # fmt: skip
-    one = scanned_client.get("/brands/1/metrics", params={"engine": "gemini"}).json()
+    one = scanned_client.get(f"{base}/metrics", params={"engine": "gemini"}).json()
     assert one["slices"][0]["answers"] == 50
     topic_id = (
         by_engine["slices"]
-        and scanned_client.get("/brands/1/metrics", params={"by": "topic"}).json()["slices"][0][
+        and scanned_client.get(f"{base}/metrics", params={"by": "topic"}).json()["slices"][0][
             "slice"
         ]
     )
-    sliced = scanned_client.get("/brands/1/metrics", params={"topic": int(topic_id)}).json()
+    sliced = scanned_client.get(f"{base}/metrics", params={"topic": int(topic_id)}).json()
     assert 0 < sliced["slices"][0]["answers"] < 200
 
-    comps = scanned_client.get("/brands/1/competitors").json()
+    comps = scanned_client.get(f"{base}/competitors").json()
     assert any(c["emerging"] and c["canonical"] in ("Saucony", "Altra") for c in comps)
     assert all(c["entity_type"] in ("competitor", "unknown") for c in comps)
 
     assert scanned_client.get("/brands/999/metrics").status_code == 404
-    assert scanned_client.get("/brands/1/metrics", params={"by": "colour"}).status_code == 422
+    assert scanned_client.get(f"{base}/metrics", params={"by": "colour"}).status_code == 422
 
 
 def test_eval_extract_gates_on_min_f1(cli_db: str, tmp_path: Path) -> None:

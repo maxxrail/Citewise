@@ -151,7 +151,7 @@ def _known_hits(answer: str, name: str, canonical: str) -> list[tuple[int, str]]
     for m in pattern.finditer(answer):
         surface, after = m.group(0), answer[m.end() : m.end() + 15]
         before = answer[max(0, m.start() - 12) : m.start()]
-        if name.casefold() in ("on", "monday", "notion"):
+        if name.casefold() in ("on", "monday", "notion", "linear"):
             if not surface[:1].isupper():
                 continue  # "on", "monday", "a notion"
             if name.casefold() == "on" and re.match(r"\s+[a-z]", after):
