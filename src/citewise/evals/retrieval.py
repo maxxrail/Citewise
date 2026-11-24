@@ -68,10 +68,14 @@ class RetrievalReport:
         }
 
 
-def build_index(kb_dir: Path, embedder: EmbeddingProvider) -> KBIndex:
+def build_index(
+    kb_dir: Path, embedder: EmbeddingProvider, *, chunk_tokens: int = 400, overlap_tokens: int = 60
+) -> KBIndex:
+    """Chunked exactly like `kb ingest` with the same settings, so gold keys line up."""
     chunks: list[KBChunk] = []
     for doc in collect_docs(str(kb_dir), None, live=False):
-        for piece in chunk_text(doc.text, doc.title):
+        for piece in chunk_text(doc.text, doc.title, chunk_tokens=chunk_tokens,
+                                overlap_tokens=overlap_tokens):  # fmt: skip
             chunks.append(KBChunk(chunk_key=f"{doc.slug}#{piece.ord}", text=piece.text))
     for c, v in zip(
         chunks, embedder.embed([c.text for c in chunks], purpose="kb.embed"), strict=True
@@ -92,6 +96,8 @@ def evaluate_retrieval(
     mode: str,
     rerank: ChatProvider | None = None,
     rerank_model: str | None = None,
+    chunk_tokens: int = 400,
+    overlap_tokens: int = 60,
 ) -> RetrievalReport:
     indexes: dict[str, KBIndex] = {}
     overall = {m: Score() for m in METHODS if m != "hybrid+rerank" or rerank is not None}
@@ -99,7 +105,12 @@ def evaluate_retrieval(
     for row in rows:
         brand = row["brand"]
         if brand not in indexes:
-            indexes[brand] = build_index(kb_root / brand.lower(), embedder)
+            indexes[brand] = build_index(
+                kb_root / brand.lower(),
+                embedder,
+                chunk_tokens=chunk_tokens,
+                overlap_tokens=overlap_tokens,
+            )
         index, gold = indexes[brand], set(row["gold_chunk_keys"])
         for method in overall:
             if method == "hybrid+rerank":

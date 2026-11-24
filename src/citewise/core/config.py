@@ -6,7 +6,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Repo root: src/citewise/core/config.py -> parents[3]
@@ -126,6 +126,14 @@ class Settings(BaseSettings):
     fixtures_dir: Path = REPO_ROOT / "tests" / "fixtures"
     brands_dir: Path = REPO_ROOT / "data" / "brands"
     prompts_dir: Path = REPO_ROOT / "prompts"  # versioned prompt templates
+
+    @model_validator(mode="after")
+    def _overlap_below_chunk(self) -> Settings:
+        # Overlap >= chunk size re-emits nearly every sentence in every chunk: the KB
+        # (and its embedding cost) balloons several-fold without adding information.
+        if self.kb_chunk_overlap * 2 >= self.kb_chunk_tokens:
+            raise ValueError("KB_CHUNK_OVERLAP must be less than half of KB_CHUNK_TOKENS")
+        return self
 
     @property
     def is_mock(self) -> bool:

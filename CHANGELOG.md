@@ -4,7 +4,37 @@ All notable changes to Citewise are documented here. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
-### Changed (provider switch)
+## module-04 - Brand knowledge base and FactCheck (2026-11-24)
+
+### Added
+- Knowledge base (`services/kb/`):
+  - ingest of Markdown/TXT/PDF with front matter; URLs in live mode only, with robots.txt respected;
+  - sentence-aware chunking with overlap and stable `chunk_key`s;
+  - idempotent re-ingest;
+  - hybrid retrieval: BM25 plus dense cosine, fused by RRF, with an optional validated LLM re-rank (`prompts/kb/rerank.v1`).
+- FactCheck (`services/factcheck/`):
+  - claim extraction (`prompts/factcheck/claims.v1`), keeping only claims whose span is in the answer;
+  - verification (`verify.v1`), never contradicted without a verbatim KB quote;
+  - source tracing (inline marker, title and, in live mode, page text);
+  - idempotent `factcheck run`;
+  - a read model;
+  - per-engine sentiment narratives (`theme.v1`).
+- Tables `kb_docs`, `kb_chunks`, `answer_factchecks` and `claims` (migration `0006`).
+- `providers/mock_factcheck.py`: a simulated reader for claims, verify, re-rank and theme labels in mock mode.
+- KBs for Stridelab and Taskflow (`data/kb/`).
+- The mock world plants 8 wrong claims, each cited inline to a culprit page.
+- **Linear** as a real brand (`data/brands/linear.yaml`, `data/kb/linear/` from official pages, 2026-11-24).
+- Retrieval eval (`evals/retrieval.py`, golden `kb_qa.jsonl` with 36 queries; reports for mock and real local embeddings).
+- CLI:
+  - `citewise kb ingest | search`;
+  - `factcheck run | show | narrative`;
+  - `eval retrieval`.
+- API: `GET /brands/{id}/factcheck`.
+- Settings `KB_CHUNK_TOKENS` and `KB_CHUNK_OVERLAP`. Dependencies `rank-bm25` and `pypdf`.
+
+## Provider switch: Claude for Citewise's own LLM calls (2026-11-24)
+
+### Changed
 - Citewise's own LLM calls now use Claude by default (`LLM_PROVIDER=anthropic`): `claude-haiku-5-5` for extraction, labelling and judging, and `claude-opus-5-5` for generation. Adds `providers/anthropic_client.py` (Messages API with structured outputs). `LLM_PROVIDER=openai` still works.
 - Embeddings default to a local model (`EMBED_PROVIDER=local`, `BAAI/bge-small-en-v1.5` via fastembed, no key and no cost), because Anthropic has no embeddings API. `EMBED_PROVIDER=openai` still works.
 - A live command refuses to start when a configured model doesn't belong to `LLM_PROVIDER` (a stale `.env` pinning `gpt-*` models).

@@ -66,6 +66,8 @@ def _themes(
     out = []
     for c in range(n):
         idx = [i for i, lab in enumerate(labels) if lab == c]
+        if not idx:  # identical vectors can leave a KMeans cluster empty
+            continue
         centroid = vecs[idx].mean(axis=0)
         nearest = min(idx, key=lambda i: float(np.linalg.norm(vecs[i] - centroid)))
         sample = list(dict.fromkeys(snippets[i] for i in idx))[:8]

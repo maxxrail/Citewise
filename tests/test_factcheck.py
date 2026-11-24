@@ -111,7 +111,11 @@ def test_contradicted_needs_a_verbatim_quote_from_a_retrieved_chunk() -> None:
 
 def test_contains_normalizes_and_allows_ellipses() -> None:
     assert contains("The **Pro** plan  costs $12.", "the pro plan costs $12")
-    assert contains("Free is for 3 users. Pro adds timelines.", "Free is for 3 users ... timelines")
+    assert contains("Free is for 3 users and 1 GB of storage.", "Free is for 3 users ... storage")
+    # An ellipsis skips words inside a sentence, never across sentences.
+    assert not contains(
+        "Free is for 3 users. Pro adds timelines.", "Free is for 3 users ... timelines"
+    )
     assert not contains("Pro costs $12", "Pro costs $15")
 
 

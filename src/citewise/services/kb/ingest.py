@@ -20,7 +20,6 @@ from __future__ import annotations
 import hashlib
 import html
 import re
-import urllib.robotparser
 from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -35,7 +34,8 @@ from citewise.providers.base import EmbeddingProvider
 from citewise.providers.mock import estimate_tokens
 
 SUPPORTED = (".md", ".markdown", ".txt", ".pdf")
-USER_AGENT = "CitewiseBot/0.1 (+https://github.com/maxxrail/Citewise)"
+MAX_PDF_BYTES = 20_000_000
+MAX_PDF_PAGES = 300
 _SENTENCE = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9\"'(])")
 _HEADING = re.compile(r"^#{1,6}\s+(.+?)\s*#*\s*$")
 _FRONT_MATTER = re.compile(r"\A---\s*\n(.*?)\n---\s*\n", re.DOTALL)
@@ -69,6 +69,9 @@ class IngestReport:
     docs_unchanged: int = 0
     chunks: int = 0
     slugs: list[str] = field(default_factory=list)
+    # Docs in the KB that this ingest didn't include (deleted from the folder?). They stay
+    # "truth" until removed; listed so the CLI can say so.
+    orphaned: list[str] = field(default_factory=list)
 
 
 # ---------------------------------------------------------------- parsing
@@ -82,7 +85,10 @@ def slugify(name: str) -> str:
 def _parse_text(raw: str, slug: str, source: str, category: str | None) -> ParsedDoc:
     meta: dict = {}
     if m := _FRONT_MATTER.match(raw):
-        meta = yaml.safe_load(m.group(1)) or {}
+        loaded = yaml.safe_load(m.group(1))
+        if loaded is not None and not isinstance(loaded, dict):
+            raise IngestError(f"{source}: front matter must be key: value pairs")
+        meta = loaded or {}
         raw = raw[m.end() :]
     title = str(meta.get("title") or "")
     if not title:
@@ -111,9 +117,15 @@ def parse_file(path: Path, category: str | None = None) -> ParsedDoc:
     if suffix == ".pdf":
         from pypdf import PdfReader
 
-        raw = "\n\n".join((page.extract_text() or "") for page in PdfReader(path).pages)
+        if path.stat().st_size > MAX_PDF_BYTES:
+            raise IngestError(f"{path}: PDF larger than {MAX_PDF_BYTES // 1_000_000} MB")
+        reader = PdfReader(path)
+        if len(reader.pages) > MAX_PDF_PAGES:
+            raise IngestError(f"{path}: more than {MAX_PDF_PAGES} pages")
+        raw = "\n\n".join((page.extract_text() or "") for page in reader.pages)
     else:
-        raw = path.read_text(encoding="utf-8")
+        # utf-8-sig: Notepad on Windows writes a BOM, which would hide the front matter.
+        raw = path.read_text(encoding="utf-8-sig")
     return _parse_text(raw, slugify(path.stem), str(path.as_posix()), category)
 
 
@@ -127,30 +139,19 @@ def html_to_text(page: str) -> str:
 
 
 def fetch_url(url: str, category: str | None, *, timeout_s: float = 20.0) -> ParsedDoc:
-    """Live mode only (the caller checks). Honours robots.txt for our user agent."""
-    import httpx
+    """Live mode only (the caller checks): SSRF-safe, robots-respecting, size-capped."""
+    from citewise.services.kb.fetch import FetchError, fetch_text
 
-    parts = urlsplit(url)
-    if parts.scheme not in ("http", "https"):
-        raise IngestError(f"{url}: only http(s) URLs can be ingested")
-    robots = urllib.robotparser.RobotFileParser()
-    robots_url = f"{parts.scheme}://{parts.netloc}/robots.txt"
     try:
-        resp = httpx.get(robots_url, timeout=timeout_s, headers={"User-Agent": USER_AGENT})
-        robots.parse(resp.text.splitlines() if resp.status_code == 200 else [])
-    except httpx.HTTPError:
-        robots.parse([])
-    if not robots.can_fetch(USER_AGENT, url):
-        raise IngestError(f"{url}: disallowed by robots.txt")
-    resp = httpx.get(
-        url, timeout=timeout_s, follow_redirects=True, headers={"User-Agent": USER_AGENT}
-    )
-    resp.raise_for_status()
-    text = html_to_text(resp.text) if "html" in resp.headers.get("content-type", "") else resp.text
+        final, body = fetch_text(url, timeout_s=timeout_s)
+    except (FetchError, OSError) as exc:
+        raise IngestError(str(exc)) from exc
+    parts = urlsplit(final)
+    text = html_to_text(body) if "<" in body[:2000] else body
     slug = (
         slugify(parts.netloc + "-" + parts.path) if parts.path.strip("/") else slugify(parts.netloc)
     )
-    return _parse_text(text, slug, url, category)
+    return _parse_text(text, slug, final, category)
 
 
 # ---------------------------------------------------------------- chunking
@@ -248,7 +249,13 @@ def collect_docs(target: str, category: str | None, *, live: bool) -> list[Parse
         files = sorted(p for p in path.iterdir() if p.suffix.lower() in SUPPORTED)
         if not files:
             raise IngestError(f"{path}: no {', '.join(SUPPORTED)} files")
-        return [parse_file(p, category) for p in files]
+        docs = [parse_file(p, category) for p in files]
+        slugs: dict[str, str] = {}
+        for d in docs:  # "pricing.md" and "pricing.pdf" would overwrite each other
+            if d.slug in slugs:
+                raise IngestError(f"{d.source} and {slugs[d.slug]} both map to doc '{d.slug}'")
+            slugs[d.slug] = d.source
+        return docs
     if not path.exists():
         raise IngestError(f"{path}: not found")
     return [parse_file(path, category)]
@@ -304,4 +311,6 @@ def ingest(
         report.chunks += len(chunks)
         report.slugs.append(doc.slug)
     session.flush()
+    known = set(session.scalars(select(KBDoc.slug).where(KBDoc.brand_id == brand.id)))
+    report.orphaned = sorted(known - set(report.slugs))
     return report

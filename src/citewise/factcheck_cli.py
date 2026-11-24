@@ -47,6 +47,12 @@ def kb_ingest(
         f"{b.name}: {report.docs_added} added, {report.docs_updated} updated, "
         f"{report.docs_unchanged} unchanged; {report.chunks} chunks written"
     )
+    if report.orphaned and not path.startswith(("http://", "https://")):
+        typer.secho(
+            f"  still in the KB but not in this ingest: {', '.join(report.orphaned)} "
+            "(deleted files keep counting as truth until removed)",
+            fg=typer.colors.YELLOW,
+        )
 
 
 @kb_app.command("search")
@@ -56,10 +62,11 @@ def kb_search(
     k: int = typer.Option(5, min=1, max=20),
     mode: str = typer.Option("hybrid", help="bm25, dense or hybrid."),
     rerank: bool = typer.Option(False, help="LLM re-rank of the top 20 (costs a call)."),
+    max_cost: float | None = typer.Option(None, min=0, help=MAX_COST_HELP),
 ) -> None:
     """Show what the KB returns for a query (debug retrieval)."""
     from citewise.core.db import session_scope
-    from citewise.providers import get_chat_provider, get_embedder
+    from citewise.providers import get_embedder
     from citewise.services.kb.retrieve import KBIndex
     from citewise.services.panel.common import BrandNotFoundError, resolve_brand
 
@@ -70,7 +77,7 @@ def kb_search(
         with session_scope() as session:
             index = KBIndex.load(session, resolve_brand(session, brand).id)
         hits = index.search(query, get_embedder(), k=k, mode=mode,  # type: ignore[arg-type]
-                            rerank=get_chat_provider() if rerank else None,
+                            rerank=_budgeted_chat(max_cost) if rerank else None,
                             rerank_model=settings.model_judge)  # fmt: skip
     except (BrandNotFoundError, ValueError) as exc:
         _fail(str(exc))
@@ -87,6 +94,9 @@ def factcheck_run_cmd(
     run_id: int = typer.Argument(..., help="Scan run id (extracted with `extract run`)."),
     force: bool = typer.Option(False, "--force", help="Re-check answers already done."),
     rerank: bool = typer.Option(False, help="LLM re-rank of KB evidence (more calls)."),
+    fetch_sources: bool = typer.Option(
+        False, "--fetch-sources", help="Live only: read cited pages to trace wrong claims."
+    ),
     max_cost: float | None = typer.Option(None, min=0, help=MAX_COST_HELP),
 ) -> None:
     """Extract the brand claims in a run's answers and verify each against the KB."""
@@ -98,7 +108,7 @@ def factcheck_run_cmd(
     chat = _budgeted_chat(max_cost)
     try:
         r = factcheck_run(get_sessionmaker(), run_id, chat, get_embedder(), settings,
-                          force=force, rerank=rerank)  # fmt: skip
+                          force=force, rerank=rerank, fetch_sources=fetch_sources)  # fmt: skip
     except ValueError as exc:
         _fail(str(exc))
         return
@@ -161,10 +171,11 @@ def factcheck_show(
 def factcheck_narrative(
     brand: str = typer.Argument(..., help="Brand name or id."),
     run: int | None = typer.Option(None, "--run", help="Run id (default: latest extracted)."),
+    max_cost: float | None = typer.Option(None, min=0, help=MAX_COST_HELP),
 ) -> None:
     """Per engine: the top positive and negative themes in how it describes the brand."""
     from citewise.core.db import session_scope
-    from citewise.providers import get_chat_provider, get_embedder
+    from citewise.providers import get_embedder
     from citewise.services.factcheck.narrative import narratives
     from citewise.services.metrics.visibility import NoExtractionsError, latest_extracted_run
     from citewise.services.panel.common import BrandNotFoundError, resolve_brand
@@ -174,8 +185,8 @@ def factcheck_narrative(
         with session_scope() as session:
             b = resolve_brand(session, brand)
             run_id = run or latest_extracted_run(session, b.id)
-            out = narratives(session, b.id, b.name, run_id, get_embedder(), get_chat_provider(),
-                             settings.model_judge)  # fmt: skip
+            out = narratives(session, b.id, b.name, run_id, get_embedder(),
+                             _budgeted_chat(max_cost), settings.model_judge)  # fmt: skip
     except (BrandNotFoundError, NoExtractionsError, ValueError) as exc:
         _fail(str(exc))
         return
@@ -204,7 +215,9 @@ def eval_retrieval(
     chat = _budgeted_chat(max_cost) if rerank else None
     report = evaluate_retrieval(load_rows(golden), settings.brands_dir.parent / "kb", embedder,
                                 mode=settings.citewise_mode, rerank=chat,
-                                rerank_model=settings.model_judge)  # fmt: skip
+                                rerank_model=settings.model_judge,
+                                chunk_tokens=settings.kb_chunk_tokens,
+                                overlap_tokens=settings.kb_chunk_overlap)  # fmt: skip
     for m, s in report.overall.items():
         x = s.summary()
         typer.echo(f"{m:<14} recall@1 {x['recall@1']:.3f}  recall@5 {x['recall@5']:.3f}  "
@@ -218,3 +231,47 @@ def eval_retrieval(
     typer.echo(f"report: {out}")
     if chat is not None:
         _budget_note(chat)
+
+
+FACTCHECK_GOLDEN = REPO_ROOT / "evals" / "datasets" / "golden" / "factcheck_claims.jsonl"
+FACTCHECK_REPORT = REPO_ROOT / "evals" / "reports" / "factcheck_eval.md"
+
+
+@eval_app.command("factcheck")
+def eval_factcheck(
+    golden: Path = typer.Option(FACTCHECK_GOLDEN, help="Held-out claims (JSONL)."),
+    out: Path = typer.Option(FACTCHECK_REPORT, help="Markdown report path."),
+    max_cost: float | None = typer.Option(None, min=0, help=MAX_COST_HELP),
+) -> None:
+    """Verifier accuracy, false-contradiction rate and evidence hit rate on held-out claims."""
+    from citewise.evals.factcheck import evaluate_factcheck, load_rows, render_markdown
+    from citewise.providers import get_embedder
+
+    settings = get_settings()
+    chat = _budgeted_chat(max_cost)
+    report = evaluate_factcheck(load_rows(golden), settings.brands_dir.parent / "kb",
+                                get_embedder(), chat, model=settings.model_judge,
+                                mode=settings.citewise_mode,
+                                chunk_tokens=settings.kb_chunk_tokens,
+                                overlap_tokens=settings.kb_chunk_overlap)  # fmt: skip
+    d = report.as_dict()
+    fcr = d["false_contradiction_rate"]
+    typer.echo(f"accuracy {d['accuracy']:.3f}  false-contradiction rate "
+               f"{'-' if fcr is None else f'{fcr:.3f}'}  "
+               f"evidence hit rate {d['evidence_hit_rate']}")  # fmt: skip
+    for v, pv in d["per_verdict"].items():
+        typer.echo(f"  {v:<13} precision {pv['precision']}  recall {pv['recall']}")
+    note = (
+        "Mock mode: the verifier is the simulated reader (providers/mock_factcheck.py), "
+        "unless recorded real responses exist for these prompts. These claims were written "
+        "without seeing its rules, so this is the honest offline measure of it."
+        if settings.is_mock
+        else f"Live verifier: {settings.model_judge}."
+    )
+    rel = golden.relative_to(REPO_ROOT) if golden.is_relative_to(REPO_ROOT) else golden
+    out.parent.mkdir(parents=True, exist_ok=True)
+    today = datetime.now(UTC).date().isoformat()
+    out.write_text(render_markdown(report, rel.as_posix(), today, note), encoding="utf-8")
+    out.with_suffix(".json").write_text(json.dumps(d, indent=2) + "\n", encoding="utf-8")
+    typer.echo(f"report: {out}")
+    _budget_note(chat)

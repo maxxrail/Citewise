@@ -82,3 +82,38 @@ A script checked that every line parses, that ids are unique and that every gold
 - Gold keys depend on the current chunking. If the chunker or a KB doc changes, re-check the keys. The build script validates
   that keys exist, not that they still hold the answer.
 - One labeller wrote both the queries and the labels, so paraphrases may still carry some lexical overlap.
+
+## factcheck_claims.jsonl (Module 4, FactCheck verifier, held out)
+
+**What it measures.** Whether the verifier gives the right verdict (`supported | contradicted | not_in_kb`) for an
+engine-style claim about a brand, judged against that brand's KB in `data/kb/<brand>/`. Report accuracy and a
+3x3 confusion matrix, overall and per brand. Two error types matter most: `not_in_kb` rows marked
+`contradicted`, which are false accusations, and `contradicted` rows marked `supported`, which are missed errors.
+For `contradicted` predictions, also check that the quoted evidence contains `evidence_hint`.
+
+**Format.** One JSON object per line with these fields: `id, brand, claim, expected_verdict, evidence_hint, kind, difficulty, note, reviewed`.
+`evidence_hint` is a short phrase copied verbatim from the brand's KB that settles the claim. It is `null` for `not_in_kb`.
+`kind` is a free-text tag for the claim's shape, for example `wrong_year`, `plan_mismatch`, `number_misattributed`,
+`true_negation`, `paraphrase_true`, `high_overlap_unsettled` or `related_unsettled`.
+
+**How it was built (45 rows, 15 per brand: 6 contradicted, 5 supported, 4 not_in_kb).** Claude Code wrote the claims
+from the KB Markdown and the Module 4 spec only. It did not read the mock verifier, the factcheck services or prompts,
+or the planted claims in the engine fixtures, so the rows are held out from the rules they score. The rows also avoid
+the 12 `claim`-style rows in `kb_qa.jsonl`. A script checked that every line parses, that the ids are unique, and that every
+`evidence_hint` is a verbatim substring of that brand's KB docs. Every row is `reviewed: false` until Maxx checks it.
+
+**Labelling conventions.**
+- `contradicted` means the KB states something incompatible with the claim. This includes plan structure ("Business adds
+  SAML", so a claim that Pro has SAML is contradicted) and closed lists ("ships to the United States and Canada only").
+- `not_in_kb` means the KB is silent. Silence plus related facts is still `not_in_kb`. For example, "distributed across
+  North America and Europe" does not settle a headquarters city, and listing integrations does not settle which plan they are on.
+- A claim with one true part and one false part is `contradicted`.
+- Derived facts (a $3 price difference, "highest drop of the lineup") are `supported` when they follow from KB numbers.
+
+**Known biases and limits.**
+- One person wrote both the claims and the labels, and the claims stick close to the KB. Real engine errors are messier.
+- The KBs are tiny, so retrieval rarely fails. This set mostly tests the judge, not the retriever.
+- The 13 `hard` rows (misattributed numbers, plan mismatches, high-overlap `not_in_kb`) are the useful signal. Report them separately.
+- Two Taskflow and Linear `not_in_kb` rows (`fc-taskflow-15`, `fc-linear-15`) resemble facts from the *other* brand's KB.
+  They only test cross-brand leaks if the verifier is ever given evidence from more than one brand.
+- The `contradicted`/`not_in_kb` line is a judgement call on a few rows. See the notes on `fc-taskflow-02`, `fc-linear-12` and `fc-taskflow-13`.
