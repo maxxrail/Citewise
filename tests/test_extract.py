@@ -256,3 +256,50 @@ def test_extract_run_stops_at_the_spend_cap_without_marking_answers_done(
     assert _counts(scanned_factory, 1)[1] == report.extracted  # the rest stay unextracted
     rest = extract_run(scanned_factory, 1, inner, settings)
     assert rest.extracted == report.budget_stopped
+
+
+def test_links_are_sources_not_mentions() -> None:
+    text = (
+        "Pricing is on https://taskflow.example/pricing and www.taskflow.example/plans.\n"
+        "Compare with asana.com/pricing. Monday.com is popular."
+    )
+    got = {m.canonical for m in stage_a(text, PM)}
+    assert got == {"Monday.com"}  # a bare "Monday.com" is a name; links are not
+    b = [_b("taskflow", "Taskflow"), _b("Monday.com")]
+    merged, dis = merge(text, PM, stage_a(text, PM), b)
+    assert {m.canonical for m in merged} == {"Monday.com"}
+    assert {"type": "b_only_in_url", "canonical": "Taskflow"} in dis
+
+
+def test_fragments_of_a_known_name_are_dropped() -> None:
+    text = "Here are some of the best options:\n1. **New Balance 880**: wide.\n2. **Nike**: fast."
+    merged, dis = merge(text, SHOES, stage_a(text, SHOES), [_b("New"), _b("Nike")])
+    by = {m.canonical: m.rank for m in merged}
+    assert by == {"New Balance": 1, "Nike": 2}  # "New" would have taken rank 1
+    assert {"type": "b_fragment", "entity": "New"} in dis
+
+
+@pytest.mark.parametrize(
+    "prompt",
+    ["How much does Linear cost for 30 users?", "fast issue tracker that devs actually like",
+     "taskflw review", "best all-in-one workspace for startups"],
+)  # fmt: skip
+def test_simulator_answers_pm_questions_about_pm_not_shoes(prompt: str, settings: Settings) -> None:
+    """Regression: with no keyword hit the simulator fell back to the first category, so
+    Taskflow scans got running-shoe answers (27 of 300 panel prompts)."""
+    from citewise.providers.engines.mock import MockEngine
+
+    cat = MockEngine("openai", "m", settings.fixtures_dir)._category(prompt)
+    assert cat is not None and "Taskflow" in cat["brands"]
+
+
+def test_simulator_answers_uncategorised_questions_without_brands(settings: Settings) -> None:
+    import asyncio
+
+    from citewise.providers.engines.mock import MockEngine
+
+    ans = asyncio.run(
+        MockEngine("gemini", "m", settings.fixtures_dir).answer("what is a raci chart")
+    )
+    assert ans.text and not ans.citations
+    assert stage_a(ans.text, PM) == [] and stage_a(ans.text, SHOES) == []

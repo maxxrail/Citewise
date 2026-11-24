@@ -50,6 +50,18 @@ _TOKEN = re.compile(r"[\w][\w.'’&-]*")
 _WEEKDAY_BEFORE = re.compile(r"\b(?:on|every|next|last|this|by|until|since|a)\s+$", re.I)
 _WEEKDAY_AFTER = re.compile(r"^\s+(?:morning|afternoon|evening|night|through|to)\b", re.I)
 _LOWER_WORD_AFTER = re.compile(r"^\s+[a-z]")
+# Links are sources, not mentions: "taskflow.example/pricing" doesn't name the company in
+# the answer (it feeds citation share instead). A bare "Monday.com" is a name, so a domain
+# only counts as a link with a scheme, "www." or a path.
+_URL = re.compile(r"https?://\S+|\bwww\.\S+|\b[\w-]+(?:\.[\w-]+)*\.[a-z]{2,}/\S*", re.I)
+
+
+def url_spans(text: str) -> list[tuple[int, int]]:
+    return [m.span() for m in _URL.finditer(text)]
+
+
+def _in_spans(pos: int, spans: list[tuple[int, int]]) -> bool:
+    return any(s <= pos < e for s, e in spans)
 
 
 @dataclass
@@ -165,14 +177,19 @@ def stage_a(text: str, resolver: Resolver) -> list[Mention]:
             ),
         )  # fmt: skip
         # Several aliases (Stridelab, Stride Lab) share one canonical: merge by canonical.
-        m.positions.append(pos)
+        if pos not in m.positions:  # two aliases can match at one offset
+            m.positions.append(pos)
         m.ambiguous_only = m.ambiguous_only and ambiguous
         if pos == min(m.positions):
             m.entity = surface
 
+    urls = url_spans(text)
     for name in resolver.names:
         regex = _alias_regex(name.surface, case_sensitive=name.ambiguous)
         for match in regex.finditer(text):
+            if _in_spans(match.start(), urls):
+                taken.add(match.start())  # don't let the fuzzy pass pick it up either
+                continue
             if name.ambiguous and not _ambiguous_is_brand(text, match, name.key):
                 continue
             taken.add(match.start())
@@ -189,7 +206,7 @@ def stage_a(text: str, resolver: Resolver) -> list[Mention]:
         if (prev := by_canonical.get(m.key)) is None:
             by_canonical[m.key] = m
             continue
-        prev.positions += m.positions
+        prev.positions = sorted(set(prev.positions) | set(m.positions))
         prev.ambiguous_only = prev.ambiguous_only and m.ambiguous_only
         if min(m.positions) < min(prev.positions):
             prev.entity = m.entity
@@ -280,6 +297,8 @@ def merge(
         b_by_key[r.key] = (mention, x.rank)
 
     a_by_key = {m.key: m for m in a}
+    a_positions = {p for m in a for p in m.positions}
+    urls = url_spans(text)
     merged: list[Mention] = []
     for key in list(a_by_key) + [k for k in b_by_key if k not in a_by_key]:
         ma, (mb, _) = a_by_key.get(key), b_by_key.get(key, (None, None))
@@ -297,7 +316,16 @@ def merge(
                 disagreements.append({"type": "a_only", "canonical": ma.canonical})
             merged.append(ma)
         elif mb is not None:
-            mb.positions = occurrences(text, mb.entity) or occurrences(text, mb.canonical)
+            found = occurrences(text, mb.entity) or occurrences(text, mb.canonical)
+            mb.positions = [p for p in found if not _in_spans(p, urls)]
+            if found and not mb.positions:
+                disagreements.append({"type": "b_only_in_url", "canonical": mb.canonical})
+                continue
+            if mb.entity_type == "unknown" and mb.positions and set(mb.positions) <= a_positions:
+                # Every occurrence starts where a known name does: a fragment of it ("New"
+                # from "New Balance 880"), which would also steal that name's list rank.
+                disagreements.append({"type": "b_fragment", "entity": mb.entity})
+                continue
             if mb.entity_type != "unknown":
                 disagreements.append({"type": "b_only", "canonical": mb.canonical})
             merged.append(mb)

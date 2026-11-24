@@ -9,6 +9,7 @@ import typer
 
 from citewise.core.config import get_settings
 from citewise.core.logging import configure_logging
+from citewise.extract_cli import eval_app, extract_app, metrics_app
 from citewise.panel_cli import panel_app
 from citewise.scan_cli import scan_app, schedule_app, worker
 
@@ -16,6 +17,9 @@ app = typer.Typer(help="Citewise: AI-search visibility platform.", no_args_is_he
 app.add_typer(panel_app, name="panel")
 app.add_typer(scan_app, name="scan")
 app.add_typer(schedule_app, name="schedule")
+app.add_typer(extract_app, name="extract")
+app.add_typer(metrics_app, name="metrics")
+app.add_typer(eval_app, name="eval")
 app.command()(worker)
 
 
