@@ -105,6 +105,10 @@ class Settings(BaseSettings):
     # Bootstrap resamples for metric confidence intervals.
     metrics_bootstrap: int = Field(default=1000, ge=100, le=5000)  # memory: n x prompts
 
+    # Knowledge base (Module 4): chunk size and overlap, in estimated tokens.
+    kb_chunk_tokens: int = Field(default=400, ge=50, le=2000)
+    kb_chunk_overlap: int = Field(default=60, ge=0, le=500)
+
     # Prompt panel (Module 1).
     panel_prompts_per_cell: int = Field(default=20, ge=1, le=50)  # per (intent x persona)
     panel_dedup_threshold: float = Field(default=0.92, gt=0, le=1)

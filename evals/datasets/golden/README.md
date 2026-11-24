@@ -47,3 +47,38 @@ is_recommended`. `entity_type` depends on the row's `brand`: a shoe brand in a T
 - `hard-007` (products without maker names) needs product-to-maker knowledge that Stage A alias matching cannot have.
   If it drags F1 down, report it separately rather than relabelling it.
 - `taskflow-034/038/039/042` and others where the brand is absent (31 rows) test precision on the brand. They do not test mention rate.
+
+## kb_qa.jsonl (Module 4, KB retrieval)
+
+**What it measures.** Whether KB retrieval (BM25, dense, hybrid RRF, hybrid + re-rank) puts the chunk that answers a
+question, or settles a claim, in the top 5 of that brand's chunks. Report recall@5 and MRR per retriever, overall and
+split by `style`. Retrieval is always scoped to one brand.
+
+**Format.** One JSON object per line with these fields: `id, brand, query, gold_chunk_keys[], style, difficulty, note, reviewed`.
+`gold_chunk_keys` are `<doc slug>#<chunk index>` keys of the indexed chunks (for example `pricing#0` = first chunk of
+`data/kb/linear/pricing.md`). A row lists every chunk that contains the answer. Usually that is one chunk; 7 rows list two,
+where the fact is split across docs or repeated (for example Linear SAML in `security#2` and `pricing#0`). For recall@5,
+count a row as a hit if **any** gold key is in the top 5. MRR uses the best-ranked gold key.
+
+**Styles (12 rows per brand, 4 of each style).**
+- `lexical`: reuses the KB's own terms ("How much is the Linear Business plan per user?").
+- `paraphrase`: the same need in other words, avoiding the KB's distinctive terms ("let outside contractors in" for
+  guest accounts, "front of the foot" for forefoot). This is where BM25 and dense retrieval should differ.
+- `claim`: an engine-style statement to fact-check. The note gives the expected verdict. 3 are true, 8 false (one partly true: `kbqa-stridelab-10`) and 1 is
+  `not_in_kb` (`kbqa-linear-12`, the funding round). The gold chunk is the one a judge needs to see to reach the verdict.
+
+**How it was built.** Claude Code wrote the rows from the KB Markdown in `data/kb/` and a dump of the indexed chunks
+(brand, key, text). It did not read or run `src/citewise/services/kb/`, so the labels are not tuned to the retriever.
+A script checked that every line parses, that ids are unique and that every gold key exists for that brand. All rows are
+`reviewed: false` until Maxx checks them.
+
+**Known biases and limits.**
+- The KBs are tiny (10, 11 and 19 chunks), so recall@5 is easy to reach: with 10 chunks a random top 5 gets about 50%.
+  MRR and the paraphrase split are the more useful signals.
+- Coverage: every Stridelab and Taskflow chunk is gold at least once. 7 Linear chunks are never gold (`audience#0, billing#0,
+  company#0, company#2, pricing#1, pricing#2, pricing#3`). Several of them are deliberate distractors in notes.
+- Claims lean false (8 of 12) because the fact-checker's job is mostly catching wrong claims. Do not read verdict
+  balance into retrieval numbers.
+- Gold keys depend on the current chunking. If the chunker or a KB doc changes, re-check the keys. The build script validates
+  that keys exist, not that they still hold the answer.
+- One labeller wrote both the queries and the labels, so paraphrases may still carry some lexical overlap.
