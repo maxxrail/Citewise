@@ -1,0 +1,179 @@
+# What the mock answer engines "know". Used by providers/engines/mock.py to write
+# deterministic, realistic answers (brand mentions in ranked lists, mixed sentiment,
+# citations) so Module 2-4 pipelines have meaningful data offline.
+#
+# Stridelab and Taskflow are fictional. Competitor facts are generic, non-numeric phrasing
+# (no invented statistics). Each brand has `claims`, used verbatim in answers: `true: false`
+# claims are deliberately wrong so Module 4 FactCheck has something to catch. Keep them
+# consistent with data/kb/ once Module 4 writes the knowledge base.
+
+categories:
+  running shoes:
+    keywords: [shoe, shoes, run, running, runner, marathon, trail, sneaker, sneakers, 5k, 10k, ultra, jog, pronation, heel drop, cushion, insole]
+    brands:
+      Stridelab:
+        aliases: [StrideLab, Stride Lab, stridelab]
+        domain: stridelab.example
+        products: [Stridelab Tempo, Stridelab Trail, Stridelab Long Run]
+        positives:
+          - a newer direct-to-consumer brand with a wide toe box
+          - well liked for a roomy fit and a responsive midsole
+          - praised in reviews for grip on wet trails
+        negatives:
+          - a smaller brand, so sizing feedback is still limited
+          - some reviewers report the upper wears quickly on rocky trails
+        claims:
+          - {text: "Stridelab offers a 60-day trial on unworn and worn shoes", true: true}
+          - {text: "Stridelab shoes come with a 6-month warranty against defects", true: true}
+          - {text: "Stridelab only sells through Amazon", true: false}
+          - {text: "Stridelab shoes are made in Italy", true: false}
+      Nike:
+        aliases: [Nike]
+        domain: nike.com
+        products: [Nike Pegasus, Nike Vaporfly, Nike Invincible]
+        positives: [a versatile daily trainer with wide availability, a popular choice for race day]
+        negatives: [can run narrow for wide feet]
+      Hoka:
+        aliases: [Hoka, HOKA]
+        domain: hoka.com
+        products: [Hoka Clifton, Hoka Bondi, Hoka Speedgoat]
+        positives: [known for max cushioning on long runs, a favourite of ultra and trail runners]
+        negatives: [some runners find the high stack less stable]
+      Brooks:
+        aliases: [Brooks]
+        domain: brooksrunning.com
+        products: [Brooks Ghost, Brooks Adrenaline GTS, Brooks Glycerin]
+        positives: [a dependable choice for beginners, well regarded stability options for overpronation]
+        negatives: [not the lightest option for racing]
+      ASICS:
+        aliases: [ASICS, Asics]
+        domain: asics.com
+        products: [ASICS Gel-Kayano, ASICS Novablast, ASICS Gel-Nimbus]
+        positives: [strong stability and support, durable outsoles]
+        negatives: [some models feel firm at first]
+      New Balance:
+        aliases: [New Balance]
+        domain: newbalance.com
+        products: [New Balance 880, New Balance Fresh Foam 1080, New Balance Hierro]
+        positives: [offers many widths for wide feet, comfortable on long easy runs]
+        negatives: [model names can be confusing]
+      "On":
+        aliases: ["On", On Running, On Cloud]
+        domain: on.com
+        products: [On Cloudmonster, On Cloudsurfer]
+        positives: ["distinctive design and a firm, snappy ride"]
+        negatives: [can feel firm for heavier runners]
+    publishers:
+      - {domain: runnersworld.com, path: /gear/a2/best-running-shoes, title: "Best Running Shoes | Runner's World"}
+      - {domain: runrepeat.com, path: /catalog/running-shoes, title: "Running shoe reviews and lab tests | RunRepeat"}
+      - {domain: reddit.com, path: /r/RunningShoeGeeks/comments/x1/, title: "r/RunningShoeGeeks"}
+      - {domain: reddit.com, path: /r/running/comments/x2/, title: "r/running"}
+      - {domain: believeintherun.com, path: /reviews, title: "Running shoe reviews | Believe in the Run"}
+      - {domain: outsideonline.com, path: /outdoor-gear/run/best-trail-running-shoes, title: "Best Trail Running Shoes | Outside"}
+      - {domain: youtube.com, path: "/watch?v=abc123", title: "Running shoe review - YouTube"}
+
+  project management software:
+    keywords: [project, task, tasks, pm, kanban, sprint, scrum, agile, gantt, roadmap, team, workflow, tool, software, app, jira, backlog, agency, client]
+    brands:
+      Taskflow:
+        aliases: [TaskFlow, Taskflow PM, Task Flow, taskflow]
+        domain: taskflow.example
+        products: [Taskflow Boards, Taskflow Timelines, Taskflow Client Portal]
+        positives:
+          - a newer tool with a clean interface and fast setup
+          - well suited to agencies thanks to its client portal
+          - easy to adopt for small teams moving off spreadsheets
+        negatives:
+          - its integration library is smaller than the market leaders'
+          - advanced reporting is still limited
+        claims:
+          - {text: "Taskflow has a free plan for up to 3 users", true: true}
+          - {text: "Taskflow includes a client portal with guest access on paid plans", true: true}
+          - {text: "Taskflow has no Jira import", true: false}
+          - {text: "Taskflow is only available as a desktop app", true: false}
+      Asana:
+        aliases: [Asana]
+        domain: asana.com
+        products: [Asana]
+        positives: [polished and widely adopted, strong for cross-team work management]
+        negatives: [can get expensive as teams grow]
+      Monday.com:
+        aliases: [Monday.com, monday.com, Monday]
+        domain: monday.com
+        products: [monday work management]
+        positives: [highly visual and customizable boards]
+        negatives: [pricing tiers can be confusing]
+      Trello:
+        aliases: [Trello]
+        domain: trello.com
+        products: [Trello]
+        positives: [simple kanban boards that are easy to start with]
+        negatives: [limited for complex projects]
+      ClickUp:
+        aliases: [ClickUp, Clickup]
+        domain: clickup.com
+        products: [ClickUp]
+        positives: [packs many features into one app]
+        negatives: [the interface can feel overwhelming]
+      Notion:
+        aliases: [Notion]
+        domain: notion.so
+        products: [Notion Projects]
+        positives: [great for docs and wikis alongside tasks]
+        negatives: [less structured for formal project tracking]
+      Jira:
+        aliases: [Jira, JIRA]
+        domain: atlassian.com
+        products: [Jira Software]
+        positives: [the standard for software teams running scrum]
+        negatives: [heavy for non-technical teams]
+    publishers:
+      - {domain: g2.com, path: /categories/project-management, title: "Best Project Management Software | G2"}
+      - {domain: capterra.com, path: /project-management-software/, title: "Project Management Software | Capterra"}
+      - {domain: reddit.com, path: /r/projectmanagement/comments/y1/, title: "r/projectmanagement"}
+      - {domain: zapier.com, path: /blog/best-project-management-software/, title: "The best project management software | Zapier"}
+      - {domain: pcmag.com, path: /picks/the-best-project-management-software, title: "The Best Project Management Software | PCMag"}
+      - {domain: forbes.com, path: /advisor/business/software/best-project-management-software/, title: "Best Project Management Software | Forbes Advisor"}
+
+# How each engine behaves. `own_brand_rate`: chance an answer that doesn't already name the
+# tracked brand mentions it anyway (drives per-engine share of voice in Module 3).
+# `brand_bias`: weight multipliers when picking which competitors to list.
+# `negative_rate`: chance a mentioned brand gets one of its negatives.
+# `claim_rate`: chance the tracked brand's mention carries one of its claims.
+# `utm`: OpenAI appends utm_source=openai to cited links. `redirect`: Gemini returns
+# vertexaisearch grounding-redirect URLs with the real domain only in the title.
+engines:
+  openai:
+    own_brand_rate: 0.30
+    brand_bias: {Nike: 1.4, Hoka: 1.2, Asana: 1.4, Jira: 1.2}
+    negative_rate: 0.25
+    claim_rate: 0.35
+    citations: [3, 5]
+    publisher_bias: {runnersworld.com: 2.0, zapier.com: 2.0}
+    brand_site_rate: 0.3
+    utm: true
+  anthropic:
+    own_brand_rate: 0.40
+    brand_bias: {Brooks: 1.4, ASICS: 1.3, Notion: 1.3, Trello: 1.2}
+    negative_rate: 0.35
+    claim_rate: 0.30
+    citations: [2, 4]
+    publisher_bias: {runrepeat.com: 2.0, g2.com: 2.0}
+    brand_site_rate: 0.4
+  gemini:
+    own_brand_rate: 0.20
+    brand_bias: {Nike: 1.5, ASICS: 1.2, Monday.com: 1.4, ClickUp: 1.3}
+    negative_rate: 0.20
+    claim_rate: 0.25
+    citations: [3, 6]
+    publisher_bias: {youtube.com: 2.5, forbes.com: 2.0, outsideonline.com: 1.5}
+    brand_site_rate: 0.3
+    redirect: true
+  perplexity:
+    own_brand_rate: 0.50
+    brand_bias: {Hoka: 1.3, On: 1.2, ClickUp: 1.4, Asana: 1.1}
+    negative_rate: 0.30
+    claim_rate: 0.45
+    citations: [4, 7]
+    publisher_bias: {reddit.com: 3.0, capterra.com: 1.5}
+    brand_site_rate: 0.5

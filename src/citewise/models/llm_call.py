@@ -22,6 +22,9 @@ class LLMCall(Base):
         DateTime(timezone=True), default=utcnow, nullable=False, index=True
     )
     purpose: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    # Set for calls made inside a scan run (Module 2): per-run spend = SUM(cost_usd).
+    # No FK on purpose: the cost log must survive deleting a run.
+    run_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
     kind: Mapped[str] = mapped_column(String(16), nullable=False)  # "chat" | "embed"
     provider: Mapped[str] = mapped_column(String(32), nullable=False)
     model: Mapped[str] = mapped_column(String(128), nullable=False)

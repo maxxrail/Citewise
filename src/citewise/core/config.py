@@ -43,11 +43,34 @@ class Settings(BaseSettings):
     # Answer-engine models (used from Module 2).
     engine_model_openai: str = "gpt-6-luna"
     engine_model_anthropic: str = "claude-haiku-5-5"
-    engine_model_gemini: str = "gemini-3.1-flash-lite"
-    # Perplexity moved Sonar to its Agent API (Jul 2026); re-verify the ID in Module 2.
-    engine_model_perplexity: str = "sonar"
+    # Checked 2026-11-23: gemini-3.1-flash-lite is missing from Google's list of models
+    # supported by Search grounding, so the default is 3.5 Flash-Lite (listed on both pages).
+    engine_model_gemini: str = "gemini-3.5-flash-lite"
+    # Sonar Chat Completions ended 2026-09-27; the Agent API ID is "perplexity/sonar".
+    engine_model_perplexity: str = "perplexity/sonar"
 
     max_cost_usd_per_run: float = Field(default=3.0, ge=0)
+
+    # Scan runner (Module 2). Per-engine limits are deliberately conservative defaults:
+    # Perplexity Tier 0 allows 1 query/second, so its rate is the binding one.
+    scan_concurrency: int = Field(default=4, ge=1, le=64)  # in-flight requests per engine
+    scan_rate_per_s: dict[str, float] = Field(
+        default_factory=lambda: {"openai": 5.0, "anthropic": 3.0, "gemini": 3.0, "perplexity": 1.0}
+    )
+    scan_max_attempts: int = Field(default=4, ge=1, le=10)  # first try + retries
+    scan_backoff_base_s: float = Field(default=1.0, gt=0)  # 1s, 2s, 4s ... plus jitter
+    scan_backoff_max_s: float = Field(default=30.0, gt=0)
+    scan_max_searches: int = Field(default=3, ge=1, le=10)  # per answer, where supported
+    # Budget estimate per answer: answers with search run long, and search results are
+    # billed as input tokens.
+    scan_est_tokens_in: int = Field(default=3000, ge=0)
+    scan_est_tokens_out: int = Field(default=700, ge=0)
+    # Expected searches per answer, by engine: OpenAI and Perplexity usually make one web
+    # search call per answer; Anthropic (up to max_uses) and Gemini (every grounding query is
+    # billed) often make more.
+    scan_est_searches: dict[str, float] = Field(
+        default_factory=lambda: {"openai": 1.0, "anthropic": 1.5, "gemini": 1.5, "perplexity": 1.0}
+    )
 
     # Per-request limits for live clients. The SDK default timeout is 600s; one hung call
     # would stall a whole run.

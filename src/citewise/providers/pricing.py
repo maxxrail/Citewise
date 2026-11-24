@@ -29,10 +29,29 @@ PRICES_PER_MTOK: dict[str, tuple[float, float]] = {
     # Google - aistudio.google.com/docs/pricing (text)
     "gemini-3.1-flash-lite": (0.25, 1.50),
     "gemini-3.5-flash-lite": (0.30, 2.50),
-    # Perplexity Agent API "perplexity/sonar" (search fees not included; re-verify in Module 2)
-    "sonar": (0.25, 2.50),
+    # Perplexity Agent API (docs.perplexity.ai/docs/getting-started/pricing, 2026-11-23)
     "perplexity/sonar": (0.25, 2.50),
+    "sonar": (0.25, 2.50),  # legacy Sonar ID, kept so older .env files still price
 }
+
+# Web-search fee per search, USD, by engine (checked 2026-11-23). Search results are also
+# billed as input tokens at the model's rate, which token usage already covers.
+# - OpenAI web_search tool: $10 / 1k calls.
+# - Anthropic web_search: $10 / 1k searches (failed searches not billed).
+# - Gemini Search grounding (Gemini 3+): 5,000 free queries/month, then $14 / 1k queries.
+#   We always charge the paid rate: over-estimating keeps the budget guard safe.
+# - Perplexity web_search tool: $2.50 / 1k calls (Perplexity also reports exact cost).
+SEARCH_FEE_USD: dict[str, float] = {
+    "openai": 0.010,
+    "anthropic": 0.010,
+    "gemini": 0.014,
+    "perplexity": 0.0025,
+}
+
+
+def search_cost(engine: str, searches: int) -> float:
+    return round(SEARCH_FEE_USD.get(engine, 0.0) * max(searches, 0), 8)
+
 
 _warned: set[str] = set()
 
