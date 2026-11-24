@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Vaporfly\", \"canonical\": \"Nike\", \"rank\": null, \"sentiment\": 0.7, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"The Vaporfly and Alphafly are still the benchmark, and the Metaspeed Sky has a loyal following among runners with a longer stride.\"}, {\"entity\": \"Metaspeed Sky\", \"canonical\": \"ASICS\", \"rank\": null, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"the Metaspeed Sky has a loyal following among runners with a longer stride.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Vaporfly",
+        "canonical": "Nike",
+        "rank": null,
+        "sentiment": 0.7,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "The Vaporfly and Alphafly are still the benchmark, and the Metaspeed Sky has a loyal following among runners with a longer stride."
+      },
+      {
+        "entity": "Metaspeed Sky",
+        "canonical": "ASICS",
+        "rank": null,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "the Metaspeed Sky has a loyal following among runners with a longer stride."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "hard-007"
+  }
+}

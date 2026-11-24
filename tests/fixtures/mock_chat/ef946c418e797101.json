@@ -1,0 +1,38 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Taskflow\", \"canonical\": \"Taskflow\", \"rank\": null, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"Taskflow is a newer tool with a clean interface and fast setup.\"}, {\"entity\": \"Monday.com\", \"canonical\": \"Monday.com\", \"rank\": null, \"sentiment\": 0.0, \"sentiment_label\": \"neutral\", \"is_recommended\": false, \"snippet\": \"If it doesn't fit your needs, people also consider Monday.com, Wrike.\"}, {\"entity\": \"Wrike\", \"canonical\": \"Wrike\", \"rank\": null, \"sentiment\": 0.0, \"sentiment_label\": \"neutral\", \"is_recommended\": false, \"snippet\": \"If it doesn't fit your needs, people also consider Monday.com, Wrike.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Taskflow",
+        "canonical": "Taskflow",
+        "rank": null,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "Taskflow is a newer tool with a clean interface and fast setup."
+      },
+      {
+        "entity": "Monday.com",
+        "canonical": "Monday.com",
+        "rank": null,
+        "sentiment": 0.0,
+        "sentiment_label": "neutral",
+        "is_recommended": false,
+        "snippet": "If it doesn't fit your needs, people also consider Monday.com, Wrike."
+      },
+      {
+        "entity": "Wrike",
+        "canonical": "Wrike",
+        "rank": null,
+        "sentiment": 0.0,
+        "sentiment_label": "neutral",
+        "is_recommended": false,
+        "snippet": "If it doesn't fit your needs, people also consider Monday.com, Wrike."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-048"
+  }
+}

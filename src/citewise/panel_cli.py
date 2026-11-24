@@ -25,12 +25,12 @@ def _fail(message: str) -> None:
 
 
 def _budgeted_chat(max_cost: float | None):  # type: ignore[no-untyped-def]
-    """The OpenAI chat provider behind a spend cap for this command."""
+    """The LLM_PROVIDER chat provider behind a spend cap for this command."""
     from citewise.providers import get_chat_provider
     from citewise.providers.budget import BudgetedChatProvider
 
     cap = get_settings().max_cost_usd_per_run if max_cost is None else max_cost
-    return BudgetedChatProvider(get_chat_provider("openai"), cap)
+    return BudgetedChatProvider(get_chat_provider(), cap)
 
 
 def _budget_note(chat) -> None:  # type: ignore[no-untyped-def]

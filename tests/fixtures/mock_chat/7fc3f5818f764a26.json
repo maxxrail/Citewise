@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"monday.com\", \"canonical\": \"Monday.com\", \"rank\": null, \"sentiment\": 0.4, \"sentiment_label\": \"positive\", \"is_recommended\": false, \"snippet\": \"Teams already on monday.com usually build a dashboard that rolls up each client's status, and its automations are genuinely handy for pinging owners before the meeting.\"}, {\"entity\": \"Taskflow\", \"canonical\": \"Taskflow\", \"rank\": null, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"If your clients ask for visibility often, Taskflow is the better fit; otherwise stay with what you have.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "monday.com",
+        "canonical": "Monday.com",
+        "rank": null,
+        "sentiment": 0.4,
+        "sentiment_label": "positive",
+        "is_recommended": false,
+        "snippet": "Teams already on monday.com usually build a dashboard that rolls up each client's status, and its automations are genuinely handy for pinging owners before the meeting."
+      },
+      {
+        "entity": "Taskflow",
+        "canonical": "Taskflow",
+        "rank": null,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "If your clients ask for visibility often, Taskflow is the better fit; otherwise stay with what you have."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "hard-002"
+  }
+}

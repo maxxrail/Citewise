@@ -131,11 +131,23 @@ def test_api_metrics_and_competitors(
 
 def test_eval_extract_gates_on_min_f1(cli_db: str, tmp_path: Path) -> None:
     from citewise.cli import app as cli
+    from citewise.core.config import REPO_ROOT
 
-    out = CliRunner().invoke(cli, ["eval", "extract", "--out", str(tmp_path / "r.md"),
-                                   "--min-f1", "0.99"])  # fmt: skip
+    # One golden row with an extra label no extractor can find: F1 drops below 1.0.
+    row = json.loads(
+        (REPO_ROOT / "evals/datasets/golden/mentions.jsonl").read_text("utf-8").splitlines()[0]
+    )
+    row["mentions"].append({"canonical": "Nonexistent Co", "entity_type": "unknown", "rank": None,
+                            "sentiment": 0.0, "sentiment_label": "neutral",
+                            "is_recommended": False})  # fmt: skip
+    golden = tmp_path / "g.jsonl"
+    golden.write_text(json.dumps(row) + "\n", encoding="utf-8")
+    runner = CliRunner()
+    args = ["eval", "extract", "--golden", str(golden), "--out", str(tmp_path / "r.md")]
+    out = runner.invoke(cli, [*args, "--min-f1", "0.99"])
     assert out.exit_code == 1 and "below --min-f1" in out.output
-    assert "hand-written rows only" in out.output and "simulated" in out.output
+    assert "Stage B:" in out.output
+    assert runner.invoke(cli, [*args, "--min-f1", "0.5"]).exit_code == 0
 
 
 def test_recorded_stage_b_responses_replay_in_mock_mode(settings: Settings, tmp_path: Path) -> None:

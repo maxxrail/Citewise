@@ -1,0 +1,47 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Linear\", \"canonical\": \"Linear\", \"rank\": null, \"sentiment\": 0.8, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"My top pick is Linear: it's fast, keyboard-driven and has sensible defaults for small teams.\"}, {\"entity\": \"clickup\", \"canonical\": \"ClickUp\", \"rank\": null, \"sentiment\": 0.1, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"After that I'd look at clickup, which is more flexible but noisier, and then Taskflow if you also need to share progress with non-technical stakeholders.\"}, {\"entity\": \"Taskflow\", \"canonical\": \"Taskflow\", \"rank\": null, \"sentiment\": 0.3, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"and then Taskflow if you also need to share progress with non-technical stakeholders.\"}, {\"entity\": \"Jira\", \"canonical\": \"Jira\", \"rank\": null, \"sentiment\": -0.4, \"sentiment_label\": \"negative\", \"is_recommended\": false, \"snippet\": \"Jira is powerful, but for six people it's mostly overhead.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Linear",
+        "canonical": "Linear",
+        "rank": null,
+        "sentiment": 0.8,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "My top pick is Linear: it's fast, keyboard-driven and has sensible defaults for small teams."
+      },
+      {
+        "entity": "clickup",
+        "canonical": "ClickUp",
+        "rank": null,
+        "sentiment": 0.1,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "After that I'd look at clickup, which is more flexible but noisier, and then Taskflow if you also need to share progress with non-technical stakeholders."
+      },
+      {
+        "entity": "Taskflow",
+        "canonical": "Taskflow",
+        "rank": null,
+        "sentiment": 0.3,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "and then Taskflow if you also need to share progress with non-technical stakeholders."
+      },
+      {
+        "entity": "Jira",
+        "canonical": "Jira",
+        "rank": null,
+        "sentiment": -0.4,
+        "sentiment_label": "negative",
+        "is_recommended": false,
+        "snippet": "Jira is powerful, but for six people it's mostly overhead."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "hard-012"
+  }
+}

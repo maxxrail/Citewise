@@ -33,12 +33,22 @@ class Settings(BaseSettings):
     gemini_api_key: SecretStr | None = None
     perplexity_api_key: SecretStr | None = None
 
-    # Per-purpose model IDs. Defaults checked against provider docs on 2026-11-23;
-    # model names change, so override via env rather than editing code.
-    model_extract: str = "gpt-6-luna"
-    model_judge: str = "gpt-6-luna"
-    model_generate: str = "gpt-6.2-sol"
-    model_embed: str = "text-embedding-3-small"
+    # Who runs Citewise's own LLM calls (generation, labelling, extraction, judging) and
+    # embeddings. Answer *engines* are separate (ENGINE_MODEL_*): measuring ChatGPT always
+    # needs OpenAI. Anthropic has no embeddings API, so the default is a local model.
+    llm_provider: Literal["anthropic", "openai"] = "anthropic"
+    embed_provider: Literal["local", "openai"] = "local"
+
+    # Per-purpose model IDs; must belong to LLM_PROVIDER (checked in live mode). Defaults
+    # checked against the Claude API reference on 2026-11-24: the cheap model for bulk
+    # extraction/labelling/judging (CLAUDE.md cost guardrail), Opus for generation. Model
+    # names change, so override via env rather than editing code. For LLM_PROVIDER=openai
+    # set e.g. MODEL_EXTRACT=gpt-6-luna, MODEL_GENERATE=gpt-6.2-sol.
+    model_extract: str = "claude-haiku-5-5"
+    model_judge: str = "claude-haiku-5-5"
+    model_generate: str = "claude-opus-5-5"
+    # For EMBED_PROVIDER=openai use text-embedding-3-small.
+    model_embed: str = "BAAI/bge-small-en-v1.5"
 
     # Answer-engine models (used from Module 2).
     engine_model_openai: str = "gpt-6-luna"

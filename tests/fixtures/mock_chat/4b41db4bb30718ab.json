@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Hoka\", \"canonical\": \"Hoka\", \"rank\": 1, \"sentiment\": 0.7, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"- **Hoka Bondi**: a favourite of ultra and trail runners [3].\"}, {\"entity\": \"On\", \"canonical\": \"On\", \"rank\": 2, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"- **On Cloudmonster**: distinctive design and a firm, snappy ride [3].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Hoka",
+        "canonical": "Hoka",
+        "rank": 1,
+        "sentiment": 0.7,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "- **Hoka Bondi**: a favourite of ultra and trail runners [3]."
+      },
+      {
+        "entity": "On",
+        "canonical": "On",
+        "rank": 2,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "- **On Cloudmonster**: distinctive design and a firm, snappy ride [3]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "stridelab-005"
+  }
+}

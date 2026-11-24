@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Taskflow\", \"canonical\": \"Taskflow\", \"rank\": null, \"sentiment\": 0.4, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"Taskflow is a newer tool with a clean interface and fast setup.\"}, {\"entity\": \"Notion\", \"canonical\": \"Notion\", \"rank\": null, \"sentiment\": 0.0, \"sentiment_label\": \"neutral\", \"is_recommended\": false, \"snippet\": \"If it doesn't fit your needs, people also consider Notion.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Taskflow",
+        "canonical": "Taskflow",
+        "rank": null,
+        "sentiment": 0.4,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "Taskflow is a newer tool with a clean interface and fast setup."
+      },
+      {
+        "entity": "Notion",
+        "canonical": "Notion",
+        "rank": null,
+        "sentiment": 0.0,
+        "sentiment_label": "neutral",
+        "is_recommended": false,
+        "snippet": "If it doesn't fit your needs, people also consider Notion."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-044"
+  }
+}

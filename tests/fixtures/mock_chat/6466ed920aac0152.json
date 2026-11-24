@@ -1,0 +1,47 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Stridelab\", \"canonical\": \"Stridelab\", \"rank\": 1, \"sentiment\": 0.7, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"1. **Stridelab Long Run**: praised in reviews for grip on wet trails [1].\"}, {\"entity\": \"New Balance\", \"canonical\": \"New Balance\", \"rank\": 2, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"2. **New Balance 880**: comfortable on long easy runs [2].\"}, {\"entity\": \"On\", \"canonical\": \"On\", \"rank\": 3, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"3. **On Cloudmonster**: distinctive design and a firm, snappy ride [2].\"}, {\"entity\": \"Altra\", \"canonical\": \"Altra\", \"rank\": 4, \"sentiment\": 0.2, \"sentiment_label\": \"neutral\", \"is_recommended\": true, \"snippet\": \"4. **Altra Lone Peak**: zero-drop with a foot-shaped toe box [2].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Stridelab",
+        "canonical": "Stridelab",
+        "rank": 1,
+        "sentiment": 0.7,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "1. **Stridelab Long Run**: praised in reviews for grip on wet trails [1]."
+      },
+      {
+        "entity": "New Balance",
+        "canonical": "New Balance",
+        "rank": 2,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "2. **New Balance 880**: comfortable on long easy runs [2]."
+      },
+      {
+        "entity": "On",
+        "canonical": "On",
+        "rank": 3,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "3. **On Cloudmonster**: distinctive design and a firm, snappy ride [2]."
+      },
+      {
+        "entity": "Altra",
+        "canonical": "Altra",
+        "rank": 4,
+        "sentiment": 0.2,
+        "sentiment_label": "neutral",
+        "is_recommended": true,
+        "snippet": "4. **Altra Lone Peak**: zero-drop with a foot-shaped toe box [2]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "stridelab-018"
+  }
+}

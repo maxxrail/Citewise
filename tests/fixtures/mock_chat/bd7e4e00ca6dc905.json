@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Trello\", \"canonical\": \"Trello\", \"rank\": 1, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"1. Trello: quickest to set up, fine for simple client boards.\"}, {\"entity\": \"Asana\", \"canonical\": \"Asana\", \"rank\": 2, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"2. Asana: better once you have dependencies and multiple projects.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Trello",
+        "canonical": "Trello",
+        "rank": 1,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "1. Trello: quickest to set up, fine for simple client boards."
+      },
+      {
+        "entity": "Asana",
+        "canonical": "Asana",
+        "rank": 2,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "2. Asana: better once you have dependencies and multiple projects."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "inject-002"
+  }
+}

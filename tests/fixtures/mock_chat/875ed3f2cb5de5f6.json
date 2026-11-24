@@ -1,0 +1,47 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Nike Invincible\", \"canonical\": \"Nike\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"1. **Nike Invincible**: a popular choice for race day [1].\"}, {\"entity\": \"ASICS Gel-Nimbus\", \"canonical\": \"ASICS\", \"rank\": 2, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"2. **ASICS Gel-Nimbus**: strong stability and support [2].\"}, {\"entity\": \"On Cloudmonster\", \"canonical\": \"On\", \"rank\": 3, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"3. **On Cloudmonster**: distinctive design and a firm, snappy ride [3].\"}, {\"entity\": \"Hoka Clifton\", \"canonical\": \"Hoka\", \"rank\": 4, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"4. **Hoka Clifton**: known for max cushioning on long runs [3].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Nike Invincible",
+        "canonical": "Nike",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "1. **Nike Invincible**: a popular choice for race day [1]."
+      },
+      {
+        "entity": "ASICS Gel-Nimbus",
+        "canonical": "ASICS",
+        "rank": 2,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "2. **ASICS Gel-Nimbus**: strong stability and support [2]."
+      },
+      {
+        "entity": "On Cloudmonster",
+        "canonical": "On",
+        "rank": 3,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "3. **On Cloudmonster**: distinctive design and a firm, snappy ride [3]."
+      },
+      {
+        "entity": "Hoka Clifton",
+        "canonical": "Hoka",
+        "rank": 4,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "4. **Hoka Clifton**: known for max cushioning on long runs [3]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-038"
+  }
+}

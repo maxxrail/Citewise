@@ -202,6 +202,7 @@ def evaluate(
     model: str,
     mode: str,
     fixtures_dir: Path | None = None,
+    provider: str = "anthropic",
 ) -> EvalReport:
     stages = {name: StageScore() for name in STAGES}
     recorded = 0
@@ -215,7 +216,7 @@ def evaluate(
             msgs = stage_b_messages(brand=cfg["name"], aliases=cfg.get("aliases", []),
                                     competitors=cfg.get("competitors", []),
                                     category=cfg["category"], text=text)  # fmt: skip
-            keys = (fixture_key(PURPOSE, msgs, "openai"), fixture_key(PURPOSE, msgs))
+            keys = (fixture_key(PURPOSE, msgs), fixture_key(PURPOSE, msgs, provider))
             recorded += any((fixtures_dir / "mock_chat" / f"{k}.json").exists() for k in keys)
         a = stage_a(text, resolver)
         b = stage_b(chat, model=model, brand=cfg["name"], aliases=cfg.get("aliases", []),

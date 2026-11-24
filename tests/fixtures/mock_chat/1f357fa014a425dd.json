@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Brooks Glycerin\", \"canonical\": \"Brooks\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"1. **Brooks Glycerin**: well regarded stability options for overpronation [1].\"}, {\"entity\": \"On Cloudsurfer\", \"canonical\": \"On\", \"rank\": 2, \"sentiment\": 0.4, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"2. **On Cloudsurfer**: distinctive design and a firm, snappy ride [2].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Brooks Glycerin",
+        "canonical": "Brooks",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "1. **Brooks Glycerin**: well regarded stability options for overpronation [1]."
+      },
+      {
+        "entity": "On Cloudsurfer",
+        "canonical": "On",
+        "rank": 2,
+        "sentiment": 0.4,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "2. **On Cloudsurfer**: distinctive design and a firm, snappy ride [2]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "stridelab-008"
+  }
+}

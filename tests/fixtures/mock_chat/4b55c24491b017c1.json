@@ -1,0 +1,47 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Asana\", \"canonical\": \"Asana\", \"rank\": 1, \"sentiment\": 0.3, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"1. **Asana**: polished and widely adopted, although can get expensive as teams grow [1].\"}, {\"entity\": \"Wrike\", \"canonical\": \"Wrike\", \"rank\": 2, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"2. **Wrike**: strong resource planning for larger teams [2].\"}, {\"entity\": \"Taskflow Boards\", \"canonical\": \"Taskflow\", \"rank\": 3, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"3. **Taskflow Boards**: a newer tool with a clean interface and fast setup [3].\"}, {\"entity\": \"Trello\", \"canonical\": \"Trello\", \"rank\": 4, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"4. **Trello**: simple kanban boards that are easy to start with [4].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Asana",
+        "canonical": "Asana",
+        "rank": 1,
+        "sentiment": 0.3,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "1. **Asana**: polished and widely adopted, although can get expensive as teams grow [1]."
+      },
+      {
+        "entity": "Wrike",
+        "canonical": "Wrike",
+        "rank": 2,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "2. **Wrike**: strong resource planning for larger teams [2]."
+      },
+      {
+        "entity": "Taskflow Boards",
+        "canonical": "Taskflow",
+        "rank": 3,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "3. **Taskflow Boards**: a newer tool with a clean interface and fast setup [3]."
+      },
+      {
+        "entity": "Trello",
+        "canonical": "Trello",
+        "rank": 4,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "4. **Trello**: simple kanban boards that are easy to start with [4]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-040"
+  }
+}

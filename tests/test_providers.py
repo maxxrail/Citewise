@@ -85,11 +85,20 @@ def test_registry_returns_protocol_conforming_wrappers(
 
 
 def test_live_mode_without_key_fails_clearly(session_factory: sessionmaker[Session]) -> None:
-    live = Settings(citewise_mode="live", openai_api_key=None, _env_file=None)  # type: ignore[call-arg]
+    live = Settings(citewise_mode="live", openai_api_key=None, anthropic_api_key=None,
+                    _env_file=None)  # type: ignore[call-arg]  # fmt: skip
+    with pytest.raises(MissingAPIKeyError, match="ANTHROPIC_API_KEY"):
+        get_chat_provider(settings=live, session_factory=session_factory)  # LLM_PROVIDER default
+    openai_live = live.model_copy(
+        update={"llm_provider": "openai", "embed_provider": "openai", "model_extract": "gpt-6-luna",
+                "model_judge": "gpt-6-luna", "model_generate": "gpt-6.2-sol"}
+    )  # fmt: skip
     with pytest.raises(MissingAPIKeyError, match="OPENAI_API_KEY"):
-        get_chat_provider("openai", settings=live, session_factory=session_factory)
+        get_chat_provider(settings=openai_live, session_factory=session_factory)
     with pytest.raises(MissingAPIKeyError):
-        get_embedder(settings=live, session_factory=session_factory)
+        get_embedder(settings=openai_live, session_factory=session_factory)
+    # The default local embedder needs no key at all (nothing is loaded until first use).
+    assert get_embedder(settings=live, session_factory=session_factory).ident.startswith("local:")
 
 
 def test_pricing() -> None:

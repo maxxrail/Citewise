@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Stridelab\", \"canonical\": \"Stridelab\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"- **Stridelab Trail**: well liked for a roomy fit and a responsive midsole [1].\"}, {\"entity\": \"On\", \"canonical\": \"On\", \"rank\": 2, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"Overall, many reviewers lean towards **On** for this use case.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Stridelab",
+        "canonical": "Stridelab",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "- **Stridelab Trail**: well liked for a roomy fit and a responsive midsole [1]."
+      },
+      {
+        "entity": "On",
+        "canonical": "On",
+        "rank": 2,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "Overall, many reviewers lean towards **On** for this use case."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "stridelab-004"
+  }
+}

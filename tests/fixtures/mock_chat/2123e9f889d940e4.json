@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Stridelab\", \"canonical\": \"Stridelab\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"1. **Stridelab Tempo**: well liked for a roomy fit and a responsive midsole [1].\"}, {\"entity\": \"Altra\", \"canonical\": \"Altra\", \"rank\": 2, \"sentiment\": 0.2, \"sentiment_label\": \"neutral\", \"is_recommended\": true, \"snippet\": \"2. **Altra Lone Peak**: zero-drop with a foot-shaped toe box [2].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Stridelab",
+        "canonical": "Stridelab",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "1. **Stridelab Tempo**: well liked for a roomy fit and a responsive midsole [1]."
+      },
+      {
+        "entity": "Altra",
+        "canonical": "Altra",
+        "rank": 2,
+        "sentiment": 0.2,
+        "sentiment_label": "neutral",
+        "is_recommended": true,
+        "snippet": "2. **Altra Lone Peak**: zero-drop with a foot-shaped toe box [2]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "stridelab-010"
+  }
+}

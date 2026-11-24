@@ -1,0 +1,38 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Stridelab\", \"canonical\": \"Stridelab\", \"rank\": 1, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"1. **Stridelab Long Run**: well liked for a roomy fit and a responsive midsole, although a smaller brand, so sizing feedback is still limited [1].\"}, {\"entity\": \"ASICS\", \"canonical\": \"ASICS\", \"rank\": 2, \"sentiment\": 0.4, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"2. **ASICS Novablast**: durable outsoles [2].\"}, {\"entity\": \"Nike\", \"canonical\": \"Nike\", \"rank\": 3, \"sentiment\": 0.4, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"3. **Nike Pegasus**: a popular choice for race day [3].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Stridelab",
+        "canonical": "Stridelab",
+        "rank": 1,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "1. **Stridelab Long Run**: well liked for a roomy fit and a responsive midsole, although a smaller brand, so sizing feedback is still limited [1]."
+      },
+      {
+        "entity": "ASICS",
+        "canonical": "ASICS",
+        "rank": 2,
+        "sentiment": 0.4,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "2. **ASICS Novablast**: durable outsoles [2]."
+      },
+      {
+        "entity": "Nike",
+        "canonical": "Nike",
+        "rank": 3,
+        "sentiment": 0.4,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "3. **Nike Pegasus**: a popular choice for race day [3]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "stridelab-009"
+  }
+}

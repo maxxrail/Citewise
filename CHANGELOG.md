@@ -4,6 +4,17 @@ All notable changes to Citewise are documented here. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+### Changed (provider switch)
+- Citewise's own LLM calls now use Claude by default (`LLM_PROVIDER=anthropic`): `claude-haiku-5-5` for extraction, labelling and judging, and `claude-opus-5-5` for generation. Adds `providers/anthropic_client.py` (Messages API with structured outputs). `LLM_PROVIDER=openai` still works.
+- Embeddings default to a local model (`EMBED_PROVIDER=local`, `BAAI/bge-small-en-v1.5` via fastembed, no key and no cost), because Anthropic has no embeddings API. `EMBED_PROVIDER=openai` still works.
+- A live command refuses to start when a configured model doesn't belong to `LLM_PROVIDER` (a stale `.env` pinning `gpt-*` models).
+- `scripts/record_extract_fixtures.py` and the panel commands use `LLM_PROVIDER`.
+- Dependency `fastembed`. Prices: `claude-opus-5-5`, plus the local embedding model at $0.
+- `.env.example` documents `LLM_PROVIDER`, `EMBED_PROVIDER` and the Claude model defaults.
+
+### Added (live check)
+- Recorded real `claude-haiku-5-5` Stage B responses for all 65 golden answers (`tests/fixtures/mock_chat/`, $0.034). The offline eval and CI now score a real model: merged F1 1.000, rank accuracy 98.9%, sentiment label accuracy 92.0%, recommendation accuracy 85.2%.
+
 ## module-03 - Extraction and visibility metrics (2026-11-24)
 
 ### Added

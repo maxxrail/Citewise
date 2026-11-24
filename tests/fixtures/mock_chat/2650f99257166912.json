@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Asics\", \"canonical\": \"ASICS\", \"rank\": 1, \"sentiment\": 0.7, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"Asics Gel-Kayano 31: the classic stability pick; very consistent, if a bit heavy.\"}, {\"entity\": \"StrideLab\", \"canonical\": \"Stridelab\", \"rank\": 2, \"sentiment\": -0.1, \"sentiment_label\": \"mixed\", \"is_recommended\": false, \"snippet\": \"StrideLab Long Run: neutral shoe with a wide base, so it's stable-ish, but it isn't a true stability shoe.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Asics",
+        "canonical": "ASICS",
+        "rank": 1,
+        "sentiment": 0.7,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "Asics Gel-Kayano 31: the classic stability pick; very consistent, if a bit heavy."
+      },
+      {
+        "entity": "StrideLab",
+        "canonical": "Stridelab",
+        "rank": 2,
+        "sentiment": -0.1,
+        "sentiment_label": "mixed",
+        "is_recommended": false,
+        "snippet": "StrideLab Long Run: neutral shoe with a wide base, so it's stable-ish, but it isn't a true stability shoe."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "hard-011"
+  }
+}

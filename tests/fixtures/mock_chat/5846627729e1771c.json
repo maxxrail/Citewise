@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Stridelab\", \"canonical\": \"Stridelab\", \"rank\": null, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"Stridelab is a newer direct-to-consumer brand with a wide toe box. **Stridelab Tempo**: well liked for a roomy fit and a responsive midsole [1].\"}, {\"entity\": \"Altra\", \"canonical\": \"Altra\", \"rank\": null, \"sentiment\": 0.0, \"sentiment_label\": \"neutral\", \"is_recommended\": false, \"snippet\": \"If it doesn't fit your needs, people also consider Altra.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Stridelab",
+        "canonical": "Stridelab",
+        "rank": null,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "Stridelab is a newer direct-to-consumer brand with a wide toe box. **Stridelab Tempo**: well liked for a roomy fit and a responsive midsole [1]."
+      },
+      {
+        "entity": "Altra",
+        "canonical": "Altra",
+        "rank": null,
+        "sentiment": 0.0,
+        "sentiment_label": "neutral",
+        "is_recommended": false,
+        "snippet": "If it doesn't fit your needs, people also consider Altra."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "stridelab-024"
+  }
+}

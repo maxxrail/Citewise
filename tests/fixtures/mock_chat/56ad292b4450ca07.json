@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Taskflow Timelines\", \"canonical\": \"Taskflow\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"1. **Taskflow Timelines**: easy to adopt for small teams moving off spreadsheets [1].\"}, {\"entity\": \"Trello\", \"canonical\": \"Trello\", \"rank\": 2, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"2. **Trello**: simple kanban boards that are easy to start with [2].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Taskflow Timelines",
+        "canonical": "Taskflow",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "1. **Taskflow Timelines**: easy to adopt for small teams moving off spreadsheets [1]."
+      },
+      {
+        "entity": "Trello",
+        "canonical": "Trello",
+        "rank": 2,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "2. **Trello**: simple kanban boards that are easy to start with [2]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-032"
+  }
+}

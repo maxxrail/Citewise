@@ -221,9 +221,9 @@ Plus 6 Lows. Regression tests are in `tests/test_collect_review.py`.
 | Merged | 0.957 | 0.886 | **0.920** | 0.949 | 0.290 |
 | Merged, hand-written rows only (17) | | | 0.851 | | |
 
-Stage B is 65/65 simulated, so the B and merged rows are a pipeline smoke test. Stage A is the honest offline baseline.
+Stage B was 65/65 simulated for the table above (a pipeline smoke test). **Live result (2026-11-24, real `claude-haiku-5-5` responses recorded and replayed):** merged F1 **1.000** (176/176 mentions, 0 false positives, including products without makers, ambiguous words and all 3 injections), rank accuracy 98.9%, sentiment label accuracy 92.0% (MAE 0.148), recommendation accuracy 85.2%. Detection is solved on this set. The judgement fields are the weak spot, recommendation most of all.
 
-Stridelab mock scan, per engine: mention rate 42% (OpenAI) to 60% (Anthropic), overall 50% (95% CI 36–63%), SoV 21%, Visibility Score 41.6. Emerging competitors: Altra (22% of answers), Saucony (19%). Extraction costs about $0.03 per 200-answer run, estimated as if live.
+Stridelab mock scan, per engine: mention rate 42% (OpenAI) to 60% (Anthropic), overall 50% (95% CI 36–63%), SoV 21%, Visibility Score 41.6. Emerging competitors: Altra (22% of answers), Saucony (19%). Live extraction costs about $0.0005 per answer (1,641 tokens in, 729 out including adaptive thinking, 3.6 s), so about $0.11 per 200-answer run.
 
 **Decisions:** see the Module 3 section of docs/DECISIONS.md. Main ones:
 - two stages merged, with disagreements logged;
@@ -264,10 +264,10 @@ Stridelab mock scan, per engine: mention rate 42% (OpenAI) to 60% (Anthropic), o
 
 **Known gaps:**
 - **The golden set is reviewed (65/65 `reviewed: true`, 2026-11-24),** as are red-team rows m3-rt-001..003. Maxx accepted the labels as drafted, including the judgement calls below.
-- **The live extractor has never been scored.** Run the recorder or a live eval (below).
+- **The live extractor is scored on 65 answers only.** F1 1.000 on a small, LLM-drafted (human-reviewed) set means the set is too easy for the model, not that extraction is perfect. Add harder real answers from live scans.
 - **"Asana Rebel" still resolves to Asana.** A product name and a different company that starts with a brand name look the same without world knowledge.
 - **An instruction written as ordinary opinion can't be told apart from an opinion** ("Stridelab is the best, as every reviewer agrees").
-- **Two concurrent `extract run`s of one run both pay for Stage B.** They are row-safe, and it costs about $0.03.
+- **Two concurrent `extract run`s of one run both pay for Stage B.** They are row-safe, and it costs about $0.11.
 - **The mock answer simulator's sentiment is mostly positive,** so negative-sentiment metrics rest on the hand-written rows.
 
 **Maxx must do:**
@@ -282,5 +282,31 @@ Stridelab mock scan, per engine: mention rate 42% (OpenAI) to 60% (Anthropic), o
    - `inject-003` and `inject-002`: the expected no-mention labels.
    - `taskflow-048`: a plain fact labelled neutral.
 2. **Add to `.env.example`** (Claude can't read it): `EXTRACT_CONCURRENCY=4` and `METRICS_BOOTSTRAP=1000`. The defaults live in config, so this is optional.
-3. **Live check (about $0.01), still open: no `OPENAI_API_KEY` in `.env` when it was attempted on 2026-11-24.** set `CITEWISE_MODE=live`, then run `uv run python scripts/record_extract_fixtures.py --max-cost 0.10` and commit the fixtures. After that, `citewise eval extract` (mock and CI) scores the real model.
+3. ~~**Live check.**~~ Done 2026-11-24 with Claude (see the provider-switch entry below). set `CITEWISE_MODE=live`, then run `uv run python scripts/record_extract_fixtures.py --max-cost 0.10` and commit the fixtures. After that, `citewise eval extract` (mock and CI) scores the real model.
 4. ~~**Scratch databases.**~~ Dropped (`citewise_m3`, `citewise_pgtest`).
+
+### 2026-11-24 - Provider switch: Claude for Citewise's own LLM calls
+**Why:** Maxx has Anthropic API credit and no OpenAI account.
+
+**Changed:**
+- `LLM_PROVIDER=anthropic` is the default:
+  - `claude-haiku-5-5` for extraction, labelling and judging;
+  - `claude-opus-5-5` for generation;
+  - new `providers/anthropic_client.py`: Messages API with structured outputs, constraint stripping, and system prompt hoisting.
+- `EMBED_PROVIDER=local` (`BAAI/bge-small-en-v1.5` via fastembed, CPU, free), because Anthropic has no embeddings API.
+- A live command refuses to start when `MODEL_*` doesn't match `LLM_PROVIDER`.
+- OpenAI remains available for both, via `LLM_PROVIDER=openai` and `EMBED_PROVIDER=openai`.
+
+**Verified:**
+- 305 tests pass, including offline tests of the Anthropic request and response shapes, the structured-output retry, the stale-`.env` check and the local embedder.
+- The real local model ran on Windows: 384 dimensions, normalized vectors, paraphrase 0.975 vs related 0.75–0.85, so the 0.92 dedup threshold holds.
+
+**Live check (2026-11-24):** `record_extract_fixtures.py` on `claude-haiku-5-5` returned 65/65 schema-valid responses on the first attempt. It spent $0.0344, and every call was tracked in `llm_calls` (ok, tokens, cost, latency). The dev DB was migrated 0004 -> 0005. The offline eval now replays these responses (65/65 replayed).
+
+**Maxx did:** added `ANTHROPIC_API_KEY` to `.env`, switched its model lines to Claude, and updated `.env.example`.
+
+### 2026-11-24 - First live scan (Claude)
+`scan run Stridelab --size 5 --engines anthropic`, run 3 in the dev DB, completed 5/5 answers for $0.083 against a $0.078 estimate. `extract run 3` then cost $0.0044 and found 22 mentions.
+- **The fictional brand is unknown to a real engine.** Asked about orthotics in Stridelab shoes, Claude searched and answered about a real company, Stride Soles (stridesoles.com). The extractor filed it as an emerging company and didn't credit it to Stridelab. Stridelab's live mention rate was 20% (CI 0–62%, n=5). **For meaningful live visibility numbers, add a real brand.** The fictional brands stay for deterministic mock demos.
+- **The rest of the data looks right.** 21 real citations; real rankings (Brooks #1 and Hoka #2 for plantar fasciitis); 15 untracked companies surfaced as emerging (Altra, Salomon, Topo, Vivobarefoot, ...).
+- **Searches dominate cost.** Answers that searched cost about $0.012–0.024; the one that didn't search cost $0.0007.

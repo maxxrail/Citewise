@@ -23,6 +23,7 @@ from citewise.models.panel import Prompt, Topic
 from citewise.providers import get_chat_provider, get_embedder
 from citewise.providers.base import ChatResult, JsonSchema, Message
 from citewise.providers.mock import fixture_key
+from citewise.providers.pricing import estimate_cost
 from citewise.schemas.panel import INTENTS, MAX_LABEL_WORDS, GeneratedBatch, TopicLabel
 from citewise.services.brands import seed_brands
 from citewise.services.panel.cluster import cluster_brand
@@ -249,7 +250,12 @@ def test_every_llm_call_is_tracked_with_cost(pipeline: dict) -> None:
         rows = list(session.scalars(select(LLMCall)))
     purposes = Counter(r.purpose for r in rows)
     assert {"panel.generate", "panel.embed", "panel.classify", "panel.label_topic"} <= set(purposes)
-    assert all(r.ok and r.cost_usd > 0 and r.tokens_in > 0 for r in rows)
+    assert all(r.ok and r.tokens_in > 0 for r in rows)
+    assert all(r.cost_usd > 0 for r in rows if r.kind == "chat")
+    # Embeddings are priced from the table: $0 for the local default model.
+    assert all(
+        r.cost_usd == estimate_cost(r.model, r.tokens_in, 0) for r in rows if r.kind == "embed"
+    )
 
 
 def test_generation_cells_cover_intents_times_personas(db: Session, settings: Settings) -> None:

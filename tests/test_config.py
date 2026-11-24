@@ -8,7 +8,10 @@ from citewise.core.config import Settings
 def test_defaults_are_mock_and_have_model_ids() -> None:
     s = Settings(_env_file=None)  # type: ignore[call-arg]
     assert s.is_mock
-    assert s.model_embed == "text-embedding-3-small"
+    # Claude for Citewise's own calls, a local embedder (Anthropic has no embeddings API).
+    assert (s.llm_provider, s.embed_provider) == ("anthropic", "local")
+    assert s.model_embed == "BAAI/bge-small-en-v1.5"
+    assert all(m.startswith("claude-") for m in (s.model_extract, s.model_judge, s.model_generate))
     assert all([s.model_extract, s.model_judge, s.model_generate])
     assert s.max_cost_usd_per_run == 3.0
 
