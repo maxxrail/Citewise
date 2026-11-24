@@ -169,7 +169,12 @@ class MockEngine:
         return named + rest
 
     def _sentence(
-        self, rng: random.Random, brand: _Brand, cite: int, avoid: str | None = None
+        self,
+        rng: random.Random,
+        brand: _Brand,
+        cite: int,
+        pages: list[tuple[str, str]],
+        avoid: str | None = None,
     ) -> str:
         d = brand.data
         product = rng.choice(d["products"])
@@ -178,12 +183,19 @@ class MockEngine:
         if d.get("negatives") and rng.random() < self.profile["negative_rate"]:
             text += f", although {rng.choice(d['negatives'])}"
         if brand.tracked and rng.random() < self.profile["claim_rate"]:
-            text += f". {rng.choice(d['claims'])['text']}"
+            claim = rng.choice(d["claims"])
+            if src := claim.get("source"):
+                # The claim came from a specific page: cite it inline, like real engines.
+                page = (f"https://www.{src['domain']}{src['path']}", src["title"])
+                if page not in pages:
+                    pages.append(page)
+                return f"{text} [{cite}]. {claim['text']} [{pages.index(page) + 1}]."
+            text += f". {claim['text']}"
         return f"{text} [{cite}]."
 
-    def _citations(
+    def _citation_pages(
         self, rng: random.Random, cat: dict[str, Any], brands: list[_Brand]
-    ) -> list[Citation]:
+    ) -> list[tuple[str, str]]:
         lo, hi = self.profile["citations"]
         n = rng.randint(lo, hi)
         pubs = list(cat["publishers"])
@@ -197,8 +209,12 @@ class MockEngine:
             p = rng.choices(pubs, weights=weights)[0]
             pubs.remove(p)
             out.append((f"https://www.{p['domain']}{p['path']}", p["title"]))
+        return out
+
+    def _finalize(self, pages: list[tuple[str, str]]) -> list[Citation]:
+        """Provider-specific URL shapes (OpenAI utm tags, Gemini grounding redirects)."""
         cites = []
-        for i, (url, title) in enumerate(out, start=1):
+        for i, (url, title) in enumerate(pages, start=1):
             if self.profile.get("utm"):
                 url += ("&" if "?" in url else "?") + "utm_source=openai"
             if self.profile.get("redirect"):
@@ -222,8 +238,8 @@ class MockEngine:
             )
         brands = self._pick_brands(rng, cat, prompt)
         named = [b for b in brands if _mentions(prompt, b)]
-        citations = self._citations(rng, cat, brands)
-        n = max(1, len(citations))
+        pages = self._citation_pages(rng, cat, brands)
+        n = max(1, len(pages))  # general sources; claim sources are appended after them
         style = _style(prompt, named)
         locale = " (based on what's available where you are)" if system else ""
 
@@ -233,7 +249,7 @@ class MockEngine:
                 f"Both {a.name} and {b.name} are solid choices{locale}; "
                 "it depends on what matters most to you."
             ]
-            lines += [f"- {self._sentence(rng, x, rng.randint(1, n))}" for x in brands[:3]]
+            lines += [f"- {self._sentence(rng, x, rng.randint(1, n), pages)}" for x in brands[:3]]
             winner = rng.choice([a, b])
             lines.append(
                 f"Overall, many reviewers lean towards **{winner.name}** for this use case."
@@ -242,16 +258,20 @@ class MockEngine:
             subject = named[0]
             opener = rng.choice(subject.data["positives"])
             lines = [f"{subject.name} is {opener}{locale}."]
-            lines.append(self._sentence(rng, subject, 1, avoid=opener))
+            lines.append(self._sentence(rng, subject, 1, pages, avoid=opener))
             if len(brands) > 1:
                 alts = ", ".join(x.name for x in brands[1:])
                 lines.append(f"If it doesn't fit your needs, people also consider {alts}.")
         elif style == "deals":
             lines = [f"Here are some ways to save{locale}:"]
-            lines += [f"{i}. {self._sentence(rng, x, min(i, n))}" for i, x in enumerate(brands, 1)]
+            lines += [
+                f"{i}. {self._sentence(rng, x, min(i, n), pages)}" for i, x in enumerate(brands, 1)
+            ]
             lines.append("Prices change often, so check the retailer before buying.")
         else:
             lines = [f"Here are some of the best options{locale}:"]
-            lines += [f"{i}. {self._sentence(rng, x, min(i, n))}" for i, x in enumerate(brands, 1)]
+            lines += [
+                f"{i}. {self._sentence(rng, x, min(i, n), pages)}" for i, x in enumerate(brands, 1)
+            ]
             lines.append("The best pick depends on your budget, fit and how you'll use it.")
-        return "\n".join(lines), citations
+        return "\n".join(lines), self._finalize(pages)

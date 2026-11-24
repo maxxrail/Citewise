@@ -23,10 +23,25 @@ categories:
           - a smaller brand, so sizing feedback is still limited
           - some reviewers report the upper wears quickly on rocky trails
         claims:
+          # `source`: the page an engine took a claim from; cited inline right after it.
+          # False claims always have one, so Module 4 source tracing has a culprit to find.
+          # Keep consistent with data/kb/stridelab/ (the true claims must match it).
           - {text: "Stridelab offers a 60-day trial on unworn and worn shoes", true: true}
           - {text: "Stridelab shoes come with a 6-month warranty against defects", true: true}
-          - {text: "Stridelab only sells through Amazon", true: false}
-          - {text: "Stridelab shoes are made in Italy", true: false}
+          - {text: "The Stridelab Tempo costs $140", true: true}
+          - {text: "Stridelab shoes come in standard and wide widths", true: true}
+          - text: "Stridelab only sells through Amazon"
+            true: false
+            source: {domain: shoe-buyers-guide.example, path: /where-to-buy-stridelab, title: "Where to buy Stridelab shoes: Amazon only"}
+          - text: "Stridelab shoes are made in Italy"
+            true: false
+            source: {domain: luxe-running.example, path: /italian-made-running-shoes, title: "Italian-made running shoes: Stridelab and more"}
+          - text: "The Stridelab Tempo costs $220"
+            true: false
+            source: {domain: shoedeals-roundup.example, path: /stridelab-tempo-review, title: "Stridelab Tempo review: is it worth $220?"}
+          - text: "Stridelab discontinued the Trail line in 2025"
+            true: false
+            source: {domain: runnerforum.example, path: /t/stridelab-trail-discontinued, title: "Stridelab Trail discontinued in 2025? | RunnerForum"}
       Nike:
         aliases: [Nike]
         domain: nike.com
@@ -100,10 +115,23 @@ categories:
           - its integration library is smaller than the market leaders'
           - advanced reporting is still limited
         claims:
+          # Keep consistent with data/kb/taskflow/ (see the Stridelab note above).
           - {text: "Taskflow has a free plan for up to 3 users", true: true}
           - {text: "Taskflow includes a client portal with guest access on paid plans", true: true}
-          - {text: "Taskflow has no Jira import", true: false}
-          - {text: "Taskflow is only available as a desktop app", true: false}
+          - {text: "Taskflow Pro costs $12 per user per month on annual billing", true: true}
+          - {text: "Taskflow integrates with Slack and GitHub", true: true}
+          - text: "Taskflow has no Jira import"
+            true: false
+            source: {domain: migration-guides.example, path: /jira-to-taskflow, title: "Moving from Jira to Taskflow without an importer"}
+          - text: "Taskflow is only available as a desktop app"
+            true: false
+            source: {domain: oldreviews.example, path: /taskflow-desktop-review-2021, title: "Taskflow review (2021): a desktop-only app"}
+          - text: "Taskflow Pro costs $25 per user per month"
+            true: false
+            source: {domain: saas-pricing-tracker.example, path: /taskflow, title: "Taskflow pricing: Pro at $25 per user per month"}
+          - text: "Taskflow discontinued its free plan"
+            true: false
+            source: {domain: pmtools-news.example, path: /taskflow-ends-free-plan, title: "Taskflow discontinued its free plan"}
       Asana:
         aliases: [Asana]
         domain: asana.com

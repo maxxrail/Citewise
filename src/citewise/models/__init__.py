@@ -3,14 +3,19 @@
 from citewise.models.brand import Brand
 from citewise.models.collect import Answer, Citation, Run, Schedule
 from citewise.models.extract import AnswerExtraction, Mention
+from citewise.models.kb import AnswerFactcheck, Claim, KBChunk, KBDoc
 from citewise.models.llm_call import LLMCall
 from citewise.models.panel import Prompt, Topic
 
 __all__ = [
     "Answer",
     "AnswerExtraction",
+    "AnswerFactcheck",
     "Brand",
     "Citation",
+    "Claim",
+    "KBChunk",
+    "KBDoc",
     "LLMCall",
     "Mention",
     "Prompt",
