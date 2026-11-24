@@ -6,7 +6,7 @@
 | 1 | Prompt panel and topic discovery | 🔁 reviewed | 121 tests; all acceptance criteria verified on Postgres + SQLite 2026-11-23 |
 | 2 | Multi-engine answer collection | 🔁 reviewed | 222 tests; acceptance re-verified on fresh Postgres + SQLite 2026-11-24; live check needs Maxx's key |
 | 3 | Extraction and visibility metrics | ✅ done | 295 tests (+6 Postgres-only, all pass on PG 16); acceptance verified on Postgres + SQLite 2026-11-24; golden set reviewed by Maxx (65/65) |
-| 4 | Brand knowledge base and FactCheck | ✅ done | 367 tests; acceptance verified on Postgres + SQLite; live verifier 95.6% / 0% false contradictions on held-out claims; live Linear run done 2026-11-24 |
+| 4 | Brand knowledge base and FactCheck | ✅ done | 366 tests; acceptance verified on Postgres + SQLite; live verifier 95.6% / 0% false contradictions on held-out claims; live Linear run done 2026-11-24 |
 | 5 | Content agent | ⬜ not started | |
 | 6 | Evals, experiments and observability | ⬜ not started | |
 | 7 | AI crawler analytics | ⬜ not started | |
