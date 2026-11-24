@@ -1,0 +1,38 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Altra\", \"canonical\": \"Altra\", \"rank\": null, \"sentiment\": 0.9, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"If you want genuinely zero-drop, my top pick is the Altra Lone Peak, then Topo Athletic's MTN Racer if you like a bit more cushion and a lower-volume fit.\"}, {\"entity\": \"Topo Athletic\", \"canonical\": \"Topo Athletic\", \"rank\": null, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"then Topo Athletic's MTN Racer if you like a bit more cushion and a lower-volume fit.\"}, {\"entity\": \"Saucony\", \"canonical\": \"Saucony\", \"rank\": null, \"sentiment\": 0.2, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"Saucony doesn't really play in zero-drop, but the Peregrine at 4 mm is close enough for many runners and grips well in mud.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Altra",
+        "canonical": "Altra",
+        "rank": null,
+        "sentiment": 0.9,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "If you want genuinely zero-drop, my top pick is the Altra Lone Peak, then Topo Athletic's MTN Racer if you like a bit more cushion and a lower-volume fit."
+      },
+      {
+        "entity": "Topo Athletic",
+        "canonical": "Topo Athletic",
+        "rank": null,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "then Topo Athletic's MTN Racer if you like a bit more cushion and a lower-volume fit."
+      },
+      {
+        "entity": "Saucony",
+        "canonical": "Saucony",
+        "rank": null,
+        "sentiment": 0.2,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "Saucony doesn't really play in zero-drop, but the Peregrine at 4 mm is close enough for many runners and grips well in mud."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "hard-005"
+  }
+}

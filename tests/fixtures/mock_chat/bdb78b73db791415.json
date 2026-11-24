@@ -1,0 +1,38 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Jira\", \"canonical\": \"Jira\", \"rank\": 2, \"sentiment\": 0.1, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"Jira is the default for scrum teams and integrates with everything, but expect a lot of admin.\"}, {\"entity\": \"Linear\", \"canonical\": \"Linear\", \"rank\": 3, \"sentiment\": 0.3, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"Linear is the one engineers enjoy using; it is fast and opinionated, which is great until you need custom workflows.\"}, {\"entity\": \"ClickUp\", \"canonical\": \"ClickUp\", \"rank\": 4, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"ClickUp can cover engineering and the rest of the company in one place.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Jira",
+        "canonical": "Jira",
+        "rank": 2,
+        "sentiment": 0.1,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "Jira is the default for scrum teams and integrates with everything, but expect a lot of admin."
+      },
+      {
+        "entity": "Linear",
+        "canonical": "Linear",
+        "rank": 3,
+        "sentiment": 0.3,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "Linear is the one engineers enjoy using; it is fast and opinionated, which is great until you need custom workflows."
+      },
+      {
+        "entity": "ClickUp",
+        "canonical": "ClickUp",
+        "rank": 4,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "ClickUp can cover engineering and the rest of the company in one place."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "hard-006"
+  }
+}

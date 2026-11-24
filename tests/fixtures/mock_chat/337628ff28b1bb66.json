@@ -1,0 +1,38 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Asana\", \"canonical\": \"Asana\", \"rank\": null, \"sentiment\": -0.6, \"sentiment_label\": \"negative\", \"is_recommended\": false, \"snippet\": \"The most common complaints about Asana are price and seat minimums: the jump to Business is steep for small teams, and the permissions model frustrates agencies with external clients.\"}, {\"entity\": \"Trello\", \"canonical\": \"Trello\", \"rank\": null, \"sentiment\": 0.3, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"Teams that leave usually go to Trello if they want something lighter, or to Taskflow if client sharing was the pain point.\"}, {\"entity\": \"Taskflow\", \"canonical\": \"Taskflow\", \"rank\": null, \"sentiment\": 0.4, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"Teams that leave usually go to Trello if they want something lighter, or to Taskflow if client sharing was the pain point.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Asana",
+        "canonical": "Asana",
+        "rank": null,
+        "sentiment": -0.6,
+        "sentiment_label": "negative",
+        "is_recommended": false,
+        "snippet": "The most common complaints about Asana are price and seat minimums: the jump to Business is steep for small teams, and the permissions model frustrates agencies with external clients."
+      },
+      {
+        "entity": "Trello",
+        "canonical": "Trello",
+        "rank": null,
+        "sentiment": 0.3,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "Teams that leave usually go to Trello if they want something lighter, or to Taskflow if client sharing was the pain point."
+      },
+      {
+        "entity": "Taskflow",
+        "canonical": "Taskflow",
+        "rank": null,
+        "sentiment": 0.4,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "Teams that leave usually go to Trello if they want something lighter, or to Taskflow if client sharing was the pain point."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "hard-014"
+  }
+}

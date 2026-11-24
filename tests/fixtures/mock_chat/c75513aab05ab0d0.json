@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Taskflow\", \"canonical\": \"Taskflow\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"- **Taskflow Timelines**: well suited to agencies thanks to its client portal [1].\"}, {\"entity\": \"Trello\", \"canonical\": \"Trello\", \"rank\": 2, \"sentiment\": 0.1, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"- **Trello**: simple kanban boards that are easy to start with, although limited for complex projects [3].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Taskflow",
+        "canonical": "Taskflow",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "- **Taskflow Timelines**: well suited to agencies thanks to its client portal [1]."
+      },
+      {
+        "entity": "Trello",
+        "canonical": "Trello",
+        "rank": 2,
+        "sentiment": 0.1,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "- **Trello**: simple kanban boards that are easy to start with, although limited for complex projects [3]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-029"
+  }
+}

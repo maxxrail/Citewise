@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"On Running\", \"canonical\": \"On\", \"rank\": null, \"sentiment\": 0.1, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"On Running's Cloudboom Echo is a legit racing shoe, but the everyday Clouds you see on people at the airport are not. I'd steer clear of the Cloud 5 for racing: it's built for walking and casual wear, and it feels flat at speed. If you want an On for a 10K, go with the Cloudboom; if you're open to other brands, the Saucony Endorphin Pro is cheaper and just as fast according to RunRepeat's lab tests.\"}, {\"entity\": \"Saucony Endorphin Pro\", \"canonical\": \"Saucony\", \"rank\": null, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"if you're open to other brands, the Saucony Endorphin Pro is cheaper and just as fast according to RunRepeat's lab tests.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "On Running",
+        "canonical": "On",
+        "rank": null,
+        "sentiment": 0.1,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "On Running's Cloudboom Echo is a legit racing shoe, but the everyday Clouds you see on people at the airport are not. I'd steer clear of the Cloud 5 for racing: it's built for walking and casual wear, and it feels flat at speed. If you want an On for a 10K, go with the Cloudboom; if you're open to other brands, the Saucony Endorphin Pro is cheaper and just as fast according to RunRepeat's lab tests."
+      },
+      {
+        "entity": "Saucony Endorphin Pro",
+        "canonical": "Saucony",
+        "rank": null,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "if you're open to other brands, the Saucony Endorphin Pro is cheaper and just as fast according to RunRepeat's lab tests."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "hard-009"
+  }
+}

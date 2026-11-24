@@ -1,0 +1,38 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Nike Pegasus\", \"canonical\": \"Nike\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"1. **Nike Pegasus**: a popular choice for race day [1].\"}, {\"entity\": \"Hoka Speedgoat\", \"canonical\": \"Hoka\", \"rank\": 2, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"2. **Hoka Speedgoat**: a favourite of ultra and trail runners [2].\"}, {\"entity\": \"ASICS Gel-Kayano\", \"canonical\": \"ASICS\", \"rank\": 3, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"3. **ASICS Gel-Kayano**: strong stability and support [3].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Nike Pegasus",
+        "canonical": "Nike",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "1. **Nike Pegasus**: a popular choice for race day [1]."
+      },
+      {
+        "entity": "Hoka Speedgoat",
+        "canonical": "Hoka",
+        "rank": 2,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "2. **Hoka Speedgoat**: a favourite of ultra and trail runners [2]."
+      },
+      {
+        "entity": "ASICS Gel-Kayano",
+        "canonical": "ASICS",
+        "rank": 3,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "3. **ASICS Gel-Kayano**: strong stability and support [3]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "stridelab-016"
+  }
+}

@@ -68,7 +68,11 @@ def test_structured_call_and_embedding_each_write_a_row(
     embed_row = rows[1]
     assert embed_row.model == settings.model_embed
     assert embed_row.tokens_in > 0 and embed_row.tokens_out == 0
-    assert embed_row.cost_usd > 0
+    # Priced from the table: $0 for the local default, > 0 for an OpenAI embedding model.
+    assert embed_row.cost_usd == estimate_cost(settings.model_embed, embed_row.tokens_in, 0)
+    paid = settings.model_copy(update={"model_embed": "text-embedding-3-small"})
+    get_embedder(settings=paid, session_factory=session_factory).embed(["a"])
+    assert _rows(db)[-1].cost_usd > 0
 
 
 def test_empty_embed_batch_makes_no_call(

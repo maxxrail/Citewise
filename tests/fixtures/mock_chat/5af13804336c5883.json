@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Stridelab\", \"canonical\": \"Stridelab\", \"rank\": 1, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"Stridelab Long Run: a newer direct-to-consumer brand with a wide toe box [2].\"}, {\"entity\": \"New Balance\", \"canonical\": \"New Balance\", \"rank\": 2, \"sentiment\": 0.7, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"Overall, many reviewers lean towards New Balance for this use case.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Stridelab",
+        "canonical": "Stridelab",
+        "rank": 1,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "Stridelab Long Run: a newer direct-to-consumer brand with a wide toe box [2]."
+      },
+      {
+        "entity": "New Balance",
+        "canonical": "New Balance",
+        "rank": 2,
+        "sentiment": 0.7,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "Overall, many reviewers lean towards New Balance for this use case."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "stridelab-003"
+  }
+}

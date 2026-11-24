@@ -21,48 +21,44 @@
       }
     },
     "B": {
-      "precision": 0.9337,
-      "recall": 0.8807,
-      "f1": 0.9064,
-      "tp": 155,
-      "fp": 11,
-      "fn": 21,
-      "rank_accuracy": 0.9226,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 176,
+      "fp": 0,
+      "fn": 0,
+      "rank_accuracy": 0.983,
       "type_accuracy": 1.0,
-      "sentiment_mae": 0.2872,
-      "sentiment_label_accuracy": 0.6774,
-      "recommended_accuracy": 0.8,
+      "sentiment_mae": 0.1477,
+      "sentiment_label_accuracy": 0.9205,
+      "recommended_accuracy": 0.8523,
       "errors": {
-        "sentiment_label": 50,
-        "recommended": 31,
-        "false_negative": 21,
-        "rank": 12,
-        "false_positive": 11
+        "recommended": 26,
+        "sentiment_label": 14,
+        "rank": 3
       }
     },
     "merged": {
-      "precision": 0.9571,
-      "recall": 0.8864,
-      "f1": 0.9204,
-      "tp": 156,
-      "fp": 7,
-      "fn": 20,
-      "rank_accuracy": 0.9487,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 176,
+      "fp": 0,
+      "fn": 0,
+      "rank_accuracy": 0.9886,
       "type_accuracy": 1.0,
-      "sentiment_mae": 0.2898,
-      "sentiment_label_accuracy": 0.6731,
-      "recommended_accuracy": 0.8013,
+      "sentiment_mae": 0.1477,
+      "sentiment_label_accuracy": 0.9205,
+      "recommended_accuracy": 0.8523,
       "errors": {
-        "sentiment_label": 51,
-        "recommended": 31,
-        "false_negative": 20,
-        "rank": 8,
-        "false_positive": 7
+        "recommended": 26,
+        "sentiment_label": 14,
+        "rank": 2
       }
     }
   },
   "handwritten_rows": 17,
-  "stage_b_source": "0/65 replayed from recorded real responses, 65 simulated",
+  "stage_b_source": "65/65 replayed from recorded real responses, 0 simulated",
   "handwritten": {
     "A": {
       "precision": 1.0,
@@ -82,43 +78,38 @@
       }
     },
     "B": {
-      "precision": 0.907,
-      "recall": 0.78,
-      "f1": 0.8387,
-      "tp": 39,
-      "fp": 4,
-      "fn": 11,
-      "rank_accuracy": 0.8718,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 50,
+      "fp": 0,
+      "fn": 0,
+      "rank_accuracy": 0.94,
       "type_accuracy": 1.0,
-      "sentiment_mae": 0.4762,
-      "sentiment_label_accuracy": 0.4103,
-      "recommended_accuracy": 0.4615,
+      "sentiment_mae": 0.174,
+      "sentiment_label_accuracy": 0.84,
+      "recommended_accuracy": 0.76,
       "errors": {
-        "sentiment_label": 23,
-        "recommended": 21,
-        "false_negative": 11,
-        "rank": 5,
-        "false_positive": 4
+        "recommended": 12,
+        "sentiment_label": 8,
+        "rank": 3
       }
     },
     "merged": {
-      "precision": 0.9091,
-      "recall": 0.8,
-      "f1": 0.8511,
-      "tp": 40,
-      "fp": 4,
-      "fn": 10,
-      "rank_accuracy": 0.875,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 50,
+      "fp": 0,
+      "fn": 0,
+      "rank_accuracy": 1.0,
       "type_accuracy": 1.0,
-      "sentiment_mae": 0.4818,
-      "sentiment_label_accuracy": 0.4,
-      "recommended_accuracy": 0.475,
+      "sentiment_mae": 0.174,
+      "sentiment_label_accuracy": 0.84,
+      "recommended_accuracy": 0.76,
       "errors": {
-        "sentiment_label": 24,
-        "recommended": 21,
-        "false_negative": 10,
-        "rank": 5,
-        "false_positive": 4
+        "recommended": 12,
+        "sentiment_label": 8
       }
     }
   }

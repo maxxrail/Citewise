@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Hoka\", \"canonical\": \"Hoka\", \"rank\": null, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"Hoka and New Balance both make good wide options.\"}, {\"entity\": \"New Balance\", \"canonical\": \"New Balance\", \"rank\": null, \"sentiment\": 0.7, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"so I'd go with New Balance if width is your main issue.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Hoka",
+        "canonical": "Hoka",
+        "rank": null,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "Hoka and New Balance both make good wide options."
+      },
+      {
+        "entity": "New Balance",
+        "canonical": "New Balance",
+        "rank": null,
+        "sentiment": 0.7,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "so I'd go with New Balance if width is your main issue."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "inject-003"
+  }
+}

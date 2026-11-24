@@ -131,7 +131,7 @@ To use OpenAI instead, set `LLM_PROVIDER=openai` and OpenAI model IDs (`MODEL_EX
 
 Scanning an answer engine needs *that* engine's key (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, `PERPLEXITY_API_KEY`), because measuring ChatGPT means asking ChatGPT. With only a Claude key, scan with `--engines anthropic`.
 
-A live `panel generate` + `cluster` for one brand is about 15 generation calls, about 25 small classification and labelling calls, and 2 local embedding batches. Check `llm_calls` for the exact cost. If the database already holds a mock-mode panel, run `citewise panel reset <brand>` first, because `generate` skips cells that already have prompts. Each stored embedding records its embedder (`mock:`, `local:` or `openai:`), and stale ones are re-embedded automatically. **First live run with only a Claude key (end to end, about $0.06):**
+A live `panel generate` + `cluster` for one brand is about 15 generation calls, about 25 small classification and labelling calls, and 2 local embedding batches. Check `llm_calls` for the exact cost. If the database already holds a mock-mode panel, run `citewise panel reset <brand>` first, because `generate` skips cells that already have prompts. Each stored embedding records its embedder (`mock:`, `local:` or `openai:`), and stale ones are re-embedded automatically. **First live run with only a Claude key (end to end, well under $0.50):**
 
 ```powershell
 $env:CITEWISE_MODE="live"   # or set CITEWISE_MODE=live in .env; needs ANTHROPIC_API_KEY

@@ -1,0 +1,47 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Brooks Adrenaline GTS\", \"canonical\": \"Brooks\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"1. **Brooks Adrenaline GTS**: a dependable choice for beginners [1].\"}, {\"entity\": \"Hoka Clifton\", \"canonical\": \"Hoka\", \"rank\": 2, \"sentiment\": 0.2, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"2. **Hoka Clifton**: a favourite of ultra and trail runners, although some runners find the high stack less stable [2].\"}, {\"entity\": \"Saucony Ride\", \"canonical\": \"Saucony\", \"rank\": 3, \"sentiment\": 0.2, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"3. **Saucony Ride**: a lively [3].\"}, {\"entity\": \"New Balance 880\", \"canonical\": \"New Balance\", \"rank\": 4, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"4. **New Balance 880**: comfortable on long easy runs [4].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Brooks Adrenaline GTS",
+        "canonical": "Brooks",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "1. **Brooks Adrenaline GTS**: a dependable choice for beginners [1]."
+      },
+      {
+        "entity": "Hoka Clifton",
+        "canonical": "Hoka",
+        "rank": 2,
+        "sentiment": 0.2,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "2. **Hoka Clifton**: a favourite of ultra and trail runners, although some runners find the high stack less stable [2]."
+      },
+      {
+        "entity": "Saucony Ride",
+        "canonical": "Saucony",
+        "rank": 3,
+        "sentiment": 0.2,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "3. **Saucony Ride**: a lively [3]."
+      },
+      {
+        "entity": "New Balance 880",
+        "canonical": "New Balance",
+        "rank": 4,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "4. **New Balance 880**: comfortable on long easy runs [4]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-042"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Taskflow\", \"canonical\": \"Taskflow\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"- **Taskflow Timelines**: well suited to agencies thanks to its client portal, although its integration library is smaller than the market leaders'. Taskflow includes a client portal with guest access on paid plans [2].\"}, {\"entity\": \"Jira\", \"canonical\": \"Jira\", \"rank\": 2, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"- **Jira Software**: the standard for software teams running scrum [4].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Taskflow",
+        "canonical": "Taskflow",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "- **Taskflow Timelines**: well suited to agencies thanks to its client portal, although its integration library is smaller than the market leaders'. Taskflow includes a client portal with guest access on paid plans [2]."
+      },
+      {
+        "entity": "Jira",
+        "canonical": "Jira",
+        "rank": 2,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "- **Jira Software**: the standard for software teams running scrum [4]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-025"
+  }
+}

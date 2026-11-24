@@ -1,0 +1,38 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Nike Invincible\", \"canonical\": \"Nike\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"1. **Nike Invincible**: a popular choice for race day [1].\"}, {\"entity\": \"ASICS Gel-Kayano\", \"canonical\": \"ASICS\", \"rank\": 2, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"2. **ASICS Gel-Kayano**: strong stability and support [2].\"}, {\"entity\": \"Hoka Bondi\", \"canonical\": \"Hoka\", \"rank\": 3, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"3. **Hoka Bondi**: a favourite of ultra and trail runners [3].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Nike Invincible",
+        "canonical": "Nike",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "1. **Nike Invincible**: a popular choice for race day [1]."
+      },
+      {
+        "entity": "ASICS Gel-Kayano",
+        "canonical": "ASICS",
+        "rank": 2,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "2. **ASICS Gel-Kayano**: strong stability and support [2]."
+      },
+      {
+        "entity": "Hoka Bondi",
+        "canonical": "Hoka",
+        "rank": 3,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "3. **Hoka Bondi**: a favourite of ultra and trail runners [3]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "stridelab-014"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Taskflow Client Portal\", \"canonical\": \"Taskflow\", \"rank\": 1, \"sentiment\": 0.2, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"1. **Taskflow Client Portal**: well suited to agencies thanks to its client portal, although advanced reporting is still limited. Taskflow has a free plan for up to 3 users [1].\"}, {\"entity\": \"Asana\", \"canonical\": \"Asana\", \"rank\": 2, \"sentiment\": 0.1, \"sentiment_label\": \"mixed\", \"is_recommended\": false, \"snippet\": \"2. **Asana**: polished and widely adopted, although can get expensive as teams grow [2].\"}, {\"entity\": \"Trello\", \"canonical\": \"Trello\", \"rank\": 3, \"sentiment\": 0.2, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"3. **Trello**: simple kanban boards that are easy to start with, although limited for complex projects [3].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Taskflow Client Portal",
+        "canonical": "Taskflow",
+        "rank": 1,
+        "sentiment": 0.2,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "1. **Taskflow Client Portal**: well suited to agencies thanks to its client portal, although advanced reporting is still limited. Taskflow has a free plan for up to 3 users [1]."
+      },
+      {
+        "entity": "Asana",
+        "canonical": "Asana",
+        "rank": 2,
+        "sentiment": 0.1,
+        "sentiment_label": "mixed",
+        "is_recommended": false,
+        "snippet": "2. **Asana**: polished and widely adopted, although can get expensive as teams grow [2]."
+      },
+      {
+        "entity": "Trello",
+        "canonical": "Trello",
+        "rank": 3,
+        "sentiment": 0.2,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "3. **Trello**: simple kanban boards that are easy to start with, although limited for complex projects [3]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-031"
+  }
+}

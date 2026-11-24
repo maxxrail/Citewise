@@ -1,0 +1,56 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Wrike\", \"canonical\": \"Wrike\", \"rank\": 1, \"sentiment\": 0.7, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"- **Wrike**: workload view and effort allocation are the strongest in this group.\"}, {\"entity\": \"Monday.com Ltd.\", \"canonical\": \"Monday.com\", \"rank\": 2, \"sentiment\": 0.1, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"- **Monday.com Ltd.** (monday work management): solid workload widget, but it costs extra on the Pro tier.\"}, {\"entity\": \"Smartsheet\", \"canonical\": \"Smartsheet\", \"rank\": 3, \"sentiment\": 0.4, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"- **Smartsheet**: good if your team lives in spreadsheets.\"}, {\"entity\": \"Taskflow\", \"canonical\": \"Taskflow\", \"rank\": null, \"sentiment\": -0.6, \"sentiment_label\": \"negative\", \"is_recommended\": false, \"snippet\": \"Taskflow and Trello don't have real resource planning yet, so I'd skip them for this specific need.\"}, {\"entity\": \"Trello\", \"canonical\": \"Trello\", \"rank\": null, \"sentiment\": -0.6, \"sentiment_label\": \"negative\", \"is_recommended\": false, \"snippet\": \"Taskflow and Trello don't have real resource planning yet, so I'd skip them for this specific need.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Wrike",
+        "canonical": "Wrike",
+        "rank": 1,
+        "sentiment": 0.7,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "- **Wrike**: workload view and effort allocation are the strongest in this group."
+      },
+      {
+        "entity": "Monday.com Ltd.",
+        "canonical": "Monday.com",
+        "rank": 2,
+        "sentiment": 0.1,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "- **Monday.com Ltd.** (monday work management): solid workload widget, but it costs extra on the Pro tier."
+      },
+      {
+        "entity": "Smartsheet",
+        "canonical": "Smartsheet",
+        "rank": 3,
+        "sentiment": 0.4,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "- **Smartsheet**: good if your team lives in spreadsheets."
+      },
+      {
+        "entity": "Taskflow",
+        "canonical": "Taskflow",
+        "rank": null,
+        "sentiment": -0.6,
+        "sentiment_label": "negative",
+        "is_recommended": false,
+        "snippet": "Taskflow and Trello don't have real resource planning yet, so I'd skip them for this specific need."
+      },
+      {
+        "entity": "Trello",
+        "canonical": "Trello",
+        "rank": null,
+        "sentiment": -0.6,
+        "sentiment_label": "negative",
+        "is_recommended": false,
+        "snippet": "Taskflow and Trello don't have real resource planning yet, so I'd skip them for this specific need."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "hard-010"
+  }
+}

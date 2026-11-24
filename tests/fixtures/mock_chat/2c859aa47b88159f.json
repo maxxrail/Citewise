@@ -1,0 +1,38 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"ASICS\", \"canonical\": \"ASICS\", \"rank\": 1, \"sentiment\": 0.2, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"1. **ASICS Gel-Nimbus**: durable outsoles, although some models feel firm at first [1].\"}, {\"entity\": \"New Balance\", \"canonical\": \"New Balance\", \"rank\": 2, \"sentiment\": 0.4, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"2. **New Balance 880**: offers many widths for wide feet [2].\"}, {\"entity\": \"Stridelab\", \"canonical\": \"Stridelab\", \"rank\": 3, \"sentiment\": 0.2, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"3. **Stridelab Trail**: praised in reviews for grip on wet trails, although some reviewers report the upper wears quickly on rocky trails [3].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "ASICS",
+        "canonical": "ASICS",
+        "rank": 1,
+        "sentiment": 0.2,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "1. **ASICS Gel-Nimbus**: durable outsoles, although some models feel firm at first [1]."
+      },
+      {
+        "entity": "New Balance",
+        "canonical": "New Balance",
+        "rank": 2,
+        "sentiment": 0.4,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "2. **New Balance 880**: offers many widths for wide feet [2]."
+      },
+      {
+        "entity": "Stridelab",
+        "canonical": "Stridelab",
+        "rank": 3,
+        "sentiment": 0.2,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "3. **Stridelab Trail**: praised in reviews for grip on wet trails, although some reviewers report the upper wears quickly on rocky trails [3]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "stridelab-012"
+  }
+}

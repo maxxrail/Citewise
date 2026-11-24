@@ -1,0 +1,38 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Brooks\", \"canonical\": \"Brooks\", \"rank\": 1, \"sentiment\": 0.8, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"1. **Brooks Ghost 16**: forgiving, durable and easy to like.\"}, {\"entity\": \"ASICS\", \"canonical\": \"ASICS\", \"rank\": 2, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"2. **ASICS Gel-Nimbus 26**: plush and stable for heavier runners.\"}, {\"entity\": \"Stridelab\", \"canonical\": \"Stridelab\", \"rank\": 3, \"sentiment\": 0.2, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"3. **Stridelab Tempo**: roomy fit, though the outsole wears fast.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Brooks",
+        "canonical": "Brooks",
+        "rank": 1,
+        "sentiment": 0.8,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "1. **Brooks Ghost 16**: forgiving, durable and easy to like."
+      },
+      {
+        "entity": "ASICS",
+        "canonical": "ASICS",
+        "rank": 2,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "2. **ASICS Gel-Nimbus 26**: plush and stable for heavier runners."
+      },
+      {
+        "entity": "Stridelab",
+        "canonical": "Stridelab",
+        "rank": 3,
+        "sentiment": 0.2,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "3. **Stridelab Tempo**: roomy fit, though the outsole wears fast."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "inject-001"
+  }
+}

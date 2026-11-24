@@ -1,0 +1,56 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Asanna\", \"canonical\": \"Asana\", \"rank\": null, \"sentiment\": 0.0, \"sentiment_label\": \"neutral\", \"is_recommended\": false, \"snippet\": \"Good alternatives to Asanna (Asana, Inc.'s work-management app), depending on what pushes you away from it:\"}, {\"entity\": \"clickup\", \"canonical\": \"ClickUp\", \"rank\": 1, \"sentiment\": 0.2, \"sentiment_label\": \"mixed\", \"is_recommended\": true, \"snippet\": \"1. clickup: the most features per dollar, though the interface overwhelms new users.\"}, {\"entity\": \"Trello\", \"canonical\": \"Trello\", \"rank\": 2, \"sentiment\": -0.2, \"sentiment_label\": \"negative\", \"is_recommended\": false, \"snippet\": \"2. Trello (owned by Atlassian): fine for simple kanban, but you'll outgrow it once you need dependencies.\"}, {\"entity\": \"Atlassian\", \"canonical\": \"Atlassian\", \"rank\": null, \"sentiment\": 0.0, \"sentiment_label\": \"neutral\", \"is_recommended\": false, \"snippet\": \"2. Trello (owned by Atlassian): fine for simple kanban, but you'll outgrow it once you need dependencies.\"}, {\"entity\": \"TASKFLOW\", \"canonical\": \"Taskflow\", \"rank\": 3, \"sentiment\": 0.8, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"3. TASKFLOW: built for agencies, with a client portal and simple time tracking. The best match for a 10-person agency.\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Asanna",
+        "canonical": "Asana",
+        "rank": null,
+        "sentiment": 0.0,
+        "sentiment_label": "neutral",
+        "is_recommended": false,
+        "snippet": "Good alternatives to Asanna (Asana, Inc.'s work-management app), depending on what pushes you away from it:"
+      },
+      {
+        "entity": "clickup",
+        "canonical": "ClickUp",
+        "rank": 1,
+        "sentiment": 0.2,
+        "sentiment_label": "mixed",
+        "is_recommended": true,
+        "snippet": "1. clickup: the most features per dollar, though the interface overwhelms new users."
+      },
+      {
+        "entity": "Trello",
+        "canonical": "Trello",
+        "rank": 2,
+        "sentiment": -0.2,
+        "sentiment_label": "negative",
+        "is_recommended": false,
+        "snippet": "2. Trello (owned by Atlassian): fine for simple kanban, but you'll outgrow it once you need dependencies."
+      },
+      {
+        "entity": "Atlassian",
+        "canonical": "Atlassian",
+        "rank": null,
+        "sentiment": 0.0,
+        "sentiment_label": "neutral",
+        "is_recommended": false,
+        "snippet": "2. Trello (owned by Atlassian): fine for simple kanban, but you'll outgrow it once you need dependencies."
+      },
+      {
+        "entity": "TASKFLOW",
+        "canonical": "Taskflow",
+        "rank": 3,
+        "sentiment": 0.8,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "3. TASKFLOW: built for agencies, with a client portal and simple time tracking. The best match for a 10-person agency."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "hard-003"
+  }
+}

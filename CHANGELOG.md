@@ -10,6 +10,10 @@ All notable changes to Citewise are documented here. Format: [Keep a Changelog](
 - A live command refuses to start when a configured model doesn't belong to `LLM_PROVIDER` (a stale `.env` pinning `gpt-*` models).
 - `scripts/record_extract_fixtures.py` and the panel commands use `LLM_PROVIDER`.
 - Dependency `fastembed`. Prices: `claude-opus-5-5`, plus the local embedding model at $0.
+- `.env.example` documents `LLM_PROVIDER`, `EMBED_PROVIDER` and the Claude model defaults.
+
+### Added (live check)
+- Recorded real `claude-haiku-5-5` Stage B responses for all 65 golden answers (`tests/fixtures/mock_chat/`, $0.034). The offline eval and CI now score a real model: merged F1 1.000, rank accuracy 98.9%, sentiment label accuracy 92.0%, recommendation accuracy 85.2%.
 
 ## module-03 - Extraction and visibility metrics (2026-11-24)
 

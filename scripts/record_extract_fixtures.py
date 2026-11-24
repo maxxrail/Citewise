@@ -7,7 +7,7 @@ replays a *real model's* answers on the golden set instead of the simulator's:
     $env:CITEWISE_MODE="live"   # PowerShell; needs ANTHROPIC_API_KEY
     uv run python scripts/record_extract_fixtures.py --max-cost 0.10
 
-Each golden answer costs about $0.0002 on the default MODEL_EXTRACT. Fixtures are written
+The 65-answer set cost $0.034 on claude-haiku-5-5 (measured 2026-11-24). Fixtures are written
 to tests/fixtures/mock_chat/<key>.json, keyed by the rendered prompt, so changing the
 prompt template or the redaction rules makes them stale (re-record). Commit them with a
 note of the model and date; the eval report then says "N/65 replayed".

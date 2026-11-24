@@ -1,0 +1,29 @@
+{
+  "text": "{\"mentions\": [{\"entity\": \"Asana\", \"canonical\": \"Asana\", \"rank\": 1, \"sentiment\": 0.6, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"1. **Asana**: polished and widely adopted [1].\"}, {\"entity\": \"ClickUp\", \"canonical\": \"ClickUp\", \"rank\": 2, \"sentiment\": 0.5, \"sentiment_label\": \"positive\", \"is_recommended\": true, \"snippet\": \"2. **ClickUp**: packs many features into one app [2].\"}]}",
+  "parsed": {
+    "mentions": [
+      {
+        "entity": "Asana",
+        "canonical": "Asana",
+        "rank": 1,
+        "sentiment": 0.6,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "1. **Asana**: polished and widely adopted [1]."
+      },
+      {
+        "entity": "ClickUp",
+        "canonical": "ClickUp",
+        "rank": 2,
+        "sentiment": 0.5,
+        "sentiment_label": "positive",
+        "is_recommended": true,
+        "snippet": "2. **ClickUp**: packs many features into one app [2]."
+      }
+    ]
+  },
+  "recorded": {
+    "model": "claude-haiku-5-5",
+    "golden_id": "taskflow-035"
+  }
+}
