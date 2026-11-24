@@ -93,10 +93,13 @@ def parse_openai(raw: dict[str, Any], model: str) -> EngineAnswer:
 class OpenAIEngine:
     name = "openai"
 
-    def __init__(self, api_key: str, model: str, *, timeout_s: float) -> None:
+    def __init__(
+        self, api_key: str, model: str, *, timeout_s: float, max_output_tokens: int
+    ) -> None:
         from openai import AsyncOpenAI
 
         self.model = model
+        self.max_output_tokens = max_output_tokens
         self.client = AsyncOpenAI(api_key=api_key, timeout=timeout_s, max_retries=0)
 
     async def answer(self, prompt: str, *, system: str | None = None) -> EngineAnswer:
@@ -105,6 +108,8 @@ class OpenAIEngine:
             model=self.model,
             input=_messages(prompt, system),  # type: ignore[arg-type]
             tools=[{"type": "web_search"}],  # the model decides whether to search, like ChatGPT
+            # Includes reasoning tokens (checked 2026-11-24); hitting it -> status "incomplete".
+            max_output_tokens=self.max_output_tokens,
         )
         answer = parse_openai(response.model_dump(mode="json"), self.model)
         answer.latency_ms = _elapsed_ms(start)
@@ -268,11 +273,14 @@ def parse_gemini(raw: dict[str, Any], model: str) -> EngineAnswer:
 class GeminiEngine:
     name = "gemini"
 
-    def __init__(self, api_key: str, model: str, *, timeout_s: float) -> None:
+    def __init__(
+        self, api_key: str, model: str, *, timeout_s: float, max_output_tokens: int
+    ) -> None:
         from google import genai
         from google.genai import types
 
         self.model = model
+        self.max_output_tokens = max_output_tokens
         self.types = types
         self.client = genai.Client(
             api_key=api_key,
@@ -288,7 +296,10 @@ class GeminiEngine:
             model=self.model,
             contents=prompt,
             config=t.GenerateContentConfig(
-                tools=[t.Tool(google_search=t.GoogleSearch())], system_instruction=system
+                tools=[t.Tool(google_search=t.GoogleSearch())],
+                system_instruction=system,
+                # Includes thought tokens (checked 2026-11-24); hitting it -> MAX_TOKENS.
+                max_output_tokens=self.max_output_tokens,
             ),
         )
         answer = parse_gemini(response.model_dump(mode="json", exclude_none=True), self.model)
@@ -331,7 +342,7 @@ def parse_perplexity(raw: dict[str, Any], model: str) -> EngineAnswer:
     usage = raw.get("usage") or {}
     searches = get_path(usage, "tool_calls_details", "search_web", "invocation")
     reported = get_path(usage, "cost", "total_cost")
-    return EngineAnswer(
+    answer = EngineAnswer(
         text=text,
         citations=_dedupe(pairs),
         model=model,
@@ -340,16 +351,27 @@ def parse_perplexity(raw: dict[str, Any], model: str) -> EngineAnswer:
         raw=raw,
         reported_cost_usd=float(reported) if isinstance(reported, int | float) else None,
     )
+    status = raw.get("status")
+    if status not in (None, "completed"):
+        # The Agent API reports no incomplete_details (checked 2026-11-24). "incomplete" is
+        # most likely the max_output_tokens budget, which repeats on retry; "failed" may not.
+        raise EngineError(
+            f"Perplexity response status {status}", retryable=status == "failed", answer=answer
+        )
+    return answer
 
 
 class PerplexityEngine:
     name = "perplexity"
     BASE_URL = "https://api.perplexity.ai/v1"
 
-    def __init__(self, api_key: str, model: str, *, timeout_s: float) -> None:
+    def __init__(
+        self, api_key: str, model: str, *, timeout_s: float, max_output_tokens: int
+    ) -> None:
         from openai import AsyncOpenAI  # Perplexity's Agent API is OpenAI-compatible
 
         self.model = model
+        self.max_output_tokens = max_output_tokens
         self.client = AsyncOpenAI(
             api_key=api_key, base_url=self.BASE_URL, timeout=timeout_s, max_retries=0
         )
@@ -363,6 +385,8 @@ class PerplexityEngine:
             model=self.model,
             input=_messages(prompt, sys_msg),  # type: ignore[arg-type]
             tools=[{"type": "web_search"}],  # type: ignore[list-item]
+            # A total budget "across the run" (search steps included), checked 2026-11-24.
+            max_output_tokens=self.max_output_tokens,
         )
         answer = parse_perplexity(response.model_dump(mode="json"), self.model)
         answer.latency_ms = _elapsed_ms(start)

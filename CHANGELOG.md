@@ -4,6 +4,25 @@ All notable changes to Citewise are documented here. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+## module-02 review (2026-11-24)
+
+### Added
+- Setting `SCAN_MAX_OUTPUT_TOKENS` (per engine: OpenAI 6000, Anthropic 4096, Gemini 3000, Perplexity 2500), sent as `max_output_tokens` / `max_tokens` on every live engine call.
+- `is_timeout()` in `providers/engines/base.py`.
+
+### Changed
+- The Anthropic answer cap went from a hardcoded 1500 to 4096 (configurable), because thinking tokens count against it.
+- `execute_run` is split into setup/outcome (`execute_run`) and the per-call work (`_execute`).
+
+### Fixed
+- The run lease was only refreshed when an answer landed, so slow or timing-out calls let it lapse and a second executor could double-spend the run. A background task now beats every 10 s.
+- A setup failure after the lease was taken (e.g. a missing API key on an API-started run) left the run `running` forever with no error. It is now `failed`, with the error, and the lease is released.
+- SDK timeouts were costed at $0. They are now charged their estimate, like asyncio timeouts.
+- OpenAI, Gemini and Perplexity answers had no output-token cap. Perplexity truncations (`status: incomplete`) were stored as ok answers.
+- `execute_run` now refuses a run from the other mode (it was only checked by `scan resume`).
+- Resume reads spend so far from `llm_calls` instead of a possibly stale `runs.cost_usd`.
+- A citation domain longer than 255 characters would abort the whole run on Postgres. It is now truncated.
+
 ## module-02 - Multi-engine answer collection (2026-11-23)
 
 ### Added

@@ -97,6 +97,15 @@ def is_retryable(exc: BaseException) -> bool:
     return "Timeout" in name or "Connection" in name
 
 
+def is_timeout(exc: BaseException) -> bool:
+    """A request that was sent but not answered in time: asyncio's TimeoutError, or an SDK
+    timeout (openai/anthropic `APITimeoutError`, httpx `ReadTimeout`, ...). The provider may
+    still finish and bill it, so the runner charges these their estimate, not $0."""
+    if isinstance(exc, TimeoutError | asyncio.TimeoutError):
+        return True
+    return "Timeout" in type(exc).__name__
+
+
 @runtime_checkable
 class EngineAdapter(Protocol):
     name: str  # "openai" | "anthropic" | "gemini" | "perplexity"

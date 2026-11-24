@@ -61,6 +61,19 @@ class Settings(BaseSettings):
     scan_backoff_base_s: float = Field(default=1.0, gt=0)  # 1s, 2s, 4s ... plus jitter
     scan_backoff_max_s: float = Field(default=30.0, gt=0)
     scan_max_searches: int = Field(default=3, ge=1, le=10)  # per answer, where supported
+    # Output-token cap per answer, by engine. Without one, a single call's cost is bounded
+    # only by the model's own limit (Perplexity: 128K), so the budget guard's per-call
+    # reservation could be overshot without limit. Checked 2026-11-24: reasoning/thinking
+    # tokens count against the cap on OpenAI (gpt-6-luna reasons at "medium" by default),
+    # Gemini and Anthropic, hence the headroom over a ~700-word answer (~1K tokens).
+    scan_max_output_tokens: dict[str, int] = Field(
+        default_factory=lambda: {
+            "openai": 6000,
+            "anthropic": 4096,
+            "gemini": 3000,
+            "perplexity": 2500,
+        }
+    )
     # Budget estimate per answer: answers with search run long, and search results are
     # billed as input tokens.
     scan_est_tokens_in: int = Field(default=3000, ge=0)

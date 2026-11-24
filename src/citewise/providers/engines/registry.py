@@ -9,7 +9,7 @@ from citewise.providers.pricing import require_price
 from citewise.providers.registry import PROVIDERS, MissingAPIKeyError, _require_key
 
 ENGINES: tuple[str, ...] = PROVIDERS  # openai, anthropic, gemini, perplexity
-ANSWER_MAX_TOKENS = 1500
+DEFAULT_MAX_OUTPUT_TOKENS = 4096
 # Old .env files copied from Module 0's .env.example still say "sonar".
 RETIRED_PERPLEXITY_IDS = frozenset({"sonar", "sonar-pro", "sonar-reasoning"})
 
@@ -17,6 +17,11 @@ RETIRED_PERPLEXITY_IDS = frozenset({"sonar", "sonar-pro", "sonar-reasoning"})
 def engine_model(name: str, settings: Settings | None = None) -> str:
     settings = settings or get_settings()
     return str(getattr(settings, f"engine_model_{name}"))
+
+
+def max_output_tokens(name: str, settings: Settings) -> int:
+    """Per-answer output cap; an engine missing from SCAN_MAX_OUTPUT_TOKENS gets 4096."""
+    return int(settings.scan_max_output_tokens.get(name, DEFAULT_MAX_OUTPUT_TOKENS))
 
 
 def parse_engines(value: str | list[str]) -> list[str]:
@@ -48,23 +53,31 @@ def get_engine(name: str, settings: Settings | None = None) -> EngineAdapter:
     require_price(model)  # fail closed before any spend we couldn't account for
     key = _require_key(settings, name)
     timeout = settings.llm_timeout_s
+    max_out = max_output_tokens(name, settings)
     from citewise.providers.engines import live
 
     if name == "openai":
-        return live.OpenAIEngine(key, model, timeout_s=timeout)
+        return live.OpenAIEngine(key, model, timeout_s=timeout, max_output_tokens=max_out)
     if name == "anthropic":
         return live.AnthropicEngine(
             key,
             model,
             timeout_s=timeout,
             max_searches=settings.scan_max_searches,
-            max_tokens=ANSWER_MAX_TOKENS,
+            max_tokens=max_out,
         )
     if name == "gemini":
-        return live.GeminiEngine(key, model, timeout_s=timeout)
+        return live.GeminiEngine(key, model, timeout_s=timeout, max_output_tokens=max_out)
     if name == "perplexity":
-        return live.PerplexityEngine(key, model, timeout_s=timeout)
+        return live.PerplexityEngine(key, model, timeout_s=timeout, max_output_tokens=max_out)
     raise ValueError(f"Unknown engine {name!r}")
 
 
-__all__ = ["ENGINES", "MissingAPIKeyError", "engine_model", "get_engine", "parse_engines"]
+__all__ = [
+    "ENGINES",
+    "MissingAPIKeyError",
+    "engine_model",
+    "get_engine",
+    "max_output_tokens",
+    "parse_engines",
+]
