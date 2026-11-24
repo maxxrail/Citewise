@@ -52,7 +52,7 @@ from citewise.services.panel.common import resolve_brand
 log = logging.getLogger(__name__)
 
 # Bump the leading f<N> when check rules change; the KB fingerprint is appended per run.
-FACTCHECK_VERSION = "f2+claims.v1+verify.v1"
+FACTCHECK_VERSION = "f2+claims.v1+verify.v2"
 MAX_SOURCE_FETCHES = 5  # cited pages read per answer (live, --fetch-sources)
 
 

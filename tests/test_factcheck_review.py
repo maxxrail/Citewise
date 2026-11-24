@@ -114,11 +114,6 @@ def test_fuzzy_span_check_never_accepts_a_changed_number_or_negation(span: str) 
             "The Pro plan costs ... $25 per user",
             "quote_not_in_evidence",
         ),
-        (
-            "Taskflow's Basic tier is $9",
-            "The Enterprise plan costs $25 per user per month.",
-            "quote_unrelated_to_claim",
-        ),
     ],
 )
 def test_trivial_or_stitched_quotes_cannot_back_a_contradiction(
@@ -425,3 +420,23 @@ def test_held_out_claims_evidence_hints_are_in_the_kb() -> None:
     for r in rows:
         if r.get("evidence_hint"):
             assert contains(text[r["brand"].lower()], r["evidence_hint"]), r["id"]
+
+
+def test_a_pronoun_quote_from_the_live_model_still_backs_a_contradiction() -> None:
+    """Measured on the held-out set: a word-overlap rule threw this correct verdict away."""
+    hit = Hit(
+        "offerings#0",
+        "Stridelab shoes and prices > Current models\nThe Stridelab Tempo is a lightweight "
+        "daily trainer. It costs $140, weighs 240 grams (men's size 9).",
+        1.0,
+    )
+    v = Verdict(
+        verdict="contradicted",
+        evidence_chunk_ids=["offerings#0"],
+        evidence_quote="It costs $140, weighs 240 grams (men's size 9).",
+        rationale="r",
+    )
+    got = validate_verdict(
+        v, [hit], claim="The Stridelab Tempo sells for around $120", brand_terms={"stridelab"}
+    )
+    assert got.verdict == "contradicted"

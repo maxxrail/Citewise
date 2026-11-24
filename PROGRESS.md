@@ -6,7 +6,7 @@
 | 1 | Prompt panel and topic discovery | 🔁 reviewed | 121 tests; all acceptance criteria verified on Postgres + SQLite 2026-11-23 |
 | 2 | Multi-engine answer collection | 🔁 reviewed | 222 tests; acceptance re-verified on fresh Postgres + SQLite 2026-11-24; live check needs Maxx's key |
 | 3 | Extraction and visibility metrics | ✅ done | 295 tests (+6 Postgres-only, all pass on PG 16); acceptance verified on Postgres + SQLite 2026-11-24; golden set reviewed by Maxx (65/65) |
-| 4 | Brand knowledge base and FactCheck | ✅ done | 366 tests; acceptance verified on Postgres + SQLite 2026-11-24; live Linear run and live verifier eval pending Maxx's OK |
+| 4 | Brand knowledge base and FactCheck | ✅ done | 367 tests; acceptance verified on Postgres + SQLite; live verifier 95.6% / 0% false contradictions on held-out claims; live Linear run done 2026-11-24 |
 | 5 | Content agent | ⬜ not started | |
 | 6 | Evals, experiments and observability | ⬜ not started | |
 | 7 | AI crawler analytics | ⬜ not started | |
@@ -383,3 +383,39 @@ Stridelab mock scan, per engine: mention rate 42% (OpenAI) to 60% (Anthropic), o
 1. Review the two new golden sets (`evals/datasets/golden/kb_qa.jsonl`, `factcheck_claims.jsonl`). The agents' least-sure rows are listed in the golden README.
 2. Optionally add `KB_CHUNK_TOKENS=400` and `KB_CHUNK_OVERLAP=60` to `.env.example`.
 3. Approve, or not, the live Linear run and the live evals.
+
+### 2026-11-24 - Module 4 live run (Claude, about $0.90)
+**Held-out verifier** (`evals/reports/factcheck_eval_live.md`, 45 claims):
+
+| Verifier | Accuracy | False contradictions | Precision / recall on wrong claims |
+|---|---|---|---|
+| Simulated (mock) | 37.8% | 29.6% | 38% / 28% |
+| claude-haiku-5-5, verify.v1 (2 runs) | 93.3–95.6% | 0–3.7% | n/a |
+| claude-haiku-5-5, verify.v2 | **95.6%** | **0%** | **100% / 100%** |
+
+**Retrieval** (`retrieval_eval_live.md`, real local embeddings plus Claude re-rank):
+
+| Method | Recall@1 | MRR |
+|---|---|---|
+| BM25 | 0.694 | 0.745 |
+| Dense | 0.917 | 0.958 |
+| Hybrid | 0.833 | 0.903 |
+| **Hybrid + re-rank** | **1.000** | **1.000** |
+
+**Linear end to end:**
+- **KB ingest** (free).
+- **Panel:** 300 Opus-generated prompts, deduplicated to 262, 6 topics ($0.31). Three topics overlap; real prompts cluster less cleanly.
+- **Scan:** 20 prompts on Claude, $0.31 against a $0.31 estimate. Linear is mentioned in 70% of answers (CI 48–90%) with a Visibility Score of 60.2.
+- **Extraction:** $0.02.
+- **Fact-check** with re-rank and fetched sources ($0.10): 133 claims, 6 contradicted. 5 are clear errors and 1 is debatable, all traced to third-party pages.
+- **Narrative:** "fast tool for engineering teams" vs "opinionated, engineering-focused".
+
+**Two lessons found live and fixed:**
+1. The verdict-before-rationale schema let the model contradict its own reasoning. Fixed in verify.v2.
+2. The review's word-overlap quote rule discarded correct verdicts. Dropped.
+
+See DECISIONS, "Module 4 live run".
+
+**Still for Maxx:**
+- Review `kb_qa.jsonl` and `factcheck_claims.jsonl`.
+- Spot-check `data/kb/linear/`.

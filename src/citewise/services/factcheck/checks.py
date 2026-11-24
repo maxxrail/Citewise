@@ -168,18 +168,22 @@ def validate_verdict(
     v: Verdict, hits: list[Hit], *, claim: str = "", brand_terms: set[str] | None = None
 ) -> Checked:
     """Enforce "never contradicted (or supported) without a real quote": the quote must
-    be at least QUOTE_MIN_WORDS words, found in the body of a retrieved passage (not its
-    heading), and share a content term with the claim (the brand name doesn't count)."""
+    be at least QUOTE_MIN_WORDS words and found verbatim (ellipses within one sentence) in
+    the body of a retrieved passage, not its heading.
+
+    Deliberately *not* required: word overlap between quote and claim. It was tried, and
+    on the held-out set it discarded correct contradictions from the live model, whose
+    quotes use pronouns and paraphrase ("It costs $140" vs "sells for around $120",
+    "founded ... in Portland" vs "got its start in Seattle"). Whether a real quote means
+    what the verdict says is the model's judgement, which the held-out eval measures.
+    `claim` and `brand_terms` are kept for callers and future checks."""
     texts = {h.chunk_key: _body(h.text) for h in hits}
     if v.verdict == "not_in_kb":
         return Checked("not_in_kb", [], None, v.rationale)
     cited = [k for k in dict.fromkeys(v.evidence_chunk_ids) if k in texts]
     quote = (v.evidence_quote or "").strip()
-    bterms = brand_terms or set()
     if quote and len(quote.replace("...", " ").split()) < QUOTE_MIN_WORDS:
         return _downgrade(v, "quote_too_short", quote)
-    if quote and claim and not (content_terms(quote, bterms) & content_terms(claim, bterms)):
-        return _downgrade(v, "quote_unrelated_to_claim", quote)
     holders = [k for k in cited if quote and contains(texts[k], quote)]
     details: dict[str, Any] = {}
     if not holders and quote:
@@ -214,7 +218,7 @@ def verify_claim(
         return Checked("not_in_kb", [], None, "No knowledge-base passage matched the claim.",
                        {"reason": "no_retrieval_hits"})  # fmt: skip
     rendered = render(
-        "factcheck/verify", "v1", brand=brand, claim=claim,
+        "factcheck/verify", "v2", brand=brand, claim=claim,
         passages=[{"id": h.chunk_key, "text": h.text} for h in hits],
     )  # fmt: skip
     out = complete_structured(

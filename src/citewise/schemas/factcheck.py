@@ -30,10 +30,15 @@ class ClaimList(_Strict):
 
 
 class Verdict(_Strict):
-    verdict: VerdictLabel
+    """Field order is deliberate: structured output is generated in schema order, so the
+    model reasons (rationale), then picks its evidence, then commits to a verdict. With the
+    verdict first, a live run produced "contradicted" verdicts whose own rationale ended
+    "...so the claim is supported" (verify.v1, 2 of 7 contradictions on Linear)."""
+
+    rationale: str  # one or two sentences, written before the verdict
     evidence_chunk_ids: list[str]  # ids of the passages the verdict rests on
     evidence_quote: str | None  # verbatim sentence(s) from one of those passages
-    rationale: str  # one or two sentences
+    verdict: VerdictLabel
 
     @field_validator("rationale")
     @classmethod
