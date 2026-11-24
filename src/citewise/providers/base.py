@@ -119,6 +119,13 @@ class EmbeddingBackend(Protocol):
 
 @runtime_checkable
 class EmbeddingProvider(Protocol):
-    """What callers use: plain vectors in, tracking handled underneath."""
+    """What callers use: plain vectors in, tracking handled underneath.
+
+    `ident` names the vector space ("<provider>:<model>", e.g. "mock:text-embedding-3-small"
+    vs "openai:text-embedding-3-small"). Vectors are only comparable within one ident, so
+    it is stored next to every embedding.
+    """
+
+    ident: str
 
     def embed(self, texts: list[str], *, purpose: str = "embed") -> list[list[float]]: ...

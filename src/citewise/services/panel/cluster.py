@@ -21,8 +21,9 @@ from sqlalchemy.orm import Session
 from citewise.core.config import Settings
 from citewise.models.brand import Brand
 from citewise.models.panel import Prompt, Topic
-from citewise.providers.base import ChatProvider
+from citewise.providers.base import ChatProvider, EmbeddingProvider
 from citewise.services.panel.common import as_matrix, brand_prompts
+from citewise.services.panel.generate import refresh_embeddings
 from citewise.services.panel.intent import ensure_intents
 from citewise.services.panel.label import CENTRAL_PROMPTS, label_cluster
 
@@ -136,12 +137,24 @@ def cluster_brand(
     settings: Settings,
     algorithm: str = "kmeans",
     seed: int = 0,
+    *,
+    embedder: EmbeddingProvider | None = None,
 ) -> ClusterReport:
     """Replace the brand's topics with a fresh clustering and fill in missing intents.
 
     Prompts keep their ids (Module 2 answers reference them); only topic links change.
     """
-    prompts = [p for p in brand_prompts(session, brand.id) if p.embedding]
+    prompts = brand_prompts(session, brand.id)
+    if embedder is not None:
+        refresh_embeddings(prompts, embedder)
+    prompts = [p for p in prompts if p.embedding]
+    spaces = {p.embedding_model for p in prompts}
+    if len(spaces) > 1:
+        raise ValueError(
+            f"{brand.name} prompts were embedded by different embedders "
+            f"({', '.join(sorted(s or 'unknown' for s in spaces))}); pass an embedder to "
+            "re-embed them (the `citewise panel cluster` command does)."
+        )
     if not prompts:
         raise ValueError(f"{brand.name} has no embedded prompts. Run `citewise panel generate`.")
     x = as_matrix([p.embedding for p in prompts if p.embedding])

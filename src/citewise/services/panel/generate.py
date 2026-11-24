@@ -66,6 +66,7 @@ class StoreReport:
     stored: int = 0
     failed_calls: int = 0
     skipped_cells: int = 0  # already generated with this template version
+    reembedded: int = 0  # stored prompts moved into the current embedder's vector space
     examples: list[tuple[str, str]] = field(default_factory=list)  # (dropped, kept)
 
 
@@ -167,6 +168,23 @@ def _embed_all(embedder: EmbeddingProvider, texts: list[str]) -> list[list[float
     return vectors
 
 
+def refresh_embeddings(prompts: list[Prompt], embedder: EmbeddingProvider) -> int:
+    """Re-embed prompts whose vectors are missing or from another vector space.
+
+    Mock and live embedders share a model name but not a space, and a MODEL_EMBED change
+    can change the dimension, so mixing them would silently break dedup and clustering.
+    Mutates the ORM objects (the caller's session flushes). Returns how many changed.
+    """
+    stale = [p for p in prompts if p.embedding is None or p.embedding_model != embedder.ident]
+    if not stale:
+        return 0
+    old = sorted({p.embedding_model or "unknown" for p in stale})
+    log.info("re-embedding %d prompts (%s -> %s)", len(stale), ", ".join(old), embedder.ident)
+    for p, vector in zip(stale, _embed_all(embedder, [p.text for p in stale]), strict=True):
+        p.embedding, p.embedding_model = vector, embedder.ident
+    return len(stale)
+
+
 def store_candidates(
     session: Session,
     brand: Brand,
@@ -180,6 +198,7 @@ def store_candidates(
     """
     report = StoreReport()
     existing = brand_prompts(session, brand.id)
+    report.reembedded = refresh_embeddings(existing, embedder)
     seen = {p.text_hash for p in existing}
     fresh: list[Candidate] = []
     for cand in candidates:
@@ -224,6 +243,7 @@ def store_candidates(
                 intent=c.intent,
                 intent_source=c.intent_source,
                 embedding=vectors[idx],
+                embedding_model=embedder.ident,
             )
         )
     session.flush()

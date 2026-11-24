@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import typer
@@ -14,8 +15,21 @@ app = typer.Typer(help="Citewise: AI-search visibility platform.", no_args_is_he
 app.add_typer(panel_app, name="panel")
 
 
+def _utf8_console() -> None:
+    """Make stdout/stderr UTF-8 (unencodable chars replaced, never raised).
+
+    On Windows, piped or redirected output defaults to cp1252, so printing a prompt or topic
+    label in Japanese or with an emoji raised UnicodeEncodeError after the work was committed.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            reconfigure(encoding="utf-8", errors="replace")
+
+
 @app.callback()
 def main() -> None:
+    _utf8_console()
     configure_logging()
 
 

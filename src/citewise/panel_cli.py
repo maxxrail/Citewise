@@ -84,6 +84,8 @@ def generate(
     )
     for dropped, kept in report.examples[:3]:
         typer.echo(f"  e.g. dropped {dropped!r} (kept {kept!r})")
+    if report.reembedded:
+        typer.echo(f"  re-embedded {report.reembedded} stored prompts with the current embedder")
     _budget_note(chat)
 
 
@@ -124,6 +126,7 @@ def cluster(
     Replaces the brand's topics and clears the scan panel (re-run `panel build`).
     """
     from citewise.core.db import session_scope
+    from citewise.providers import get_embedder
     from citewise.services.panel.cluster import cluster_brand
     from citewise.services.panel.common import BrandNotFoundError, resolve_brand
 
@@ -131,7 +134,9 @@ def cluster(
     try:
         with session_scope() as session:
             b = resolve_brand(session, brand)
-            report = cluster_brand(session, b, chat, get_settings(), algorithm, seed)
+            report = cluster_brand(
+                session, b, chat, get_settings(), algorithm, seed, embedder=get_embedder()
+            )
     except (BrandNotFoundError, ValueError) as exc:
         _fail(str(exc))
         return
@@ -155,15 +160,18 @@ def eval_intent(
         None, help=f"Also score both classifiers on hand labels (default {GOLDEN_INTENTS})."
     ),
     folds: int = typer.Option(5, help="Cross-validation folds."),
+    max_cost: float | None = typer.Option(None, min=0, help=MAX_COST_HELP),
 ) -> None:
     """Agreement between the LLM and embedding intent classifiers (accuracy, macro-F1)."""
     from citewise.core.db import session_scope
+    from citewise.providers import get_embedder
     from citewise.services.panel.common import (
         BrandNotFoundError,
         as_matrix,
         brand_prompts,
         resolve_brand,
     )
+    from citewise.services.panel.generate import refresh_embeddings
     from citewise.services.panel.intent import (
         TEACHER_SOURCES,
         cross_validated_agreement,
@@ -173,9 +181,13 @@ def eval_intent(
     try:
         with session_scope() as session:
             b = resolve_brand(session, brand)
+            embedder = get_embedder()
+            prompts = brand_prompts(session, b.id)
+            # Golden rows are embedded with the current embedder, so training vectors must be too.
+            refresh_embeddings(prompts, embedder)
             teacher = [
                 p
-                for p in brand_prompts(session, b.id)
+                for p in prompts
                 if p.intent and p.embedding and p.intent_source in TEACHER_SOURCES
             ]
             if not teacher:
@@ -186,18 +198,18 @@ def eval_intent(
             typer.echo(
                 format_agreement(
                     agreement,
-                    f"{b.name}: embedding classifier vs LLM labels ({folds}-fold cross-validated)",
+                    f"{b.name}: embedding classifier vs teacher labels (LLM or imported), "
+                    f"{folds}-fold cross-validated",
                 )
             )
             if golden is not None:
-                _golden_report(b, x, labels, golden)
+                _golden_report(b, x, labels, golden, embedder, max_cost)
     except (BrandNotFoundError, ValueError) as exc:
         _fail(str(exc))
 
 
-def _golden_report(brand, x, labels: list[str], path: Path) -> None:  # type: ignore[no-untyped-def]
+def _golden_report(brand, x, labels, path, embedder, max_cost):  # type: ignore[no-untyped-def]
     """Score both classifiers against hand labels (held out: never in the training set)."""
-    from citewise.providers import get_chat_provider, get_embedder
     from citewise.services.panel.common import as_matrix
     from citewise.services.panel.intent import (
         EmbeddingIntentClassifier,
@@ -215,7 +227,7 @@ def _golden_report(brand, x, labels: list[str], path: Path) -> None:  # type: ig
     settings = get_settings()
 
     clf = EmbeddingIntentClassifier().fit(x, labels)
-    vectors = as_matrix(get_embedder().embed(texts, purpose="panel.embed"))
+    vectors = as_matrix(embedder.embed(texts, purpose="panel.embed"))
     emb_pred = [p or "none" for p in clf.predict_vectors(vectors)]
     typer.echo("\n" + format_agreement(score(gold, emb_pred), "Embedding classifier vs golden"))
 
@@ -225,14 +237,16 @@ def _golden_report(brand, x, labels: list[str], path: Path) -> None:  # type: ig
             "held-out set; run with CITEWISE_MODE=live to score it)."
         )
         return
+    chat = _budgeted_chat(max_cost)
     llm = LLMIntentClassifier(
-        get_chat_provider("openai"),
+        chat,
         model=settings.model_extract,
         category=brand.category,
         batch_size=settings.panel_classify_batch,
     )
     llm_pred = [p or "none" for p in llm.predict(texts)]
     typer.echo("\n" + format_agreement(score(gold, llm_pred), "LLM classifier vs golden"))
+    _budget_note(chat)
 
 
 @panel_app.command()
@@ -258,3 +272,35 @@ def build(
         f"{report.topics_covered}/{report.topics_total} topics ({report.topic_coverage:.0%})"
     )
     typer.echo(f"intents: {dict(sorted(report.intents.items()))}")
+
+
+@panel_app.command()
+def reset(
+    brand: str = typer.Argument(..., help="Brand name or id."),
+    yes: bool = typer.Option(False, "--yes", help="Skip the confirmation prompt."),
+) -> None:
+    """Delete a brand's prompts and topics so the panel can be rebuilt from scratch.
+
+    Use it before a first live run on a database that holds mock-mode prompts: `generate`
+    skips cells that already have prompts, so it would otherwise never call the live model.
+    The brand itself and the `llm_calls` cost history are kept.
+    """
+    from sqlalchemy import delete
+
+    from citewise.core.db import session_scope
+    from citewise.models.panel import Prompt, Topic
+    from citewise.services.panel.common import BrandNotFoundError, brand_prompts, resolve_brand
+
+    try:
+        with session_scope() as session:
+            b = resolve_brand(session, brand)
+            n = len(brand_prompts(session, b.id))
+            if not yes and not typer.confirm(f"Delete {n} prompts and all topics for {b.name}?"):
+                typer.echo("Nothing deleted.")
+                return
+            session.execute(delete(Prompt).where(Prompt.brand_id == b.id))
+            session.execute(delete(Topic).where(Topic.brand_id == b.id))
+    except BrandNotFoundError as exc:
+        _fail(str(exc))
+        return
+    typer.echo(f"{b.name}: deleted {n} prompts and all topics.")

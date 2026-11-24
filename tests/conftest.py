@@ -51,6 +51,22 @@ def db(session_factory: sessionmaker[Session]) -> Iterator[Session]:
 
 
 @pytest.fixture
+def cli_db(tmp_path, monkeypatch: pytest.MonkeyPatch) -> Iterator[str]:  # type: ignore[no-untyped-def]
+    """A file SQLite DB for CLI tests (the CLI opens its own sessions via settings)."""
+    from citewise.core import db as core_db
+
+    url = f"sqlite:///{(tmp_path / 'cli.db').as_posix()}"
+    monkeypatch.setenv("DATABASE_URL", url)
+    for cached in (get_settings, core_db.get_engine, core_db.get_sessionmaker):
+        cached.cache_clear()
+    Base.metadata.create_all(core_db.get_engine())
+    yield url
+    core_db.get_engine().dispose()
+    for cached in (get_settings, core_db.get_engine, core_db.get_sessionmaker):
+        cached.cache_clear()
+
+
+@pytest.fixture
 def client(session_factory: sessionmaker[Session]) -> Iterator[TestClient]:
     def _get_db() -> Iterator[Session]:
         with session_factory() as session:

@@ -3,7 +3,7 @@
 | # | Module | Status | Notes |
 |---|---|---|---|
 | 0 | Foundations | ✅ done | 35 tests; all acceptance criteria verified 2026-11-23 |
-| 1 | Prompt panel and topic discovery | ✅ done | 121 tests; all acceptance criteria verified on Postgres + SQLite 2026-11-23 |
+| 1 | Prompt panel and topic discovery | 🔁 reviewed | 121 tests; all acceptance criteria verified on Postgres + SQLite 2026-11-23 |
 | 2 | Multi-engine answer collection | ⬜ not started | |
 | 3 | Extraction and visibility metrics | ⬜ not started | |
 | 4 | Brand knowledge base and FactCheck | ⬜ not started | |
@@ -99,4 +99,18 @@ Cost is estimated as if the calls were live.
 1. ~~Review the golden intent set~~ (done: 94 rows reviewed, `taskflow-029` reworded to remove a training near-duplicate, `stridelab-045` relabeled navigational under a new contrast/exclusion tie-break).
 2. ~~Add the panel settings to `.env.example`~~ (done).
 3. ~~Review the red-team rows~~ (done: all 11 reviewed; 007, 008, 010 and 011 expectations tightened).
-4. Optional live smoke test: `CITEWISE_MODE=live uv run citewise panel generate Stridelab --max-cost 0.50`, then `panel cluster`, then `panel eval-intent Stridelab --golden evals/datasets/golden/intent.jsonl` to get the LLM-vs-golden number.
+4. Optional live smoke test (corrected in the review below): `uv run citewise panel reset Stridelab --yes` (clears the mock-mode panel; otherwise `generate` skips every cell and never calls the live model), then `CITEWISE_MODE=live uv run citewise panel generate Stridelab --max-cost 0.50`, `panel cluster Stridelab`, and `panel eval-intent Stridelab --golden evals/datasets/golden/intent.jsonl` for the LLM-vs-golden number.
+
+### 2026-11-23 - Module 1 review (`/review-module 01`)
+**Re-verified on a fresh Postgres DB:** `seed → panel generate → cluster → eval-intent --golden → build --size 50` for both brands. Same numbers as above: 272/276 prompts, 11/13 topics, 0 prompts without a topic, intent or template version, 50-prompt panels covering 100% of topics. `panel_report.py` works against Postgres. Mechanical checks were clean: every LLM and embedding call goes through the tracked providers, and no model IDs are hardcoded outside config and pricing.
+
+**Fixed (3 Medium):**
+- **Embeddings had no provenance.** Mock and live embedders share the model name `text-embedding-3-small` but not a vector space, so a live run on a DB with mock prompts would have deduped, clustered and scored the golden set across two unrelated spaces. A `MODEL_EMBED` change with a different dimension would crash. Fix: `prompts.embedding_model` (migration `0003`) and `EmbeddingProvider.ident` (`"mock:…"` / `"openai:…"`). `store`, `cluster` (CLI) and `eval-intent` re-embed stale rows first. `cluster_brand` without an embedder refuses mixed spaces. Pre-`0003` rows count as stale.
+- **The documented live smoke test was a no-op:** `generate` skipped every cell the mock run had filled. Added `citewise panel reset <brand> [--yes]` (deletes that brand's prompts and topics; keeps the brand and the `llm_calls` history) and corrected the instructions.
+- **Windows: piped CLI output crashed on non-cp1252 text** (Japanese, emoji) with `UnicodeEncodeError`, after the work was already committed. Reproduced, then fixed by reconfiguring stdout/stderr to UTF-8 (`errors="replace"`) in the CLI callback.
+
+**Fixed (Low):** `eval-intent --golden` in live mode now goes through the spend cap (`--max-cost`). Its cross-validation title says "teacher labels (LLM or imported)" instead of "LLM labels".
+
+**Not fixed (Low, documented):** the mock embedder tokenizes `[a-z0-9]` only, so mock-mode near-duplicate detection doesn't work for non-Latin text (exact duplicates still work). Live embeddings don't have this limit.
+
+Tests: `tests/test_panel_review.py` (+6; 127 total, all mock).
