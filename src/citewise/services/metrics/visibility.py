@@ -110,7 +110,9 @@ def _base_cte(f: Filters) -> tuple[str, dict[str, Any]]:
     sql = f"""
     base AS (
         SELECT a.id AS answer_id, a.engine AS engine, a.run_id AS run_id,
-               p.topic_id AS topic_id, p.intent AS intent
+               p.topic_id AS topic_id, p.intent AS intent,
+               -- Bootstrap cluster: the prompt (a deleted prompt's answers stand alone).
+               COALESCE(a.prompt_id, -a.id) AS cluster_id
         FROM answers a
         JOIN runs r ON r.id = a.run_id
         JOIN answer_extractions x ON x.answer_id = a.id
@@ -126,6 +128,7 @@ def _per_answer_cte(slice_by: SliceBy | None) -> str:
     per_answer AS (
         SELECT b.answer_id,
                MIN({slice_expr}) AS slice,
+               MIN(b.cluster_id) AS cluster_id,
                MAX(CASE WHEN m.is_brand THEN 1 ELSE 0 END) AS mentioned,
                SUM(CASE WHEN m.is_brand OR m.is_competitor THEN 1 ELSE 0 END) AS tracked,
                MIN(CASE WHEN m.is_brand THEN m.rank END) AS brand_rank,
@@ -199,19 +202,32 @@ def per_answer_rows(
 
 
 def bootstrap_ci(
-    mentioned: np.ndarray, tracked: np.ndarray, n: int, seed: int = 0
+    mentioned: np.ndarray,
+    tracked: np.ndarray,
+    n: int,
+    seed: int = 0,
+    clusters: np.ndarray | None = None,
 ) -> tuple[tuple[float, float], tuple[float, float] | None]:
-    """95% percentile CIs for mention rate (mean of `mentioned`) and share of voice
-    (sum(mentioned) / sum(tracked)), resampling answers with replacement."""
+    """95% percentile CIs for mention rate and share of voice.
+
+    Resamples *clusters* (prompts) with replacement, not individual answers: the four
+    engines' answers to one prompt are correlated (same question, same category), so
+    treating them as independent makes the interval too narrow. With one answer per
+    prompt (a per-engine slice) this is the ordinary answer-level bootstrap.
+    """
+    clusters = np.arange(len(mentioned)) if clusters is None else clusters
+    _, inv = np.unique(clusters, return_inverse=True)
+    m_c = np.bincount(inv, weights=mentioned)
+    t_c = np.bincount(inv, weights=tracked)
+    n_c = np.bincount(inv).astype(float)
     rng = np.random.default_rng(seed)
-    idx = rng.integers(0, len(mentioned), size=(n, len(mentioned)))
-    m, t = mentioned[idx], tracked[idx]
-    rate = m.mean(axis=1)
+    idx = rng.integers(0, len(n_c), size=(n, len(n_c)))
+    m, t = m_c[idx].sum(axis=1), t_c[idx].sum(axis=1)
+    rate = m / n_c[idx].sum(axis=1)
     rate_ci = (float(np.percentile(rate, 2.5)), float(np.percentile(rate, 97.5)))
-    tsum = t.sum(axis=1)
     if not tracked.sum():
         return rate_ci, None
-    sov = np.divide(m.sum(axis=1), tsum, out=np.zeros(n), where=tsum > 0)
+    sov = np.divide(m, t, out=np.zeros(n), where=t > 0)
     return rate_ci, (float(np.percentile(sov, 2.5)), float(np.percentile(sov, 97.5)))
 
 
@@ -232,9 +248,11 @@ def compute_metrics(
     base, params = _base_cte(f)
     sql = f"WITH {base}, {_per_answer_cte(slice_by)} {AGGREGATE_SQL}"
     aggregates = session.execute(text(sql), {"brand_id": brand_id, **params}).mappings().all()
-    per_slice: dict[str, list[tuple[int, int]]] = defaultdict(list)
+    per_slice: dict[str, list[tuple[int, int, int]]] = defaultdict(list)
     for r in per_answer_rows(session, brand_id, f, slice_by):
-        per_slice[str(r["slice"])].append((int(r["mentioned"]), int(r["tracked"] or 0)))
+        per_slice[str(r["slice"])].append(
+            (int(r["mentioned"]), int(r["tracked"] or 0), int(r["cluster_id"]))
+        )
 
     out: list[SliceMetrics] = []
     for row in aggregates:
@@ -242,8 +260,8 @@ def compute_metrics(
         answers, mentioned = int(row["answers"]), int(row["mentioned"] or 0)
         tracked, ranked = int(row["tracked"] or 0), int(row["ranked_answers"] or 0)
         pos, neg = int(row["pos"] or 0), int(row["neg"] or 0)
-        arr = np.array(per_slice[key], dtype=float).reshape(-1, 2)
-        rate_ci, sov_ci = bootstrap_ci(arr[:, 0], arr[:, 1], bootstrap)
+        arr = np.array(per_slice[key], dtype=float).reshape(-1, 3)
+        rate_ci, sov_ci = bootstrap_ci(arr[:, 0], arr[:, 1], bootstrap, clusters=arr[:, 2])
         mention_rate = mentioned / answers if answers else 0.0
         sov = mentioned / tracked if tracked else None
         net = (pos - neg) / mentioned if mentioned else None

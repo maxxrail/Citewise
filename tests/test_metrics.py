@@ -198,3 +198,18 @@ def test_bootstrap_ci_is_deterministic_and_brackets_the_estimate() -> None:
     (rlo, rhi), sov = a
     assert rlo < 0.5 < rhi and sov is not None and sov[0] < 5 / 16 < sov[1]
     assert bootstrap_ci(mentioned, np.zeros(10), 100)[1] is None  # no tracked mentions
+
+
+def test_cluster_bootstrap_widens_the_interval_for_correlated_answers() -> None:
+    # 20 prompts x 4 engines; engines agree within a prompt (fully correlated answers).
+    per_prompt = np.array([1, 0] * 10, dtype=float)
+    mentioned = np.repeat(per_prompt, 4)
+    tracked = np.full_like(mentioned, 2.0)
+    clusters = np.repeat(np.arange(20), 4)
+    (alo, ahi), _ = bootstrap_ci(mentioned, tracked, 4000)  # pretends 80 independent answers
+    (clo, chi), _ = bootstrap_ci(mentioned, tracked, 4000, clusters=clusters)
+    assert clo < 0.5 < chi
+    assert (chi - clo) > 1.5 * (ahi - alo)  # ~2x wider: 20 effective samples, not 80
+    # One answer per cluster is the plain answer-level bootstrap.
+    single = bootstrap_ci(per_prompt, np.full(20, 2.0), 500, clusters=np.arange(20))
+    assert single == bootstrap_ci(per_prompt, np.full(20, 2.0), 500)
