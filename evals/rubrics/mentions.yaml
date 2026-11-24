@@ -1,0 +1,53 @@
+# Mention labeling guidelines (Module 3). Used by human labelers of
+# evals/datasets/golden/mentions.jsonl; the same definitions are in the Stage B prompt
+# (prompts/extract/mentions.v1.jinja). Label what the answer text says, nothing else.
+version: 1
+entity:
+  definition: >-
+    Every company or brand the answer names, including ones not in the brand's competitor
+    list (emerging competitors). A product name counts as a mention of its maker
+    ("Nike Pegasus" -> Nike, "Stridelab Tempo" -> Stridelab).
+  not_entities:
+    - Publishers, review sites, retailers and communities that are only cited or referred to
+      as sources (Runner's World, RunRepeat, G2, Capterra, Reddit, YouTube, Amazon), unless
+      the answer evaluates them as a product the user could choose.
+    - Ordinary words that look like brands ("On the other hand", "on Monday", "the notion").
+    - Generic product types ("a stability shoe", "a kanban board").
+  canonical: >-
+    The company name without legal suffixes or possessives, using the brand's configured
+    name for known brands ("Asana Inc." -> "Asana", "monday.com" -> "Monday.com",
+    "HOKA" -> "Hoka", "On Running" -> "On"). Label each company once per answer.
+rank:
+  definition: >-
+    If the answer has a numbered or bulleted list: the 1-based position of the list item
+    whose subject (the first company named in that item) is this company, counting only
+    items that name a company. null when it is not the subject of any list item (named
+    only in prose, or second in an item).
+sentiment:
+  scale: "-1 (clearly negative) .. 1 (clearly positive); 0 when only named"
+  labels:
+    positive: praise only
+    negative: criticism only
+    mixed: clear praise and clear criticism together ("..., although it can run narrow")
+    neutral: only named, or plain facts with no evaluation
+  guidance: >-
+    Use about +/-0.7 for one clear evaluative statement, +/-0.9 for strong or repeated
+    praise/criticism, and something near 0 for mixed. Sentiment MAE is scored on the number,
+    accuracy on the label.
+is_recommended:
+  true_when:
+    - an item in a list presented as recommended/best options or deals
+    - named as the preferred or winning choice ("reviewers lean towards X", "go with X")
+    - the subject of a single-brand answer whose overall verdict is positive
+  false_when:
+    - mentioned in passing ("people also consider X, Y")
+    - compared without a verdict in its favour
+    - described mainly negatively, or discouraged ("avoid X")
+error_types:
+  # How `citewise eval extract` classifies errors in its report.
+  false_positive: predicted entity not in the gold labels (e.g. "On" as a word)
+  false_negative: gold entity the extractor missed
+  wrong_type: right company, wrong brand/competitor/unknown type
+  rank: matched entity, wrong rank (including null vs a number)
+  sentiment_label: matched entity, wrong sentiment label
+  recommended: matched entity, wrong is_recommended

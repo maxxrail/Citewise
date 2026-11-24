@@ -122,3 +122,45 @@ def client(session_factory: sessionmaker[Session]) -> Iterator[TestClient]:
     with TestClient(app) as c:
         yield c
     app.dependency_overrides.clear()
+
+
+@pytest.fixture(scope="session")
+def scanned_snapshot(panel_snapshot: sqlite3.Connection) -> Iterator[sqlite3.Connection]:
+    """The panel DB plus one completed mock scan per brand (50 prompts x 4 engines)."""
+    import asyncio
+
+    from citewise.services.collect.runner import create_run, execute_run
+    from citewise.services.panel.common import resolve_brand
+
+    get_settings.cache_clear()
+    settings = get_settings()
+    clone = sqlite3.connect(":memory:", check_same_thread=False)
+    panel_snapshot.backup(clone)
+    eng = create_engine("sqlite://", creator=lambda: clone, poolclass=StaticPool)
+    factory = sessionmaker(bind=eng, expire_on_commit=False)
+    for name in ("Stridelab", "Taskflow"):
+        with factory() as session:
+            run = create_run(
+                session,
+                resolve_brand(session, name),
+                engines=["openai", "anthropic", "gemini", "perplexity"],
+                size=50,
+                max_cost=10.0,
+                settings=settings,
+            )
+            session.commit()
+            run_id = run.id
+        asyncio.run(execute_run(run_id, settings, factory))
+    yield clone
+    eng.dispose()
+
+
+@pytest.fixture
+def scanned_factory(scanned_snapshot: sqlite3.Connection) -> Iterator[sessionmaker[Session]]:
+    """A private copy of the scanned DB: run 1 = Stridelab, run 2 = Taskflow."""
+    clone = sqlite3.connect(":memory:", check_same_thread=False)
+    scanned_snapshot.backup(clone)
+    eng = create_engine("sqlite://", creator=lambda: clone, poolclass=StaticPool)
+    yield sessionmaker(bind=eng, expire_on_commit=False)
+    eng.dispose()
+    clone.close()
