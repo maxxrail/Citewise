@@ -3,10 +3,15 @@ hand in the comments, so a wrong JOIN or a double count shows up as a wrong numb
 
 from __future__ import annotations
 
+import os
+from collections.abc import Iterator
+
 import numpy as np
 import pytest
-from sqlalchemy.orm import Session
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import Session, sessionmaker
 
+from citewise.core.db import Base
 from citewise.models.brand import Brand
 from citewise.models.collect import Answer, Citation, Run
 from citewise.models.extract import AnswerExtraction, Mention
@@ -53,9 +58,29 @@ CITATIONS = [
 ]
 
 
+@pytest.fixture(params=["sqlite", "postgres"])
+def metrics_db(request: pytest.FixtureRequest, db: Session) -> Iterator[Session]:
+    """The metrics SQL must hold on both backends: SQLite here, Postgres when
+    CITEWISE_TEST_PG_URL points at a throwaway database (CI sets it). The Postgres run
+    drops and recreates every table, so never point it at a database you care about."""
+    if request.param == "sqlite":
+        yield db
+        return
+    url = os.environ.get("CITEWISE_TEST_PG_URL")
+    if not url:
+        pytest.skip("CITEWISE_TEST_PG_URL not set")
+    engine = create_engine(url)
+    Base.metadata.drop_all(engine)
+    Base.metadata.create_all(engine)
+    with sessionmaker(bind=engine, expire_on_commit=False)() as session:
+        yield session
+    Base.metadata.drop_all(engine)
+    engine.dispose()
+
+
 @pytest.fixture
-def fixture_db(db: Session) -> tuple[Session, int, dict[str, int]]:
-    s = db
+def fixture_db(metrics_db: Session) -> tuple[Session, int, dict[str, int]]:
+    s = metrics_db
     brand = Brand(name="Acme", domain="acme.example", category="widgets", aliases=[],
                   competitors=["Beta", "Gamma"], personas=[])  # fmt: skip
     s.add(brand)
@@ -146,7 +171,8 @@ def test_metrics_sliced_by_engine_topic_intent_and_run(
     assert by_run[str(ids["old"])].mention_rate == 1.0
     assert by_run[str(ids["new"])].mention_rate == 0.5
     [only] = compute_metrics(s, brand_id, Filters(run_id=ids["old"]), bootstrap=200)
-    assert only.answers == 1 and only.mention_rate_ci == (1.0, 1.0)
+    # 1 of 1: a percentile bootstrap says (1.0, 1.0); Wilson keeps the uncertainty visible.
+    assert only.answers == 1 and only.mention_rate_ci == pytest.approx((0.2065, 1.0), abs=1e-3)
 
     [gem] = compute_metrics(s, brand_id, Filters(engine="gemini"), bootstrap=200)
     assert (gem.answers, gem.mentioned) == (2, 1)
@@ -181,7 +207,8 @@ def test_competitors_include_emerging_unknowns(
     assert beta.recommendation_rate == pytest.approx(1 / 2)
 
 
-def test_no_extractions_is_a_clear_error(db: Session) -> None:
+def test_no_extractions_is_a_clear_error(metrics_db: Session) -> None:
+    db = metrics_db
     brand = Brand(name="Empty", domain="e.example", category="x", aliases=[], competitors=[],
                   personas=[])  # fmt: skip
     db.add(brand)
@@ -213,3 +240,31 @@ def test_cluster_bootstrap_widens_the_interval_for_correlated_answers() -> None:
     # One answer per cluster is the plain answer-level bootstrap.
     single = bootstrap_ci(per_prompt, np.full(20, 2.0), 500, clusters=np.arange(20))
     assert single == bootstrap_ci(per_prompt, np.full(20, 2.0), 500)
+
+
+def test_wilson_interval_at_the_edges() -> None:
+    from citewise.services.metrics.visibility import wilson_interval
+
+    lo, hi = wilson_interval(0, 10)
+    assert lo == 0.0 and 0.25 < hi < 0.35  # 0 of 10 is not "0% for sure"
+    assert wilson_interval(5, 0) == (0.0, 1.0)
+
+
+def test_partial_and_degraded_extractions_are_reported_not_hidden(
+    fixture_db: tuple[Session, int, dict[str, int]],
+) -> None:
+    from sqlalchemy import delete, update
+
+    s, brand_id, _ = fixture_db
+    a3, a4 = (s.scalar(select(Answer.id).where(Answer.text == k)) for k in ("A3", "A4"))
+    s.execute(update(AnswerExtraction).where(AnswerExtraction.answer_id == a3).values(llm_ok=False))
+    s.execute(delete(AnswerExtraction).where(AnswerExtraction.answer_id == a4))  # budget-stopped
+    s.commit()
+    [m] = compute_metrics(s, brand_id, bootstrap=200)
+    # Ok answers in the latest run: A1-A5 (A6 failed) = 5; extracted A1, A2, A3 = 3.
+    assert m.answers == 3 and m.coverage == pytest.approx(3 / 5)
+    assert m.llm_ok_share == pytest.approx(2 / 3)  # A3 is Stage A only
+    # Recommendation and sentiment use only A1, A2 (Stage B ran): A1 recommends, positive.
+    assert m.recommendation_rate == pytest.approx(1 / 2)
+    assert m.net_sentiment == pytest.approx(1.0)
+    assert m.mention_rate == pytest.approx(2 / 3)  # detection still uses all extracted

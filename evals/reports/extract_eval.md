@@ -2,44 +2,55 @@
 
 Golden set: `evals/datasets/golden/mentions.jsonl`: 65 answers, 0 hand-reviewed. Mode: **mock**. Generated 2026-11-24 by `citewise eval extract`.
 
-> Mock mode: Stage B is the simulated extractor (`providers/mock_extract.py`), so the B and merged columns measure the pipeline plus that simulator, not a production model. Run `CITEWISE_MODE=live citewise eval extract` for real numbers.
+> **Mock mode.** Unless real responses have been recorded (`scripts/record_extract_fixtures.py`, needs a key), Stage B is the simulated extractor (`providers/mock_extract.py`), so the B and merged columns are a *smoke test of the pipeline*, not a model score. 48 of the rows are also simulator output: the hand-written table below is the fairer number, and Stage A (no LLM) is the honest offline baseline. Run `CITEWISE_MODE=live citewise eval extract` for real numbers.
+
+Stage B responses: 0/65 replayed from recorded real responses, 65 simulated.
 
 | Metric | Stage A | Stage B | Merged |
 |---|---|---|---|
-| Precision | 98.5% | 92.3% | 94.5% |
+| Precision | 100.0% | 93.4% | 95.7% |
 | Recall | 76.1% | 88.1% | 88.6% |
-| **F1** | 85.9% | 90.1% | 91.5% |
+| **F1** | 86.5% | 90.6% | 92.0% |
 | Rank accuracy | 93.3% | 92.3% | 94.9% |
 | Type accuracy | 100.0% | 100.0% | 100.0% |
-| Sentiment MAE | - | 0.223 | 0.226 |
-| Sentiment label accuracy | - | 74.8% | 74.4% |
-| Recommended accuracy | - | 84.5% | 84.6% |
+| Sentiment MAE | - | 0.287 | 0.290 |
+| Sentiment label accuracy | - | 67.7% | 67.3% |
+| Recommended accuracy | - | 80.0% | 80.1% |
+
+## Hand-written rows only
+
+17 rows of realistic prose (not the simulator's templates): the better guide to real-world quality.
+
+| Metric | Stage A | Stage B | Merged |
+|---|---|---|---|
+| F1 | 85.1% | 83.9% | 85.1% |
+| Rank accuracy | 94.6% | 87.2% | 87.5% |
 
 ## Errors by type
 
 | Error | Stage A | Stage B | Merged |
 |---|---|---|---|
 | false_negative | 42 | 21 | 20 |
-| false_positive | 2 | 13 | 9 |
+| false_positive | 0 | 11 | 7 |
 | rank | 9 | 12 | 8 |
-| recommended | 0 | 24 | 24 |
-| sentiment_label | 0 | 39 | 40 |
+| recommended | 0 | 31 | 31 |
+| sentiment_label | 0 | 50 | 51 |
 
 ## F1 by tag (merged)
 
 | Tag | TP | FP | FN | F1 |
 |---|---|---|---|---|
 | ambiguous_word | 36 | 2 | 6 | 90.0% |
-| brand_absent | 69 | 6 | 15 | 86.8% |
+| brand_absent | 69 | 4 | 15 | 87.9% |
 | casing | 19 | 2 | 2 | 90.5% |
-| comparison | 30 | 2 | 1 | 95.2% |
+| comparison | 30 | 1 | 1 | 96.8% |
 | deals | 27 | 1 | 2 | 94.7% |
-| injection | 7 | 2 | 0 | 87.5% |
+| injection | 7 | 0 | 0 | 100.0% |
 | legal_suffix | 12 | 1 | 1 | 92.3% |
-| list | 60 | 6 | 4 | 92.3% |
+| list | 60 | 5 | 4 | 93.0% |
 | negative | 13 | 1 | 1 | 92.9% |
 | off_topic | 11 | 3 | 5 | 73.3% |
-| possessive | 16 | 2 | 6 | 80.0% |
+| possessive | 16 | 1 | 6 | 82.1% |
 | product_name | 128 | 4 | 16 | 92.8% |
 | prose_ranking | 3 | 0 | 4 | 60.0% |
 | publisher_not_entity | 13 | 1 | 2 | 89.7% |
@@ -84,5 +95,3 @@ Golden set: `evals/datasets/golden/mentions.jsonl`: 65 answers, 0 hand-reviewed.
 - hard-011: Stridelab rank 3 != 2
 - hard-012: missed 'Linear'
 - hard-014: false positive 'Monday.com'
-- inject-002: false positive 'Taskflow'
-- inject-003: false positive 'Stridelab'

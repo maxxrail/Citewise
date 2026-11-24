@@ -30,6 +30,7 @@ from citewise.models.collect import Answer, Run
 from citewise.models.extract import AnswerExtraction
 from citewise.models.extract import Mention as MentionRow
 from citewise.providers.base import ChatProvider
+from citewise.providers.budget import BudgetExceededError
 from citewise.schemas.extract import ExtractedMention
 from citewise.services.extract.mentions import (
     PROMPT_NAME,
@@ -43,7 +44,7 @@ from citewise.services.extract.resolve import Resolver
 
 log = logging.getLogger(__name__)
 
-STAGE_A_VERSION = "a1"  # bump when Stage A or merge rules change, to re-extract
+STAGE_A_VERSION = "a2"  # bump when Stage A or merge rules change, to re-extract
 EXTRACTOR_VERSION = f"{STAGE_A_VERSION}+{PROMPT_NAME.split('/')[-1]}.{PROMPT_VERSION}"
 
 
@@ -74,7 +75,7 @@ def resolver_for(brand: Brand) -> Resolver:
     return Resolver(brand.name, list(brand.aliases), list(brand.competitors))
 
 
-def _store(factory: sessionmaker[Session], r: _Result) -> None:
+def _store(factory: sessionmaker[Session], r: _Result) -> bool:
     rows = [
         MentionRow(
             answer_id=r.answer_id,
@@ -109,8 +110,13 @@ def _store(factory: sessionmaker[Session], r: _Result) -> None:
         session.add_all(rows)
         try:
             session.commit()
-        except IntegrityError:  # a concurrent `extract run` stored this answer first
+        except IntegrityError as exc:
+            # Expected only when a concurrent `extract run` stored this answer first; log
+            # it so a real constraint bug (e.g. a key collision) isn't silently swallowed.
             session.rollback()
+            log.warning("answer %s not stored: %s", r.answer_id, exc.orig)
+            return False
+    return True
 
 
 def extract_run(
@@ -121,6 +127,7 @@ def extract_run(
     *,
     force: bool = False,
     on_progress: Callable[[int], None] | None = None,
+    workers: int | None = None,
 ) -> ExtractReport:
     with factory() as session:
         run = session.get(Run, run_id)
@@ -154,25 +161,26 @@ def extract_run(
 
     def work(item: tuple[int, str]) -> _Result:
         aid, text = item
-        refused_before = int(getattr(chat, "refused", 0))
         a = stage_a(text, resolver)
-        b = stage_b(chat, model=settings.model_extract, brand=name, aliases=aliases,
-                    competitors=competitors, category=category, text=text)  # fmt: skip
-        refused = int(getattr(chat, "refused", 0)) > refused_before
+        try:
+            b = stage_b(chat, model=settings.model_extract, brand=name, aliases=aliases,
+                        competitors=competitors, category=category, text=text)  # fmt: skip
+        except BudgetExceededError:
+            return _Result(aid, a, None, [], [], refused=True)
         merged, dis = merge(text, resolver, a, b)
-        return _Result(aid, a, b, merged, dis, refused and b is None)
+        return _Result(aid, a, b, merged, dis, refused=False)
 
     # Mock mode is CPU-only, and SQLite (tests) shares one connection between sessions:
     # a worker thread recording llm_calls while this thread commits would collide. So one
     # worker means *no* thread, not a pool of one that still overlaps with the writes.
-    workers = 1 if settings.is_mock else settings.extract_concurrency
+    if workers is None:
+        workers = 1 if settings.is_mock else settings.extract_concurrency
     with ThreadPoolExecutor(max_workers=workers) as pool:
         results = map(work, todo) if workers == 1 else pool.map(work, todo)
         for i, r in enumerate(results, start=1):
             if r.refused:
                 report.budget_stopped += 1
-            else:
-                _store(factory, r)
+            elif _store(factory, r):
                 report.extracted += 1
                 report.llm_failed += r.b is None
                 report.mentions += len(r.merged)

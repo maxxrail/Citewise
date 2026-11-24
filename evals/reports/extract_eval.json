@@ -4,11 +4,11 @@
   "mode": "mock",
   "stages": {
     "A": {
-      "precision": 0.9853,
+      "precision": 1.0,
       "recall": 0.7614,
-      "f1": 0.859,
+      "f1": 0.8645,
       "tp": 134,
-      "fp": 2,
+      "fp": 0,
       "fn": 42,
       "rank_accuracy": 0.9328,
       "type_accuracy": 1.0,
@@ -17,48 +17,108 @@
       "recommended_accuracy": null,
       "errors": {
         "false_negative": 42,
-        "rank": 9,
-        "false_positive": 2
+        "rank": 9
       }
     },
     "B": {
-      "precision": 0.9226,
+      "precision": 0.9337,
       "recall": 0.8807,
-      "f1": 0.9012,
+      "f1": 0.9064,
       "tp": 155,
-      "fp": 13,
+      "fp": 11,
       "fn": 21,
       "rank_accuracy": 0.9226,
       "type_accuracy": 1.0,
-      "sentiment_mae": 0.223,
-      "sentiment_label_accuracy": 0.7484,
-      "recommended_accuracy": 0.8452,
+      "sentiment_mae": 0.2872,
+      "sentiment_label_accuracy": 0.6774,
+      "recommended_accuracy": 0.8,
       "errors": {
-        "sentiment_label": 39,
-        "recommended": 24,
+        "sentiment_label": 50,
+        "recommended": 31,
         "false_negative": 21,
-        "false_positive": 13,
-        "rank": 12
+        "rank": 12,
+        "false_positive": 11
       }
     },
     "merged": {
-      "precision": 0.9455,
+      "precision": 0.9571,
       "recall": 0.8864,
-      "f1": 0.915,
+      "f1": 0.9204,
       "tp": 156,
-      "fp": 9,
+      "fp": 7,
       "fn": 20,
       "rank_accuracy": 0.9487,
       "type_accuracy": 1.0,
-      "sentiment_mae": 0.2261,
-      "sentiment_label_accuracy": 0.7436,
-      "recommended_accuracy": 0.8462,
+      "sentiment_mae": 0.2898,
+      "sentiment_label_accuracy": 0.6731,
+      "recommended_accuracy": 0.8013,
       "errors": {
-        "sentiment_label": 40,
-        "recommended": 24,
+        "sentiment_label": 51,
+        "recommended": 31,
         "false_negative": 20,
-        "false_positive": 9,
-        "rank": 8
+        "rank": 8,
+        "false_positive": 7
+      }
+    }
+  },
+  "handwritten_rows": 17,
+  "stage_b_source": "0/65 replayed from recorded real responses, 65 simulated",
+  "handwritten": {
+    "A": {
+      "precision": 1.0,
+      "recall": 0.74,
+      "f1": 0.8506,
+      "tp": 37,
+      "fp": 0,
+      "fn": 13,
+      "rank_accuracy": 0.9459,
+      "type_accuracy": 1.0,
+      "sentiment_mae": null,
+      "sentiment_label_accuracy": null,
+      "recommended_accuracy": null,
+      "errors": {
+        "false_negative": 13,
+        "rank": 2
+      }
+    },
+    "B": {
+      "precision": 0.907,
+      "recall": 0.78,
+      "f1": 0.8387,
+      "tp": 39,
+      "fp": 4,
+      "fn": 11,
+      "rank_accuracy": 0.8718,
+      "type_accuracy": 1.0,
+      "sentiment_mae": 0.4762,
+      "sentiment_label_accuracy": 0.4103,
+      "recommended_accuracy": 0.4615,
+      "errors": {
+        "sentiment_label": 23,
+        "recommended": 21,
+        "false_negative": 11,
+        "rank": 5,
+        "false_positive": 4
+      }
+    },
+    "merged": {
+      "precision": 0.9091,
+      "recall": 0.8,
+      "f1": 0.8511,
+      "tp": 40,
+      "fp": 4,
+      "fn": 10,
+      "rank_accuracy": 0.875,
+      "type_accuracy": 1.0,
+      "sentiment_mae": 0.4818,
+      "sentiment_label_accuracy": 0.4,
+      "recommended_accuracy": 0.475,
+      "errors": {
+        "sentiment_label": 24,
+        "recommended": 21,
+        "false_negative": 10,
+        "rank": 5,
+        "false_positive": 4
       }
     }
   }

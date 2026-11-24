@@ -32,7 +32,7 @@ class AnswerExtraction(Base):
     answer_id: Mapped[int] = mapped_column(
         ForeignKey("answers.id", ondelete="CASCADE"), primary_key=True
     )
-    version: Mapped[str] = mapped_column(String(64), nullable=False)  # e.g. "a1+mentions.v1"
+    version: Mapped[str] = mapped_column(String(64), nullable=False)  # e.g. "a2+mentions.v1"
     llm_ok: Mapped[bool] = mapped_column(Boolean, nullable=False)  # False: Stage A only
     stage_a: Mapped[list[dict[str, Any]]] = mapped_column(JSON, nullable=False)
     stage_b: Mapped[list[dict[str, Any]] | None] = mapped_column(JSON, nullable=True)

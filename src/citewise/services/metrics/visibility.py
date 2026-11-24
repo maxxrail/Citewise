@@ -10,8 +10,10 @@ Definitions (per slice of answers; a slice is all answers, or one engine/topic/i
   Each (answer, entity) counts once.
 - avg_rank: mean rank of the brand where it is ranked. top3_rate: answers where the brand
   is ranked 1-3 / answers that contain a ranking.
-- recommendation_rate: answers that recommend the brand / answers.
+- recommendation_rate: answers that recommend the brand / answers. Only answers whose
+  Stage B succeeded count here and in sentiment: Stage A alone can't tell.
 - net_sentiment: (positive - negative brand mentions) / brand mentions, in -1..1.
+- coverage / llm_ok_share: how much of the slice the numbers actually describe.
 - position_score: over answers containing a ranking, max(0, (6 - rank) / 5), with 0 when
   the brand isn't in the ranking. Rank 1 -> 1.0, rank 5 -> 0.2.
 - visibility_score (0-100): see VISIBILITY_WEIGHTS and DECISIONS.md.
@@ -75,6 +77,10 @@ class SliceMetrics:
     position_score: float
     visibility_score: float
     small_sample: bool  # fewer than 30 answers: read the CI, not the point estimate
+    # Share of the slice's ok answers that are extracted, and of those, the share whose
+    # Stage B succeeded. Below 1.0 the numbers describe a subset: say so, don't hide it.
+    coverage: float = 1.0
+    llm_ok_share: float = 1.0
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -95,7 +101,7 @@ class CitationShare:
     without_brand: list[DomainShare] = field(default_factory=list)
 
 
-def _base_cte(f: Filters) -> tuple[str, dict[str, Any]]:
+def _base_cte(f: Filters, *, extracted_only: bool = True) -> tuple[str, dict[str, Any]]:
     where = ["r.brand_id = :brand_id", "a.ok"]
     params: dict[str, Any] = {}
     for col, value, name in (
@@ -112,10 +118,13 @@ def _base_cte(f: Filters) -> tuple[str, dict[str, Any]]:
         SELECT a.id AS answer_id, a.engine AS engine, a.run_id AS run_id,
                p.topic_id AS topic_id, p.intent AS intent,
                -- Bootstrap cluster: the prompt (a deleted prompt's answers stand alone).
-               COALESCE(a.prompt_id, -a.id) AS cluster_id
+               COALESCE(a.prompt_id, -a.id) AS cluster_id,
+               x.answer_id AS extracted_id,
+               x.llm_ok AS llm_ok
         FROM answers a
         JOIN runs r ON r.id = a.run_id
-        JOIN answer_extractions x ON x.answer_id = a.id
+        {"JOIN" if extracted_only else "LEFT JOIN"} answer_extractions x
+            ON x.answer_id = a.id
         LEFT JOIN prompts p ON p.id = a.prompt_id
         WHERE {" AND ".join(where)}
     )"""
@@ -129,6 +138,7 @@ def _per_answer_cte(slice_by: SliceBy | None) -> str:
         SELECT b.answer_id,
                MIN({slice_expr}) AS slice,
                MIN(b.cluster_id) AS cluster_id,
+               MAX(CASE WHEN b.llm_ok THEN 1 ELSE 0 END) AS llm_ok,
                MAX(CASE WHEN m.is_brand THEN 1 ELSE 0 END) AS mentioned,
                SUM(CASE WHEN m.is_brand OR m.is_competitor THEN 1 ELSE 0 END) AS tracked,
                MIN(CASE WHEN m.is_brand THEN m.rank END) AS brand_rank,
@@ -155,10 +165,15 @@ SELECT slice,
        SUM(has_ranking) AS ranked_answers,
        SUM(CASE WHEN has_ranking = 1 AND brand_rank IS NOT NULL AND brand_rank < 6
                 THEN (6 - brand_rank) / 5.0 ELSE 0 END) AS position_points,
-       SUM(recommended) AS recommended,
-       AVG(sentiment) AS avg_sentiment,
-       SUM(pos) AS pos,
-       SUM(neg) AS neg
+       -- Stage A alone has no sentiment or recommendation signal: an answer whose
+       -- Stage B failed would count as "not recommended, neutral". Use only answers
+       -- where Stage B ran for these.
+       SUM(llm_ok) AS llm_answers,
+       SUM(CASE WHEN llm_ok = 1 THEN mentioned ELSE 0 END) AS mentioned_llm,
+       SUM(CASE WHEN llm_ok = 1 THEN recommended ELSE 0 END) AS recommended,
+       AVG(CASE WHEN llm_ok = 1 THEN sentiment END) AS avg_sentiment,
+       SUM(CASE WHEN llm_ok = 1 THEN pos ELSE 0 END) AS pos,
+       SUM(CASE WHEN llm_ok = 1 THEN neg ELSE 0 END) AS neg
 FROM per_answer
 GROUP BY slice
 ORDER BY slice
@@ -231,6 +246,52 @@ def bootstrap_ci(
     return rate_ci, (float(np.percentile(sov, 2.5)), float(np.percentile(sov, 97.5)))
 
 
+def wilson_interval(k: float, n: float, z: float = 1.96) -> tuple[float, float]:
+    """Wilson score interval: sensible at small n and at 0% / 100%, where a percentile
+    bootstrap collapses to zero width (1 of 1 resamples to 100% every time)."""
+    if n <= 0:
+        return (0.0, 1.0)
+    p = k / n
+    denom = 1 + z * z / n
+    centre = (p + z * z / (2 * n)) / denom
+    half = z * ((p * (1 - p) / n + z * z / (4 * n * n)) ** 0.5) / denom
+    return (max(0.0, centre - half), min(1.0, centre + half))
+
+
+def mention_rate_interval(
+    mentioned: np.ndarray, clusters: np.ndarray, boot: tuple[float, float]
+) -> tuple[float, float]:
+    """The wider of the cluster bootstrap and a Wilson interval on the number of prompts
+    (the effective sample size when engines agree within a prompt). Never narrower than
+    either, so 0/n and n/n slices still show their uncertainty."""
+    n_eff = float(len(np.unique(clusters))) if len(clusters) else 0.0
+    rate = float(mentioned.mean()) if len(mentioned) else 0.0
+    w = wilson_interval(rate * n_eff, n_eff)
+    return (min(boot[0], w[0]), max(boot[1], w[1]))
+
+
+def coverage(
+    session: Session, brand_id: int, f: Filters, slice_by: SliceBy | None
+) -> dict[str, tuple[int, int, int]]:
+    """slice -> (ok answers, extracted, extracted with a successful Stage B)."""
+    base, params = _base_cte(f, extracted_only=False)
+    sql = f"""
+    WITH {base}
+    SELECT MIN({_SLICE_SQL[slice_by]}) AS slice, b.answer_id AS answer_id,
+           MAX(CASE WHEN b.extracted_id IS NOT NULL THEN 1 ELSE 0 END) AS extracted,
+           MAX(CASE WHEN b.llm_ok THEN 1 ELSE 0 END) AS llm_ok
+    FROM base b
+    GROUP BY b.answer_id
+    """
+    out: dict[str, list[int]] = defaultdict(lambda: [0, 0, 0])
+    for r in session.execute(text(sql), {"brand_id": brand_id, **params}).mappings():
+        c = out[str(r["slice"])]
+        c[0] += 1
+        c[1] += int(r["extracted"])
+        c[2] += int(r["llm_ok"])
+    return {k: (v[0], v[1], v[2]) for k, v in out.items()}
+
+
 def visibility_score(c: dict[str, float]) -> float:
     return round(100 * sum(w * c[k] for k, w in VISIBILITY_WEIGHTS.items()), 1)
 
@@ -248,6 +309,7 @@ def compute_metrics(
     base, params = _base_cte(f)
     sql = f"WITH {base}, {_per_answer_cte(slice_by)} {AGGREGATE_SQL}"
     aggregates = session.execute(text(sql), {"brand_id": brand_id, **params}).mappings().all()
+    cov = coverage(session, brand_id, f, slice_by)
     per_slice: dict[str, list[tuple[int, int, int]]] = defaultdict(list)
     for r in per_answer_rows(session, brand_id, f, slice_by):
         per_slice[str(r["slice"])].append(
@@ -262,11 +324,14 @@ def compute_metrics(
         pos, neg = int(row["pos"] or 0), int(row["neg"] or 0)
         arr = np.array(per_slice[key], dtype=float).reshape(-1, 3)
         rate_ci, sov_ci = bootstrap_ci(arr[:, 0], arr[:, 1], bootstrap, clusters=arr[:, 2])
+        rate_ci = mention_rate_interval(arr[:, 0], arr[:, 2], rate_ci)
+        llm_answers, mentioned_llm = int(row["llm_answers"] or 0), int(row["mentioned_llm"] or 0)
+        ok_answers, extracted, llm_ok = cov.get(key, (answers, answers, llm_answers))
         mention_rate = mentioned / answers if answers else 0.0
         sov = mentioned / tracked if tracked else None
-        net = (pos - neg) / mentioned if mentioned else None
+        net = (pos - neg) / mentioned_llm if mentioned_llm else None
         position = float(row["position_points"] or 0) / ranked if ranked else 0.0
-        rec_rate = int(row["recommended"] or 0) / answers if answers else 0.0
+        rec_rate = int(row["recommended"] or 0) / llm_answers if llm_answers else 0.0
         components = {
             "mention_rate": mention_rate,
             "share_of_voice": sov or 0.0,
@@ -294,6 +359,8 @@ def compute_metrics(
                 position_score=position,
                 visibility_score=visibility_score(components),
                 small_sample=answers < 30,
+                coverage=extracted / ok_answers if ok_answers else 0.0,
+                llm_ok_share=llm_ok / extracted if extracted else 0.0,
             )
         )
     return out

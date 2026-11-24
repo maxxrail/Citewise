@@ -127,3 +127,63 @@ def test_api_metrics_and_competitors(
 
     assert scanned_client.get("/brands/999/metrics").status_code == 404
     assert scanned_client.get("/brands/1/metrics", params={"by": "colour"}).status_code == 422
+
+
+def test_eval_extract_gates_on_min_f1(cli_db: str, tmp_path: Path) -> None:
+    from citewise.cli import app as cli
+
+    out = CliRunner().invoke(cli, ["eval", "extract", "--out", str(tmp_path / "r.md"),
+                                   "--min-f1", "0.99"])  # fmt: skip
+    assert out.exit_code == 1 and "below --min-f1" in out.output
+    assert "hand-written rows only" in out.output and "simulated" in out.output
+
+
+def test_recorded_stage_b_responses_replay_in_mock_mode(settings: Settings, tmp_path: Path) -> None:
+    """scripts/record_extract_fixtures.py writes real responses under the prompt's fixture
+    key; the mock provider must then replay them instead of simulating."""
+    import shutil
+
+    from citewise.core.config import REPO_ROOT
+    from citewise.evals.extract import evaluate, load_brand_configs, load_golden
+    from citewise.providers.mock import MockChatProvider, fixture_key
+    from citewise.services.extract.mentions import PURPOSE, stage_b_messages
+
+    fixtures = tmp_path / "fixtures"
+    shutil.copytree(settings.fixtures_dir / "engines", fixtures / "engines")
+    (fixtures / "mock_chat").mkdir()
+    rows = load_golden(REPO_ROOT / "evals/datasets/golden/mentions.jsonl")[:1]
+    brands = load_brand_configs(settings.brands_dir)
+    cfg = brands[rows[0]["brand"]]
+    msgs = stage_b_messages(brand=cfg["name"], aliases=cfg["aliases"],
+                            competitors=cfg["competitors"], category=cfg["category"],
+                            text=rows[0]["answer"])  # fmt: skip
+    recorded = {"mentions": [{"entity": "Nike", "canonical": "Nike", "rank": 1, "sentiment": -0.9,
+                              "sentiment_label": "negative", "is_recommended": False,
+                              "snippet": "x"}]}  # fmt: skip
+    (fixtures / "mock_chat" / f"{fixture_key(PURPOSE, msgs)}.json").write_text(
+        json.dumps({"text": json.dumps(recorded), "parsed": recorded}), encoding="utf-8"
+    )
+    report = evaluate(rows, brands, MockChatProvider(fixtures), model="m", mode="mock",
+                      fixtures_dir=fixtures)  # fmt: skip
+    assert report.stage_b_source.startswith("1/1 replayed")
+    assert report.stages["B"].sentiment_abs_err  # scored on the recorded (negative) answer
+    assert report.stages["B"].tp == 1  # only Nike came back
+
+
+def test_cli_by_run_has_no_misleading_all_row_and_warns_on_partial_runs(
+    cli_scanned_db: str,
+) -> None:
+    from citewise.cli import app as cli
+    from citewise.core.config import get_settings
+    from citewise.core.db import get_sessionmaker
+    from citewise.providers.budget import BudgetedChatProvider
+    from citewise.providers.registry import get_chat_provider
+
+    settings = get_settings()
+    capped = BudgetedChatProvider(get_chat_provider(settings=settings), 0.003)
+    extract_run(get_sessionmaker(), 1, capped, settings)  # budget-stops partway
+    runner = CliRunner()
+    shown = runner.invoke(cli, ["metrics", "show", "Stridelab"])
+    assert shown.exit_code == 0 and "warning" in shown.output and "extracted" in shown.output
+    by_run = runner.invoke(cli, ["metrics", "show", "Stridelab", "--by", "run"])
+    assert by_run.exit_code == 0 and "ALL" not in by_run.output

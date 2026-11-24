@@ -66,6 +66,20 @@ def display_name(surface: str) -> str:
     return " ".join(tokens).strip(" .,") or surface.strip()
 
 
+def fuzzy_ok(candidate: str, known: str) -> bool:
+    """A close spelling may be a typo, but a *longer* name built on a known one is a
+    different company ("LinearB" vs Linear, "Asanas" aside): only a trailing "s" (a plural
+    or dropped apostrophe, "Stridelabs") is allowed as an extension."""
+    if candidate != known and candidate.startswith(known):
+        return candidate[len(known) :] == "s"
+    return True
+
+
+def _ends_with_suffix(surface: str) -> bool:
+    tokens = surface.replace(",", " ").split()
+    return len(tokens) > 1 and tokens[-1].strip(".").casefold() in COMPANY_SUFFIXES
+
+
 @dataclass(frozen=True)
 class Resolved:
     canonical: str
@@ -121,16 +135,18 @@ class Resolver:
         key = normalize(surface)
         if hit := self._by_key.get(key):
             return Resolved(hit[0], hit[1], normalize(hit[0]), "exact")
-        for k in self._prefix_keys:
+        # "Monday Morning Co" names its own company (legal suffix), not a Monday.com product.
+        own_company = _ends_with_suffix(surface)
+        for k in self._prefix_keys if not own_company else ():
             if key.startswith(k + " "):
                 canonical, typ = self._by_key[k]
                 return Resolved(canonical, typ, normalize(canonical), "product")
         if fuzzy and len(key) >= FUZZY_MIN_LEN and self._fuzzy_keys:
-            match = process.extractOne(
-                key, self._fuzzy_keys, scorer=fuzz.ratio, score_cutoff=FUZZY_THRESHOLD
-            )
-            if match is not None:
-                canonical, typ = self._by_key[match[0]]
-                return Resolved(canonical, typ, normalize(canonical), "fuzzy")
+            for cand_key, _score, _ in process.extract(
+                key, self._fuzzy_keys, scorer=fuzz.ratio, score_cutoff=FUZZY_THRESHOLD, limit=3
+            ):
+                if fuzzy_ok(key, cand_key):
+                    canonical, typ = self._by_key[cand_key]
+                    return Resolved(canonical, typ, normalize(canonical), "fuzzy")
         name = display_name(surface)
         return Resolved(name, "unknown", normalize(name), "unknown")

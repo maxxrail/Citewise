@@ -93,7 +93,7 @@ class Settings(BaseSettings):
     # Extraction (Module 3): parallel Stage B calls in live mode (mock runs serially).
     extract_concurrency: int = Field(default=4, ge=1, le=32)
     # Bootstrap resamples for metric confidence intervals.
-    metrics_bootstrap: int = Field(default=1000, ge=100, le=20000)
+    metrics_bootstrap: int = Field(default=1000, ge=100, le=5000)  # memory: n x prompts
 
     # Prompt panel (Module 1).
     panel_prompts_per_cell: int = Field(default=20, ge=1, le=50)  # per (intent x persona)

@@ -41,8 +41,13 @@ def complete_structured(
     *,
     model: str,
     purpose: str,
+    raise_on_budget: bool = False,
 ) -> T | None:
-    """Return a validated `output`, or None after two failed attempts (logged as a warning)."""
+    """Return a validated `output`, or None after two failed attempts (logged as a warning).
+
+    `raise_on_budget=True` re-raises BudgetExceededError instead of returning None, for
+    callers that must not mistake "out of budget" for "the model failed".
+    """
     schema = schema_for(output)
     attempt_messages = list(messages)
     error = ""
@@ -54,6 +59,8 @@ def complete_structured(
         except UnpricedModelError:
             raise  # configuration error: fail loudly before anything is spent
         except BudgetExceededError as exc:
+            if raise_on_budget:
+                raise
             log.error("%s: skipped, %s", purpose, exc)
             return None  # no retry: the next call would be refused too
         except Exception as exc:  # provider error after the SDK's own retries

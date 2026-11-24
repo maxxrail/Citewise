@@ -130,7 +130,8 @@ def metrics_show(
     def p(v: float | None) -> str:
         return "-" if v is None else f"{100 * v:.0f}"
 
-    for r in [*rows, *([] if by == "all" else overall)]:
+    # With --by run the slices *are* the runs; an ALL row would be the latest run only.
+    for r in [*rows, *([] if by in ("all", "run") else overall)]:
         lo, hi = r.mention_rate_ci
         label = "ALL" if r.slice == "all" else labels.get(r.slice, r.slice)
         table.add_row(
@@ -149,7 +150,16 @@ def metrics_show(
     console.print(
         "rank = avg rank where ranked; rec = recommendation rate; score = Visibility Score 0-100."
     )
-    console.print("* fewer than 30 answers: trust the interval, not the point.")
+    if any(r.small_sample for r in rows):
+        console.print("* fewer than 30 answers: trust the interval, not the point.")
+    for r in [*rows, *overall] if by not in ("all", "run") else rows:
+        if r.coverage < 1 or r.llm_ok_share < 1:
+            console.print(
+                f"[yellow]warning ({r.slice}): {r.coverage:.0%} of ok answers extracted, "
+                f"{r.llm_ok_share:.0%} of those with Stage B; numbers describe that subset "
+                "(re-run `citewise extract run`)[/yellow]"
+            )
+            break
     if cites is not None and cites.total:
         top = ", ".join(f"{d.domain} {d.share:.0%}" for d in cites.with_brand[:5])
         console.print(f"citations: {cites.total}, own domain {cites.own_domain_share:.1%}; "
@@ -184,6 +194,9 @@ def eval_extract(
     golden: Path = typer.Option(GOLDEN_MENTIONS, help="Golden set (JSONL)."),
     out: Path = typer.Option(EXTRACT_REPORT, help="Markdown report path."),
     max_cost: float | None = typer.Option(None, min=0, help=MAX_COST_HELP),
+    min_f1: float = typer.Option(
+        0.85, min=0, max=1, help="Exit 1 if the merged F1 is below this (CI gate)."
+    ),
 ) -> None:
     """Precision/recall/F1, rank accuracy and sentiment MAE for Stage A, Stage B and the
     merge, with errors broken down by type and tag."""
@@ -193,7 +206,8 @@ def eval_extract(
     rows = load_golden(golden)
     chat = _budgeted_chat(max_cost)
     report = evaluate(rows, load_brand_configs(settings.brands_dir), chat,
-                      model=settings.model_extract, mode=settings.citewise_mode)  # fmt: skip
+                      model=settings.model_extract, mode=settings.citewise_mode,
+                      fixtures_dir=settings.fixtures_dir)  # fmt: skip
     for stage, s in report.stages.items():
         typer.echo(
             f"{stage:<7} P {s.precision:.3f}  R {s.recall:.3f}  F1 {s.f1:.3f}  "
@@ -203,7 +217,11 @@ def eval_extract(
     merged = report.stages["merged"]
     errors = ", ".join(f"{k} {v}" for k, v in merged.errors.most_common())
     typer.echo(f"merged errors by type: {errors or 'none'}")
+    hand = report.handwritten.get("merged")
+    if hand is not None and report.handwritten_rows:
+        typer.echo(f"hand-written rows only ({report.handwritten_rows}): merged F1 {hand.f1:.3f}")
     typer.echo(f"golden rows: {report.rows} ({report.reviewed} hand-reviewed)")
+    typer.echo(f"Stage B: {report.stage_b_source}")
     rel = golden.relative_to(REPO_ROOT) if golden.is_relative_to(REPO_ROOT) else golden
     out.parent.mkdir(parents=True, exist_ok=True)
     today = datetime.now(UTC).date().isoformat()
@@ -212,3 +230,5 @@ def eval_extract(
                                         encoding="utf-8")  # fmt: skip
     typer.echo(f"report: {out}")
     _budget_note(chat)
+    if merged.f1 < min_f1:
+        _fail(f"merged F1 {merged.f1:.3f} is below --min-f1 {min_f1:.2f}")

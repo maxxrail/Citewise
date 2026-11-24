@@ -25,7 +25,14 @@ from typing import Any
 import yaml
 
 from citewise.providers.base import ChatProvider
-from citewise.services.extract.mentions import merge, stage_a, stage_b
+from citewise.providers.mock import fixture_key
+from citewise.services.extract.mentions import (
+    PURPOSE,
+    merge,
+    stage_a,
+    stage_b,
+    stage_b_messages,
+)
 from citewise.services.extract.resolve import Resolver, normalize
 
 STAGES = ("A", "B", "merged")
@@ -73,6 +80,10 @@ class StageScore:
         return ok / self.tp if self.tp else None
 
     @property
+    def has_attrs(self) -> bool:  # the stage produced sentiment/recommendation at all
+        return bool(self.sentiment_abs_err)
+
+    @property
     def sentiment_mae(self) -> float | None:
         e = self.sentiment_abs_err
         return sum(e) / len(e) if e else None
@@ -88,8 +99,8 @@ class StageScore:
             "rank_accuracy": _r(self.rate(self.rank_ok)),
             "type_accuracy": _r(self.rate(self.type_ok)),
             "sentiment_mae": _r(self.sentiment_mae),
-            "sentiment_label_accuracy": _r(self.rate(self.label_ok)) if self.label_ok else None,
-            "recommended_accuracy": _r(self.rate(self.rec_ok)) if self.rec_ok else None,
+            "sentiment_label_accuracy": _r(self.rate(self.label_ok)) if self.has_attrs else None,
+            "recommended_accuracy": _r(self.rate(self.rec_ok)) if self.has_attrs else None,
             "errors": dict(self.errors.most_common()),
         }
 
@@ -104,6 +115,11 @@ class EvalReport:
     reviewed: int
     mode: str
     stages: dict[str, StageScore]
+    # Rows written by hand (engine == "handwritten"): realistic prose, not the answer
+    # simulator's templates, so the better guide to real-world quality.
+    handwritten: dict[str, StageScore] = field(default_factory=dict)
+    handwritten_rows: int = 0
+    stage_b_source: str = "live model"
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -111,6 +127,9 @@ class EvalReport:
             "reviewed": self.reviewed,
             "mode": self.mode,
             "stages": {k: v.summary() for k, v in self.stages.items()},
+            "handwritten_rows": self.handwritten_rows,
+            "stage_b_source": self.stage_b_source,
+            "handwritten": {k: v.summary() for k, v in self.handwritten.items()},
         }
 
 
@@ -182,37 +201,58 @@ def evaluate(
     *,
     model: str,
     mode: str,
+    fixtures_dir: Path | None = None,
 ) -> EvalReport:
     stages = {name: StageScore() for name in STAGES}
+    recorded = 0
+    hand = {name: StageScore() for name in STAGES}
     for row in rows:
+        targets = [stages, hand] if row.get("engine") == "handwritten" else [stages]
         cfg = brands[row["brand"]]
         resolver = Resolver(cfg["name"], cfg.get("aliases", []), cfg.get("competitors", []))
         text = row["answer"]
+        if mode == "mock" and fixtures_dir is not None:
+            msgs = stage_b_messages(brand=cfg["name"], aliases=cfg.get("aliases", []),
+                                    competitors=cfg.get("competitors", []),
+                                    category=cfg["category"], text=text)  # fmt: skip
+            keys = (fixture_key(PURPOSE, msgs, "openai"), fixture_key(PURPOSE, msgs))
+            recorded += any((fixtures_dir / "mock_chat" / f"{k}.json").exists() for k in keys)
         a = stage_a(text, resolver)
         b = stage_b(chat, model=model, brand=cfg["name"], aliases=cfg.get("aliases", []),
                     competitors=cfg.get("competitors", []), category=cfg["category"],
                     text=text)  # fmt: skip
         merged, _ = merge(text, resolver, a, b)
         a_preds = [Pred(m.key, m.canonical, m.entity_type, m.rank) for m in a]
-        _score(stages["A"], row, a_preds, has_attrs=False)
+        for t in targets:
+            _score(t["A"], row, a_preds, has_attrs=False)
         b_preds: dict[str, Pred] = {}
         for x in b or []:
             r = resolver.resolve(x.canonical or x.entity)
             pred = Pred(r.key, r.canonical, r.entity_type, x.rank, x.sentiment,
                         x.sentiment_label, x.is_recommended)  # fmt: skip
             b_preds.setdefault(r.key, pred)
-        _score(stages["B"], row, list(b_preds.values()), has_attrs=True)
+        for t in targets:
+            _score(t["B"], row, list(b_preds.values()), has_attrs=True)
         m_preds = [
             Pred(m.key, m.canonical, m.entity_type, m.rank, m.sentiment, m.sentiment_label,
                  m.is_recommended)
             for m in merged
         ]  # fmt: skip
-        _score(stages["merged"], row, m_preds, has_attrs=True)
+        for t in targets:
+            _score(t["merged"], row, m_preds, has_attrs=True)
     return EvalReport(
         rows=len(rows),
         reviewed=sum(1 for r in rows if r.get("reviewed")),
         mode=mode,
         stages=stages,
+        handwritten=hand,
+        handwritten_rows=sum(1 for r in rows if r.get("engine") == "handwritten"),
+        stage_b_source=(
+            "live model"
+            if mode != "mock"
+            else f"{recorded}/{len(rows)} replayed from recorded real responses, "
+            f"{len(rows) - recorded} simulated"
+        ),
     )
 
 
@@ -233,9 +273,15 @@ def render_markdown(report: EvalReport, golden_path: str, date: str) -> str:
     ]
     if report.mode == "mock":
         lines += [
-            "> Mock mode: Stage B is the simulated extractor (`providers/mock_extract.py`), "
-            "so the B and merged columns measure the pipeline plus that simulator, not a "
-            "production model. Run `CITEWISE_MODE=live citewise eval extract` for real numbers.",
+            "> **Mock mode.** Unless real responses have been recorded "
+            "(`scripts/record_extract_fixtures.py`, needs a key), Stage B is the simulated "
+            "extractor (`providers/mock_extract.py`), so the B and merged columns are a "
+            "*smoke test of the pipeline*, not a model score. 48 of the rows are also "
+            "simulator output: the hand-written table below is the fairer number, and "
+            "Stage A (no LLM) is the honest offline baseline. Run `CITEWISE_MODE=live "
+            "citewise eval extract` for real numbers.",
+            "",
+            f"Stage B responses: {report.stage_b_source}.",
             "",
         ]
     lines += [
@@ -258,6 +304,24 @@ def render_markdown(report: EvalReport, golden_path: str, date: str) -> str:
     ]:
         lines.append(f"| {label} | " + " | ".join(_fmt(getter(st[k]), pct) for k in STAGES) + " |")
     lines += [
+        "",
+        "## Hand-written rows only",
+        "",
+        f"{report.handwritten_rows} rows of realistic prose (not the simulator's templates): "
+        "the better guide to real-world quality.",
+        "",
+        "| Metric | Stage A | Stage B | Merged |",
+        "|---|---|---|---|",
+        "| F1 | "
+        + " | ".join(_fmt(report.handwritten[k].f1, True) for k in STAGES if report.handwritten)
+        + " |",
+        "| Rank accuracy | "
+        + " | ".join(
+            _fmt(report.handwritten[k].rate(report.handwritten[k].rank_ok), True)
+            for k in STAGES
+            if report.handwritten
+        )
+        + " |",
         "",
         "## Errors by type",
         "",

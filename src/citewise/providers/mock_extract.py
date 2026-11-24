@@ -90,18 +90,21 @@ STOPWORDS = frozenset(
     ]
 )
 MAKER_WORDS = frozenset({"athletic", "running", "labs", "software", "sports", "apparel", "hq"})
+# A general-purpose evaluative lexicon, deliberately *not* the answer simulator's phrases
+# (a review found an earlier version had copied "packs many", "max cushioning", "wears
+# quickly", ... from tests/fixtures/engines/world.yaml, which made the mock eval partly
+# circular). Template-specific praise it doesn't know now reads as neutral, as it would
+# for any off-the-shelf sentiment model.
 POSITIVE = (
-    "praised", "well liked", "well-liked", "solid", "strong", "favourite", "favorite",
-    "popular", "versatile", "dependable", "durable", "great", "polished", "simple", "easy",
-    "clean", "fast", "lively", "comfortable", "responsive", "well suited", "well regarded",
-    "highly", "distinctive", "standard for", "packs many", "roomy", "max cushioning",
-    "offers many", "excellent", "love", "reliable", "best", "widely adopted", "intuitive",
+    "praised", "well liked", "solid", "strong", "favourite", "favorite", "popular",
+    "versatile", "dependable", "durable", "great", "polished", "easy", "fast",
+    "comfortable", "responsive", "well regarded", "excellent", "love", "reliable", "best",
+    "intuitive", "recommended", "impressive", "good",
 )  # fmt: skip
 NEGATIVE = (
-    "although", "however", "can feel", "expensive", "confusing", "overwhelming", "limited",
-    "narrow", "less stable", "wears quickly", "steeper", "heavy for", "takes time", "snug",
-    "smaller", "not the lightest", "firm", "avoid", "steer clear", "disappoint", "clunky",
-    "buggy", "overpriced", "poor", "worse", "lacks", "falls apart",
+    "although", "however", "but ", "expensive", "confusing", "limited", "avoid",
+    "steer clear", "disappoint", "clunky", "buggy", "overpriced", "poor", "worse", "lacks",
+    "falls apart", "drawback", "downside", "complain", "issue", "problem",
 )  # fmt: skip
 WINNER_CUES = re.compile(
     r"(?:lean(?:s)? towards|go with|top pick is|my pick is|recommend|winner is|best bet is)"
