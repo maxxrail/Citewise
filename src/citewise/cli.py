@@ -10,9 +10,13 @@ import typer
 from citewise.core.config import get_settings
 from citewise.core.logging import configure_logging
 from citewise.panel_cli import panel_app
+from citewise.scan_cli import scan_app, schedule_app, worker
 
 app = typer.Typer(help="Citewise: AI-search visibility platform.", no_args_is_help=True)
 app.add_typer(panel_app, name="panel")
+app.add_typer(scan_app, name="scan")
+app.add_typer(schedule_app, name="schedule")
+app.command()(worker)
 
 
 def _utf8_console() -> None:

@@ -56,3 +56,9 @@ def ping(session: Session) -> bool:
         return True
     except Exception:
         return False
+
+
+def get_session_factory() -> sessionmaker[Session]:
+    """FastAPI dependency for work that outlives the request (background scan runs), which
+    needs its own sessions. Tests override it the same way they override `get_db`."""
+    return get_sessionmaker()

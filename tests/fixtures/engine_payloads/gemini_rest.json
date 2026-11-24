@@ -1,0 +1,64 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "text": "Spain won Euro 2024, beating England 2-1."
+          }
+        ]
+      },
+      "finishReason": "STOP",
+      "groundingMetadata": {
+        "webSearchQueries": [
+          "who won euro 2024",
+          "euro 2024 final score"
+        ],
+        "groundingChunks": [
+          {
+            "web": {
+              "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AAA",
+              "title": "aljazeera.com"
+            }
+          },
+          {
+            "web": {
+              "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/BBB",
+              "title": "uefa.com"
+            }
+          }
+        ],
+        "groundingSupports": [
+          {
+            "segment": {
+              "startIndex": 0,
+              "endIndex": 19
+            },
+            "groundingChunkIndices": [
+              1
+            ]
+          },
+          {
+            "segment": {
+              "startIndex": 20,
+              "endIndex": 40
+            },
+            "groundingChunkIndices": [
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 12,
+    "candidatesTokenCount": 18,
+    "toolUsePromptTokenCount": 310,
+    "thoughtsTokenCount": 4,
+    "totalTokenCount": 344
+  },
+  "modelVersion": "gemini-3.5-flash-lite"
+}

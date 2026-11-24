@@ -10,6 +10,8 @@ from citewise.providers.registry import PROVIDERS, MissingAPIKeyError, _require_
 
 ENGINES: tuple[str, ...] = PROVIDERS  # openai, anthropic, gemini, perplexity
 ANSWER_MAX_TOKENS = 1500
+# Old .env files copied from Module 0's .env.example still say "sonar".
+RETIRED_PERPLEXITY_IDS = frozenset({"sonar", "sonar-pro", "sonar-reasoning"})
 
 
 def engine_model(name: str, settings: Settings | None = None) -> str:
@@ -38,6 +40,11 @@ def get_engine(name: str, settings: Settings | None = None) -> EngineAdapter:
     model = engine_model(name, settings)
     if settings.is_mock:
         return MockEngine(name, model, settings.fixtures_dir)
+    if name == "perplexity" and model in RETIRED_PERPLEXITY_IDS:
+        raise ValueError(
+            f"ENGINE_MODEL_PERPLEXITY={model!r} is a retired Sonar Chat Completions ID "
+            "(support ended 2026-09-27). Use 'perplexity/sonar' (Agent API) in .env."
+        )
     require_price(model)  # fail closed before any spend we couldn't account for
     key = _require_key(settings, name)
     timeout = settings.llm_timeout_s
