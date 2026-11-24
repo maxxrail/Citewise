@@ -55,9 +55,13 @@ def test_api_start_run_then_poll_it(
     bid = _brand_id(scan_factory)
     resp = scan_client.post(
         f"/brands/{bid}/runs",
-        json={"engines": ["openai", "perplexity"], "size": 10, "max_cost": 1.0,
-              "system_prompt": "The user is in Toronto, Canada."},
-    )  # fmt: skip
+        json={
+            "engines": ["openai", "perplexity"],
+            "size": 10,
+            "max_cost": 1.0,
+            "system_prompt": "The user is in Toronto, Canada.",
+        },
+    )
     assert resp.status_code == 202, resp.text
     body = resp.json()
     assert body["status"] == "pending" and body["total"] == 20
@@ -105,8 +109,20 @@ def test_cli_scan_run_status_list_resume(cli_panel_db: str) -> None:
     from citewise.cli import app as cli
 
     runner = CliRunner()
-    out = runner.invoke(cli, ["scan", "run", "Stridelab", "--engines", "openai,gemini",
-                              "--size", "10", "--max-cost", "1"])  # fmt: skip
+    out = runner.invoke(
+        cli,
+        [
+            "scan",
+            "run",
+            "Stridelab",
+            "--engines",
+            "openai,gemini",
+            "--size",
+            "10",
+            "--max-cost",
+            "1",
+        ],
+    )
     assert out.exit_code == 0, out.output
     assert "10 prompts x 2 engines = 20 answers" in out.output
     assert "completed | 20/20 answers" in out.output
@@ -152,8 +168,14 @@ def test_scheduler_syncs_jobs_with_the_table_and_runs_a_schedule(
     scan_factory: sessionmaker[Session], settings: Settings
 ) -> None:
     with scan_factory() as s:
-        sched = add_schedule(s, resolve_brand(s, "Stridelab"), cron="0 9 * * 1",
-                             engines=["openai"], size=5, max_cost=1.0)  # fmt: skip
+        sched = add_schedule(
+            s,
+            resolve_brand(s, "Stridelab"),
+            cron="0 9 * * 1",
+            engines=["openai"],
+            size=5,
+            max_cost=1.0,
+        )
         s.commit()
         sid = sched.id
 
@@ -179,8 +201,14 @@ def test_scheduled_run_over_budget_is_skipped_not_crashed(
     scan_factory: sessionmaker[Session], settings: Settings
 ) -> None:
     with scan_factory() as s:
-        sched = add_schedule(s, resolve_brand(s, "Stridelab"), cron="0 9 * * 1",
-                             engines=["openai", "gemini"], size=50, max_cost=0.01)  # fmt: skip
+        sched = add_schedule(
+            s,
+            resolve_brand(s, "Stridelab"),
+            cron="0 9 * * 1",
+            engines=["openai", "gemini"],
+            size=50,
+            max_cost=0.01,
+        )
         s.commit()
     assert run_schedule(sched.id, settings, scan_factory) is None
     with scan_factory() as s:

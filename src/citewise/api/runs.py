@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
@@ -19,11 +20,13 @@ router = APIRouter(tags=["runs"])
 log = logging.getLogger(__name__)
 
 
-async def _execute(run_id: int, use_cache: bool, factory: sessionmaker[Session]) -> None:
-    """Background task. Failures are stored on the run (status/error) for GET /runs/{id};
-    here they are only logged, since no client is waiting for this coroutine."""
+def _execute(run_id: int, use_cache: bool, factory: sessionmaker[Session]) -> None:
+    """Background task, deliberately sync: Starlette runs sync tasks in its threadpool, so
+    the scan's blocking DB writes (several per answer) never stall the API's event loop.
+    Failures are stored on the run (status/error) for GET /runs/{id}; here they are only
+    logged, since no client is waiting."""
     try:
-        await execute_run(run_id, get_settings(), factory, use_cache=use_cache)
+        asyncio.run(execute_run(run_id, get_settings(), factory, use_cache=use_cache))
     except Exception:
         log.exception("background scan run %s failed", run_id)
 

@@ -149,3 +149,33 @@ def test_retired_perplexity_id_fails_clearly_in_live_mode(settings: Settings) ->
     )
     with pytest.raises(ValueError, match="perplexity/sonar"):
         get_engine("perplexity", live)
+
+
+def test_deterministic_truncations_are_not_retried_but_keep_their_billed_usage() -> None:
+    openai_cut = {
+        **OPENAI,
+        "status": "incomplete",
+        "incomplete_details": {"reason": "max_output_tokens"},
+    }
+    with pytest.raises(EngineError) as info:
+        parse_openai(openai_cut, "gpt-6-luna")
+    assert not info.value.retryable and info.value.answer is not None
+    assert info.value.answer.usage.tokens_in == 1834
+
+    with pytest.raises(EngineError) as info:
+        parse_anthropic({**ANTHROPIC, "stop_reason": "max_tokens"}, "claude-haiku-5-5")
+    assert not info.value.retryable and info.value.answer is not None
+    assert info.value.answer.searches == 1
+
+    gemini_cut = {
+        **GEMINI_REST,
+        "candidates": [{**GEMINI_REST["candidates"][0], "finishReason": "MAX_TOKENS"}],
+    }
+    with pytest.raises(EngineError) as info:
+        parse_gemini(gemini_cut, "gemini-3.5-flash-lite")
+    assert not info.value.retryable and info.value.answer is not None
+    assert info.value.answer.searches == 2
+
+    blocked = {"candidates": [{"content": {"parts": []}, "finishReason": "SAFETY"}]}
+    with pytest.raises(EngineError):
+        parse_gemini(blocked, "gemini-3.5-flash-lite")

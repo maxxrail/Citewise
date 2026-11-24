@@ -58,12 +58,24 @@ def get_path(data: Any, *keys: str | int, default: Any = None) -> Any:
 
 
 class EngineError(Exception):
-    """An adapter-level failure with an explicit retry decision."""
+    """An adapter-level failure with an explicit retry decision.
 
-    def __init__(self, message: str, *, retryable: bool, status: int | None = None) -> None:
+    `answer` is set when the provider returned (and billed) a response that we reject, e.g.
+    a truncated one, so the runner can still record what it cost.
+    """
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        retryable: bool,
+        status: int | None = None,
+        answer: EngineAnswer | None = None,
+    ) -> None:
         super().__init__(message)
         self.retryable = retryable
         self.status = status
+        self.answer = answer
 
 
 def is_retryable(exc: BaseException) -> bool:
@@ -91,3 +103,10 @@ class EngineAdapter(Protocol):
     model: str
 
     async def answer(self, prompt: str, *, system: str | None = None) -> EngineAnswer: ...
+
+
+async def close_adapter(adapter: object) -> None:
+    """Close an adapter's HTTP client if it has one (live adapters do; mocks don't)."""
+    aclose = getattr(adapter, "aclose", None)
+    if aclose is not None:
+        await aclose()

@@ -34,12 +34,16 @@ def _summary(run) -> None:  # type: ignore[no-untyped-def]
         typer.echo(f"  {run.error}")
 
 
-def _execute_with_progress(run_id: int, total: int, use_cache: bool) -> None:
-    """Run with a rich progress bar; Ctrl+C leaves a resumable run."""
+def _execute_with_progress(
+    run_id: int, total: int, already: int, use_cache: bool, force: bool = False
+) -> None:
+    """Run with a rich progress bar; Ctrl+C leaves a resumable run.
+
+    The bar counts all of the run's answers (`already` of `total` exist when resuming)."""
     from rich.progress import BarColumn, MofNCompleteColumn, Progress, TextColumn, TimeElapsedColumn
 
     from citewise.core.db import get_sessionmaker
-    from citewise.services.collect.runner import execute_run
+    from citewise.services.collect.runner import RunLeasedError, execute_run
 
     settings = get_settings()
     with Progress(
@@ -50,7 +54,7 @@ def _execute_with_progress(run_id: int, total: int, use_cache: bool) -> None:
         TimeElapsedColumn(),
         transient=True,
     ) as progress:
-        task = progress.add_task("scan", total=total, cost=0.0)
+        task = progress.add_task("scan", total=total, completed=already, cost=0.0)
 
         def on_progress(run) -> None:  # type: ignore[no-untyped-def]
             progress.update(task, completed=run.done + run.failed, cost=run.cost_usd)
@@ -63,8 +67,13 @@ def _execute_with_progress(run_id: int, total: int, use_cache: bool) -> None:
                     get_sessionmaker(),
                     on_progress=on_progress,
                     use_cache=use_cache,
+                    force=force,
                 )
             )
+        except RunLeasedError as exc:
+            progress.stop()
+            _fail(str(exc))
+            return
         except KeyboardInterrupt:
             progress.stop()
             typer.secho(
@@ -121,7 +130,7 @@ def run_scan(
         f"run {run_id} [{settings.citewise_mode}]: {total // len(engine_list)} prompts x "
         f"{len(engine_list)} engines = {total} answers, estimated ${estimate:.4f} (cap ${cap:.2f})"
     )
-    _execute_with_progress(run_id, total, use_cache=not no_cache)
+    _execute_with_progress(run_id, total, 0, use_cache=not no_cache)
 
 
 @scan_app.command()
@@ -129,6 +138,9 @@ def resume(
     run_id: int = typer.Argument(..., help="Run id (see `citewise scan list`)."),
     max_cost: float | None = typer.Option(
         None, min=0, help="Raise the run's cap, e.g. after it stopped on budget."
+    ),
+    force: bool = typer.Option(
+        False, "--force", help="Take over a run another process still holds (it crashed)."
     ),
 ) -> None:
     """Finish an interrupted, failed or budget-stopped run (no duplicates)."""
@@ -145,12 +157,12 @@ def resume(
             return
         if max_cost is not None:
             run.max_cost_usd = max_cost
-        remaining = run.total - run.done
+        remaining, total, already = run.total - run.done, run.total, run.done
         if run.mode != get_settings().citewise_mode:
             _fail(f"run {run_id} was a {run.mode} run; resume it with CITEWISE_MODE={run.mode}")
             return
     typer.echo(f"resuming run {run_id}: {remaining} answers to go")
-    _execute_with_progress(run_id, remaining, use_cache=True)
+    _execute_with_progress(run_id, total, already, use_cache=True, force=force)
 
 
 @scan_app.command()

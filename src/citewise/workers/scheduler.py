@@ -109,9 +109,14 @@ def sync_jobs(scheduler: BaseScheduler, settings: Settings, factory: sessionmake
         if existing is not None and getattr(existing, "name", "") == s.cron:
             continue
         kwargs: dict[str, Any] = {"schedule_id": s.id, "settings": settings, "factory": factory}
+        try:
+            trigger = parse_cron(s.cron)
+        except ValueError:
+            log.error("schedule %s has an invalid cron %r; skipping it", s.id, s.cron)
+            continue
         scheduler.add_job(
             run_schedule,
-            trigger=parse_cron(s.cron),
+            trigger=trigger,
             id=job_id,
             name=s.cron,  # used above to detect a changed expression
             kwargs=kwargs,

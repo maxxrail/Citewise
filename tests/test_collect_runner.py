@@ -72,8 +72,14 @@ class HTTPError(Exception):
 class FakeEngine:
     """Fails `fail_times` times with `error`, then answers. Records every call."""
 
-    def __init__(self, name: str, *, fail_times: int = 0, error: Exception | None = None,
-                 cost: float | None = None) -> None:  # fmt: skip
+    def __init__(
+        self,
+        name: str,
+        *,
+        fail_times: int = 0,
+        error: Exception | None = None,
+        cost: float | None = None,
+    ) -> None:
         self.name = name
         self.model = "fake-model"
         self.fail_times = fail_times
@@ -222,8 +228,17 @@ def test_retry_fails_twice_then_succeeds(
     async def record_sleep(d: float) -> None:
         delays.append(d)
 
-    final = asyncio.run(execute_run(run_id, settings, scan_factory, engines={"anthropic": flaky},
-                                    sleep=record_sleep, use_cache=False, seed=1))  # fmt: skip
+    final = asyncio.run(
+        execute_run(
+            run_id,
+            settings,
+            scan_factory,
+            engines={"anthropic": flaky},
+            sleep=record_sleep,
+            use_cache=False,
+            seed=1,
+        )
+    )
     assert final.status == "completed"
     assert len(flaky.calls) == 3
     with scan_factory() as s:
@@ -248,8 +263,16 @@ def test_retry_only_retryable_errors_and_cap_attempts(
 ) -> None:
     run_id = _plan(scan_factory, settings, engines=["openai"], size=1)
     bad = FakeEngine("openai", fail_times=10**6, error=error)
-    final = asyncio.run(execute_run(run_id, settings, scan_factory, engines={"openai": bad},
-                                    sleep=_no_sleep, use_cache=False))  # fmt: skip
+    final = asyncio.run(
+        execute_run(
+            run_id,
+            settings,
+            scan_factory,
+            engines={"openai": bad},
+            sleep=_no_sleep,
+            use_cache=False,
+        )
+    )
     assert len(bad.calls) == expected_calls == min(expected_calls, settings.scan_max_attempts)
     assert (final.status, final.failed) == ("partial", 1)
     with scan_factory() as s:
@@ -354,8 +377,9 @@ def test_persona_system_prompt_is_stored_sent_and_part_of_the_cache_key(
         texts = list(s.scalars(select(Answer.text).where(Answer.run_id == local_id)))
     assert all("where you are" in t for t in texts)  # the mock engine honours the persona
     assert plain.status == local.status == "completed"
-    assert cache_key("openai", "m", None, "q", "2026-11-23") != cache_key(
-        "openai", "m", persona, "q", "2026-11-23"
+    day = "2026-11-23"
+    assert cache_key("mock", "openai", "m", None, "q", day) != cache_key(
+        "mock", "openai", "m", persona, "q", day
     )
 
 

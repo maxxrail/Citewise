@@ -37,6 +37,7 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("started_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("finished_at", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("heartbeat_at", sa.DateTime(timezone=True), nullable=True),
         sa.ForeignKeyConstraint(["brand_id"], ["brands.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
@@ -46,7 +47,8 @@ def upgrade() -> None:
         "answers",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("run_id", sa.Integer(), nullable=False),
-        sa.Column("prompt_id", sa.Integer(), nullable=False),
+        sa.Column("prompt_id", sa.Integer(), nullable=True),
+        sa.Column("prompt_text", sa.Text(), nullable=False),
         sa.Column("engine", sa.String(length=32), nullable=False),
         sa.Column("model", sa.String(length=128), nullable=False),
         sa.Column("ok", sa.Boolean(), nullable=False),
@@ -63,7 +65,7 @@ def upgrade() -> None:
         sa.Column("cached_from_id", sa.Integer(), nullable=True),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.ForeignKeyConstraint(["run_id"], ["runs.id"], ondelete="CASCADE"),
-        sa.ForeignKeyConstraint(["prompt_id"], ["prompts.id"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(["prompt_id"], ["prompts.id"], ondelete="SET NULL"),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("run_id", "prompt_id", "engine", name="uq_answers_run_prompt_engine"),
     )

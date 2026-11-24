@@ -70,10 +70,7 @@ def parse_openai(raw: dict[str, Any], model: str) -> EngineAnswer:
     ]
     searches = sum(1 for item in raw.get("output") or [] if item.get("type") == "web_search_call")
     usage = raw.get("usage") or {}
-    if raw.get("status") not in (None, "completed"):
-        # Partial answers would skew mention metrics; let the runner retry or record it.
-        raise EngineError(f"OpenAI response status {raw.get('status')}", retryable=True)
-    return EngineAnswer(
+    answer = EngineAnswer(
         text="".join(texts).strip(),
         citations=extract_url_citations(raw),
         model=model,
@@ -81,6 +78,16 @@ def parse_openai(raw: dict[str, Any], model: str) -> EngineAnswer:
         searches=searches,
         raw=raw,
     )
+    if raw.get("status") not in (None, "completed"):
+        # A partial answer would skew mention metrics. Hitting the token limit or the
+        # content filter happens again on retry, so only other reasons are retried.
+        reason = get_path(raw, "incomplete_details", "reason")
+        raise EngineError(
+            f"OpenAI response status {raw.get('status')} ({reason})",
+            retryable=reason not in ("max_output_tokens", "content_filter"),
+            answer=answer,
+        )
+    return answer
 
 
 class OpenAIEngine:
@@ -103,6 +110,9 @@ class OpenAIEngine:
         answer.latency_ms = _elapsed_ms(start)
         return answer
 
+    async def aclose(self) -> None:
+        await self.client.close()
+
 
 # ---------------------------------------------------------------- Anthropic
 
@@ -124,17 +134,12 @@ def parse_anthropic(raw: dict[str, Any], model: str) -> EngineAnswer:
             if isinstance(content, dict) and content.get("type") == "web_search_tool_result_error":
                 search_error = content.get("error_code")
     text = "".join(texts).strip()
-    if not text and search_error:
-        raise EngineError(
-            f"Anthropic web search error: {search_error}",
-            retryable=search_error in _ANTHROPIC_RETRYABLE_SEARCH_ERRORS,
-        )
     usage = raw.get("usage") or {}
     tokens_in = sum(
         usage.get(k, 0) or 0
         for k in ("input_tokens", "cache_read_input_tokens", "cache_creation_input_tokens")
     )
-    return EngineAnswer(
+    answer = EngineAnswer(
         text=text,
         citations=_dedupe(pairs),
         model=model,
@@ -142,6 +147,17 @@ def parse_anthropic(raw: dict[str, Any], model: str) -> EngineAnswer:
         searches=int(get_path(usage, "server_tool_use", "web_search_requests", default=0) or 0),
         raw=raw,
     )
+    if not text and search_error:
+        raise EngineError(
+            f"Anthropic web search error: {search_error}",
+            retryable=search_error in _ANTHROPIC_RETRYABLE_SEARCH_ERRORS,
+            answer=answer,
+        )
+    stop = raw.get("stop_reason")
+    if stop in ("max_tokens", "refusal", "pause_turn"):
+        # Truncated, refused, or still paused after MAX_PAUSE_TURNS: all repeat on retry.
+        raise EngineError(f"Anthropic stop_reason {stop}", retryable=False, answer=answer)
+    return answer
 
 
 class AnthropicEngine:
@@ -174,7 +190,7 @@ class AnthropicEngine:
         raw: dict[str, Any] = {}
         for _ in range(MAX_PAUSE_TURNS):
             response = await self.client.messages.create(messages=messages, **kwargs)  # type: ignore[arg-type]
-            raw = response.model_dump(mode="json")
+            raw = response.model_dump(mode="json", exclude_none=True)
             blocks += raw.get("content") or []
             for k, v in (raw.get("usage") or {}).items():  # accumulate billable usage
                 if isinstance(v, int):
@@ -191,6 +207,9 @@ class AnthropicEngine:
         answer = parse_anthropic({**raw, "content": blocks, "usage": usage}, self.model)
         answer.latency_ms = _elapsed_ms(start)
         return answer
+
+    async def aclose(self) -> None:
+        await self.client.close()
 
 
 # ---------------------------------------------------------------- Gemini
@@ -216,16 +235,13 @@ def parse_gemini(raw: dict[str, Any], model: str) -> EngineAnswer:
         (get_path(chunks[i], "web", "uri", default=""), get_path(chunks[i], "web", "title"))
         for i in order
     ]
-    if get_path(cand, "finish_reason|finishReason") == "MAX_TOKENS":
-        raise EngineError("Gemini answer hit max tokens", retryable=True)
-
     um = get_path(raw, "usage_metadata|usageMetadata", default={}) or {}
 
     def n(*keys: str) -> int:
         return sum(int(get_path(um, k, default=0) or 0) for k in keys)
 
     queries = get_path(meta, "web_search_queries|webSearchQueries", default=[]) or []
-    return EngineAnswer(
+    answer = EngineAnswer(
         text=text,
         citations=_dedupe(pairs),
         model=model,
@@ -242,6 +258,11 @@ def parse_gemini(raw: dict[str, Any], model: str) -> EngineAnswer:
         searches=len(queries),
         raw=raw,
     )
+    finish = get_path(cand, "finish_reason|finishReason")
+    if finish == "MAX_TOKENS" or (finish not in (None, "STOP") and not text):
+        # Truncated, or blocked (SAFETY, RECITATION, ...): the same thing happens on retry.
+        raise EngineError(f"Gemini finish_reason {finish}", retryable=False, answer=answer)
+    return answer
 
 
 class GeminiEngine:
@@ -273,6 +294,9 @@ class GeminiEngine:
         answer = parse_gemini(response.model_dump(mode="json", exclude_none=True), self.model)
         answer.latency_ms = _elapsed_ms(start)
         return answer
+
+    async def aclose(self) -> None:
+        await self.client.aio.aclose()
 
 
 # ---------------------------------------------------------------- Perplexity
@@ -343,6 +367,9 @@ class PerplexityEngine:
         answer = parse_perplexity(response.model_dump(mode="json"), self.model)
         answer.latency_ms = _elapsed_ms(start)
         return answer
+
+    async def aclose(self) -> None:
+        await self.client.close()
 
 
 def is_grounding_redirect(url: str) -> bool:

@@ -295,7 +295,11 @@ def reset(
         with session_scope() as session:
             b = resolve_brand(session, brand)
             n = len(brand_prompts(session, b.id))
-            if not yes and not typer.confirm(f"Delete {n} prompts and all topics for {b.name}?"):
+            question = (
+                f"Delete {n} prompts and all topics for {b.name}? Past scan answers are kept "
+                "(with the prompt text) but lose their link to the deleted prompts."
+            )
+            if not yes and not typer.confirm(question):
                 typer.echo("Nothing deleted.")
                 return
             session.execute(delete(Prompt).where(Prompt.brand_id == b.id))

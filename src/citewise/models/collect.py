@@ -32,8 +32,12 @@ class Run(Base):
     brand_id: Mapped[int] = mapped_column(
         ForeignKey("brands.id", ondelete="CASCADE"), nullable=False, index=True
     )
-    # pending -> running -> completed | failed | stopped_budget | interrupted
+    # pending -> running -> completed | partial | failed | stopped_budget | interrupted
     status: Mapped[str] = mapped_column(String(32), nullable=False, default="pending")
+    # Lease: a process executing the run refreshes this. Another process may only take the
+    # run over once it is older than the lease (or with --force), so two workers can't
+    # double-spend the same run.
+    heartbeat_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     engines: Mapped[list[str]] = mapped_column(JSON, nullable=False)
     models: Mapped[dict[str, str]] = mapped_column(JSON, nullable=False)  # engine -> model ID
     prompt_ids: Mapped[list[int]] = mapped_column(JSON, nullable=False)
@@ -70,9 +74,12 @@ class Answer(Base):
     run_id: Mapped[int] = mapped_column(
         ForeignKey("runs.id", ondelete="CASCADE"), nullable=False, index=True
     )
-    prompt_id: Mapped[int] = mapped_column(
-        ForeignKey("prompts.id", ondelete="CASCADE"), nullable=False, index=True
+    # SET NULL, not CASCADE: answers are the historical record (trends), so rebuilding a
+    # panel must not delete them. `prompt_text` keeps what was actually asked.
+    prompt_id: Mapped[int | None] = mapped_column(
+        ForeignKey("prompts.id", ondelete="SET NULL"), nullable=True, index=True
     )
+    prompt_text: Mapped[str] = mapped_column(Text, nullable=False, default="")
     engine: Mapped[str] = mapped_column(String(32), nullable=False)
     model: Mapped[str] = mapped_column(String(128), nullable=False)
     ok: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
