@@ -25,6 +25,7 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from rapidfuzz import fuzz
 
 from citewise.providers.base import Citation, Usage
 from citewise.providers.engines.base import EngineAnswer
@@ -114,16 +115,26 @@ class MockEngine:
         seed = hashlib.sha256(f"{self.name}|{self.model}|{system}|{prompt}".encode()).digest()
         return random.Random(int.from_bytes(seed[:8], "big"))
 
-    def _category(self, prompt: str) -> dict[str, Any]:
+    def _category(self, prompt: str) -> dict[str, Any] | None:
         words = _words(prompt)
         cats = self.world["categories"]
 
         def score(item: tuple[str, dict[str, Any]]) -> int:
             _name, cat = item
             brand_hits = sum(_mentions(prompt, _Brand(b, d)) for b, d in cat["brands"].items())
-            return 3 * brand_hits + sum(1 for k in cat["keywords"] if k in words)
+            # A misspelled brand ("taskflw review") still says which category it is about.
+            names = {
+                n.lower() for b, d in cat["brands"].items() for n in [b, *d.get("aliases", [])]
+            }
+            typo_hits = sum(
+                1
+                for w in words
+                if len(w) >= 5 and any(fuzz.ratio(w, n) >= 85 for n in names if len(n) >= 5)
+            )
+            return 3 * (brand_hits + typo_hits) + sum(1 for k in cat["keywords"] if k in words)
 
-        return max(cats.items(), key=score)[1]
+        best = max(cats.items(), key=score)
+        return best[1] if score(best) > 0 else None
 
     def _pick_brands(self, rng: random.Random, cat: dict[str, Any], prompt: str) -> list[_Brand]:
         brands = [_Brand(n, d) for n, d in cat["brands"].items()]
@@ -200,6 +211,15 @@ class MockEngine:
     def _simulate(self, prompt: str, system: str | None) -> tuple[str, list[Citation]]:
         rng = self._rng(prompt, system)
         cat = self._category(prompt)
+        if cat is None:
+            # Nothing ties the question to a category ("what is a raci chart"): like a real
+            # engine, explain the concept and name no brands. (Picking the first category
+            # here used to answer project-management questions with running shoes.)
+            return (
+                "Here's a short overview: it depends on your situation, but the core idea is "
+                "simple, and most guides recommend starting small and adjusting as you go.",
+                [],
+            )
         brands = self._pick_brands(rng, cat, prompt)
         named = [b for b in brands if _mentions(prompt, b)]
         citations = self._citations(rng, cat, brands)

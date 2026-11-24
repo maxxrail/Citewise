@@ -50,6 +50,8 @@ def main() -> None:
             for engine in ENGINES:
                 eng = MockEngine(engine, "mock", settings.fixtures_dir)
                 cat = eng._category(text)
+                if cat is None:  # generic answer that names no brands: nothing to label
+                    continue
                 named = [
                     _Brand(n, d) for n, d in cat["brands"].items() if _mentions(text, _Brand(n, d))
                 ]

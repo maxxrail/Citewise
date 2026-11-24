@@ -86,7 +86,7 @@ categories:
       - {domain: youtube.com, path: "/watch?v=abc123", title: "Running shoe review - YouTube"}
 
   project management software:
-    keywords: [project, task, tasks, pm, kanban, sprint, scrum, agile, gantt, roadmap, team, workflow, tool, software, app, jira, backlog, agency, client]
+    keywords: [project, task, tasks, pm, kanban, sprint, scrum, agile, gantt, roadmap, team, teams, workflow, tool, tools, software, app, jira, backlog, agency, client, clients, tracker, tracking, issue, issues, workspace, wiki, docs, users, seats, startup, startups, devs, developers, engineering, collaboration, planning, linear, saas, remote]
     brands:
       Taskflow:
         aliases: [TaskFlow, Taskflow PM, Task Flow, taskflow]
