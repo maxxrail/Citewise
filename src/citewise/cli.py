@@ -7,6 +7,7 @@ from pathlib import Path
 
 import typer
 
+from citewise.content_cli import content_app
 from citewise.core.config import get_settings
 from citewise.core.logging import configure_logging
 from citewise.extract_cli import eval_app, extract_app, metrics_app
@@ -23,6 +24,7 @@ app.add_typer(metrics_app, name="metrics")
 app.add_typer(eval_app, name="eval")
 app.add_typer(kb_app, name="kb")
 app.add_typer(factcheck_app, name="factcheck")
+app.add_typer(content_app, name="content")
 app.command()(worker)
 
 

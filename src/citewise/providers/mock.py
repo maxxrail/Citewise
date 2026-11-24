@@ -23,7 +23,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from citewise.providers import mock_extract, mock_factcheck
+from citewise.providers import mock_content, mock_extract, mock_factcheck
 from citewise.providers.base import (
     ChatResult,
     Citation,
@@ -140,6 +140,10 @@ class MockChatProvider:
             text = data.get("text", "")
             parsed = data.get("parsed")
             citations = [Citation(**c) for c in data.get("citations", [])]
+        elif json_schema is not None and purpose in mock_content.PURPOSES:
+            parsed = mock_content.simulate(purpose, messages)
+            text = json.dumps(parsed)
+            citations = []
         elif json_schema is not None and purpose in mock_factcheck.PURPOSES:
             parsed = mock_factcheck.simulate(purpose, messages)
             text = json.dumps(parsed)

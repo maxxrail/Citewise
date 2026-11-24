@@ -35,6 +35,7 @@ citewise = "citewise.cli:app"
 
 [dependency-groups]
 dev = [
+    "jsonschema>=4.23",
     "matplotlib>=3.8",
     "mypy>=1.11",
     "pre-commit>=3.8",
