@@ -4,7 +4,7 @@
 |---|---|---|---|
 | 0 | Foundations | ✅ done | 35 tests; all acceptance criteria verified 2026-11-23 |
 | 1 | Prompt panel and topic discovery | 🔁 reviewed | 121 tests; all acceptance criteria verified on Postgres + SQLite 2026-11-23 |
-| 2 | Multi-engine answer collection | ⬜ not started | |
+| 2 | Multi-engine answer collection | ✅ done | 210 tests; mock acceptance verified on Postgres + SQLite 2026-11-23; live check needs Maxx's key |
 | 3 | Extraction and visibility metrics | ⬜ not started | |
 | 4 | Brand knowledge base and FactCheck | ⬜ not started | |
 | 5 | Content agent | ⬜ not started | |
@@ -114,3 +114,52 @@ Cost is estimated as if the calls were live.
 **Not fixed (Low, documented):** the mock embedder tokenizes `[a-z0-9]` only, so mock-mode near-duplicate detection doesn't work for non-Latin text (exact duplicates still work). Live embeddings don't have this limit.
 
 Tests: `tests/test_panel_review.py` (+6; 127 total, all mock).
+
+### 2026-11-23 - Module 2 (Multi-engine answer collection)
+**Built:**
+- Engine adapters for OpenAI, Anthropic, Gemini and Perplexity, with web search on and API shapes checked against the official docs on 2026-11-23. Each has an offline-tested parser.
+- A deterministic mock answer simulator.
+- The scan runner: concurrency limits, rate limits, backoff, idempotent resumable runs with leases, a budget estimate plus per-call reservations, and a same-day cache.
+- Citation URL normalization.
+- `runs` / `answers` / `citations` / `schedules` tables and `llm_calls.run_id` (migration `0004`).
+- `citewise scan run|resume|status|list`, `schedule add|list|remove`, `worker`.
+- `POST /brands/{id}/runs`, `GET /runs/{id}`, `GET /brands/{id}/runs`.
+
+**Results (mock):** 50 prompts × 4 engines = 200 answers and 842 citations in 0.9 s (pytest, SQLite) and 2.7 s end to end (CLI, Postgres). Estimated $2.71, actual $1.89 (simulated, priced as live), cap $3. A same-day re-run comes from the cache for $0. Stridelab is mentioned in 21 (OpenAI) to 31 (Anthropic) of 50 answers, so engines differ as intended.
+
+**Decisions:** see the Module 2 section of docs/DECISIONS.md. Main ones:
+- docs-verified adapters (Gemini 3.5 Flash-Lite, Perplexity Agent API)
+- runner-owned retries
+- simulator mock
+- search fees in cost
+- reservations and leases
+- a mode-aware cache
+- SET NULL history
+- threadpool API scans
+
+**Code review:** fixed 4 High:
+- mock answers could be served to live runs from the cache;
+- no live progress for API runs;
+- billed failures were costed at $0;
+- concurrent executors could double-spend.
+
+Fixed 7 Medium:
+- `panel reset` would cascade-delete history on Postgres;
+- `gather` orphaned sibling calls;
+- API scans blocked the event loop;
+- the timeout cut off `pause_turn`;
+- empty or truncated answers were stored as ok;
+- resume progress was miscounted;
+- SDK clients were never closed.
+
+Plus 6 Lows. Regression tests are in `tests/test_collect_review.py`.
+
+**Known gaps:**
+- The live adapters are tested against docs-shaped payloads only. No real key was available in this session. The Gemini async call and the Perplexity `web_search` tool on `perplexity/sonar` aren't confirmed by docs examples.
+- Gemini's free search quota isn't modelled, so cost is over-estimated.
+- Ctrl+C on `citewise worker` doesn't stop runs already executing in its threads. Those runs stay resumable.
+- The mock simulator's claims about competitors are generic. Module 4's KB must stay consistent with Stridelab's and Taskflow's `claims` in `world.yaml`.
+
+**Maxx must do:**
+1. **Update `.env.example` and your `.env`:** `ENGINE_MODEL_GEMINI=gemini-3.5-flash-lite` and `ENGINE_MODEL_PERPLEXITY=perplexity/sonar`. Both files still pin the old IDs, which override the new defaults. The old `sonar` ID is refused in live mode.
+2. **Live acceptance check** (needs `OPENAI_API_KEY`, about $0.06): `CITEWISE_MODE=live`, then `uv run citewise scan run Stridelab --size 5 --engines openai --max-cost 1`. Optionally repeat with `--engines anthropic,gemini,perplexity` and their keys.

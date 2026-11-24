@@ -4,6 +4,26 @@ All notable changes to Citewise are documented here. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+## module-02 - Multi-engine answer collection (2026-11-23)
+
+### Added
+- Answer-engine adapters (`providers/engines/`): a normalized `EngineAnswer` and async adapter protocol, plus live adapters for OpenAI (Responses API + `web_search`), Anthropic (Messages + `web_search_20250305`, `pause_turn` continuation), Gemini (google-genai + Google Search grounding) and Perplexity (the `perplexity/sonar` model on its Agent API). Each has a pure, offline-tested `parse_*`. API shapes were checked against the official docs on 2026-11-23.
+- A deterministic mock answer simulator (`providers/engines/mock.py`, `tests/fixtures/engines/world.yaml`) with per-engine brand bias, sentiment, true and false brand claims, and realistic citations (OpenAI `utm_source`, Gemini grounding redirects).
+- Scan runner (`services/collect/runner.py`): per-engine semaphores and token buckets, full-jitter exponential backoff on 429/5xx/timeouts, idempotent upserts on `(run_id, prompt_id, engine)`, resumable frozen plans, run leases, a budget estimate plus per-call cost reservations, and a same-day answer cache.
+- Citation URL normalization (`services/collect/urls.py`).
+- Tables `runs`, `answers`, `citations`, `schedules`, and `llm_calls.run_id` (migration `0004`).
+- CLI `citewise scan run | resume | status | list`, `citewise schedule add | list | remove`, `citewise worker` (APScheduler 3.x).
+- API `POST /brands/{id}/runs`, `GET /runs/{id}`, `GET /brands/{id}/runs`.
+- Per-search fees in `pricing.py` (`SEARCH_FEE_USD`). Settings `SCAN_CONCURRENCY`, `SCAN_RATE_PER_S`, `SCAN_MAX_ATTEMPTS`, `SCAN_BACKOFF_BASE_S`, `SCAN_BACKOFF_MAX_S`, `SCAN_MAX_SEARCHES`, `SCAN_EST_TOKENS_IN`, `SCAN_EST_TOKENS_OUT`, `SCAN_EST_SEARCHES`.
+- Dependencies: `anthropic`, `google-genai`, `apscheduler>=3.10,<4`, `rich`.
+
+### Changed
+- Default `ENGINE_MODEL_GEMINI` is now `gemini-3.5-flash-lite`, because 3.1 Flash-Lite isn't listed as supporting Search grounding. Default `ENGINE_MODEL_PERPLEXITY` is now `perplexity/sonar`, because Sonar Chat Completions ended on 2026-09-27.
+- `CallRecorder.record` accepts `run_id` and an explicit `cost_usd`, so per-search fees are counted.
+
+### Fixed (code review, 2026-11-23)
+- The cache could serve mock answers to live runs. Run progress was only written at the end. Billed failures (timeouts, truncations, cancellations) were costed at $0. Two processes could execute one run. `panel reset` would have cascade-deleted historical answers. A bug in one task left sibling calls running. API scans blocked the event loop. Empty or truncated answers were stored as ok. Resume progress was miscounted. SDK clients were never closed.
+
 ## module-01 review (2026-11-23)
 
 ### Added

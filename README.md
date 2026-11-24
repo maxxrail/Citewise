@@ -76,9 +76,44 @@ The API serves the results at `GET /brands/{id}/prompts` (filters: `topic_id`, `
 
 Prompt templates live in `prompts/panel/*.v1.jinja`, and every generated prompt stores its template version. In mock mode the generated prompts, intent labels and topic labels come from hand-written sources in `tests/fixtures/panel_source/`. If you change a template, the mock embedder or the clustering, re-record the fixtures with `uv run python scripts/record_panel_fixtures.py`. A test fails if they go stale.
 
+### 5. Scan the answer engines (Module 2)
+
+A scan sends the brand's panel to ChatGPT (OpenAI), Claude (Anthropic), Gemini and Perplexity with web search on, and stores every answer, its citations, tokens, latency and cost. In mock mode the engines are deterministic simulators, so all of this works offline:
+
+```bash
+uv run citewise scan run Stridelab --engines openai,anthropic,gemini,perplexity --size 50 --max-cost 3
+uv run citewise scan list Stridelab           # recent runs: status, answers, cost
+uv run citewise scan status 1                 # one run
+uv run citewise scan resume 1                 # finish an interrupted / budget-stopped / partial run
+uv run citewise scan run Stridelab --size 20 --system "The user is in Toronto, Canada."   # persona / locale
+```
+
+- **Budget:** the run is refused before it starts if its estimate exceeds `--max-cost` (default `MAX_COST_USD_PER_RUN`). During the run it stops once actual spend reaches the cap, and `scan resume --max-cost <higher>` continues. Cost includes the engines' per-search fees, not just tokens.
+- **Safe to interrupt:** Ctrl+C (or a crash) leaves a resumable run. Resuming only asks the prompt × engine pairs that have no answer yet, so nothing is duplicated. A run can only be executed by one process at a time (`scan resume --force` takes over after a crash).
+- **Free re-asks:** asking the same question of the same engine on the same UTC day reuses the stored answer (`--no-cache` to re-ask).
+- **Smaller scans** (`--size 20`) use a stratified subset of the existing panel, so repeated scans keep asking the same questions.
+
+Recurring scans (weekly snapshots are what make trends possible):
+
+```bash
+uv run citewise schedule add Stridelab --cron "0 9 * * 1" --size 50 --max-cost 3   # Mondays 09:00 UTC
+uv run citewise schedule list
+uv run citewise worker                        # runs the schedules; picks up changes every minute
+```
+
+API: `POST /brands/{id}/runs` (body `{"engines": [...], "size": 50, "max_cost": 3, "system_prompt": null}`; 202, runs in the background; 422 with the estimate if it's over budget), `GET /runs/{id}` (status, progress, cost), `GET /brands/{id}/runs`.
+
 ### Live mode
 
-Set `CITEWISE_MODE=live` and `OPENAI_API_KEY` in `.env`. Only the OpenAI provider (chat + embeddings) is live so far. The other engines arrive in Module 2. A live `panel generate` + `cluster` for one brand is about 15 generation calls on `MODEL_GENERATE`, about 25 small classification and labeling calls on `MODEL_EXTRACT`, and 2 embedding batches. Check `llm_calls` for the exact cost. If the database already holds a mock-mode panel, run `citewise panel reset <brand>` first, because `generate` skips cells that already have prompts. Each stored embedding records its embedder (`mock:` vs `openai:`), and stale ones are re-embedded automatically. Model IDs are set per purpose (`MODEL_EXTRACT`, `MODEL_JUDGE`, `MODEL_GENERATE`, `MODEL_EMBED`) in `.env`.
+Set `CITEWISE_MODE=live` and `OPENAI_API_KEY` in `.env`. Each answer engine needs its own key (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `PERPLEXITY_API_KEY`); only the engines you scan need one. A live `panel generate` + `cluster` for one brand is about 15 generation calls on `MODEL_GENERATE`, about 25 small classification and labeling calls on `MODEL_EXTRACT`, and 2 embedding batches. Check `llm_calls` for the exact cost. If the database already holds a mock-mode panel, run `citewise panel reset <brand>` first, because `generate` skips cells that already have prompts. Each stored embedding records its embedder (`mock:` vs `openai:`), and stale ones are re-embedded automatically. **First live scan (end to end, about $0.06):**
+
+```powershell
+$env:CITEWISE_MODE="live"   # or set CITEWISE_MODE=live in .env; needs OPENAI_API_KEY
+uv run citewise scan run Stridelab --size 5 --engines openai --max-cost 1
+uv run citewise scan status <run id printed above>
+```
+
+Live answers are never served from mock answers cached the same day (the cache key includes the mode). Engine model IDs are `ENGINE_MODEL_OPENAI`, `ENGINE_MODEL_ANTHROPIC`, `ENGINE_MODEL_GEMINI` (default `gemini-3.5-flash-lite`) and `ENGINE_MODEL_PERPLEXITY` (default `perplexity/sonar`; the old `sonar` ID is refused because Perplexity retired it). Model IDs are set per purpose (`MODEL_EXTRACT`, `MODEL_JUDGE`, `MODEL_GENERATE`, `MODEL_EMBED`) in `.env`.
 
 ## How it's built
 
