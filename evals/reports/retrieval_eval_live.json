@@ -1,0 +1,111 @@
+{
+  "mode": "live",
+  "rows": 36,
+  "reviewed": 0,
+  "overall": {
+    "bm25": {
+      "n": 36,
+      "recall@1": 0.6944,
+      "recall@5": 0.8056,
+      "mrr": 0.7454
+    },
+    "dense": {
+      "n": 36,
+      "recall@1": 0.9167,
+      "recall@5": 1.0,
+      "mrr": 0.9583
+    },
+    "hybrid": {
+      "n": 36,
+      "recall@1": 0.8333,
+      "recall@5": 1.0,
+      "mrr": 0.9028
+    },
+    "hybrid+rerank": {
+      "n": 36,
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "mrr": 1.0
+    }
+  },
+  "by_style": {
+    "lexical": {
+      "bm25": {
+        "n": 12,
+        "recall@1": 0.8333,
+        "recall@5": 1.0,
+        "mrr": 0.9028
+      },
+      "dense": {
+        "n": 12,
+        "recall@1": 1.0,
+        "recall@5": 1.0,
+        "mrr": 1.0
+      },
+      "hybrid": {
+        "n": 12,
+        "recall@1": 0.9167,
+        "recall@5": 1.0,
+        "mrr": 0.9583
+      },
+      "hybrid+rerank": {
+        "n": 12,
+        "recall@1": 1.0,
+        "recall@5": 1.0,
+        "mrr": 1.0
+      }
+    },
+    "paraphrase": {
+      "bm25": {
+        "n": 12,
+        "recall@1": 0.25,
+        "recall@5": 0.4167,
+        "mrr": 0.3333
+      },
+      "dense": {
+        "n": 12,
+        "recall@1": 0.9167,
+        "recall@5": 1.0,
+        "mrr": 0.9583
+      },
+      "hybrid": {
+        "n": 12,
+        "recall@1": 0.5833,
+        "recall@5": 1.0,
+        "mrr": 0.75
+      },
+      "hybrid+rerank": {
+        "n": 12,
+        "recall@1": 1.0,
+        "recall@5": 1.0,
+        "mrr": 1.0
+      }
+    },
+    "claim": {
+      "bm25": {
+        "n": 12,
+        "recall@1": 1.0,
+        "recall@5": 1.0,
+        "mrr": 1.0
+      },
+      "dense": {
+        "n": 12,
+        "recall@1": 0.8333,
+        "recall@5": 1.0,
+        "mrr": 0.9167
+      },
+      "hybrid": {
+        "n": 12,
+        "recall@1": 1.0,
+        "recall@5": 1.0,
+        "mrr": 1.0
+      },
+      "hybrid+rerank": {
+        "n": 12,
+        "recall@1": 1.0,
+        "recall@5": 1.0,
+        "mrr": 1.0
+      }
+    }
+  }
+}

@@ -6,7 +6,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Repo root: src/citewise/core/config.py -> parents[3]
@@ -105,6 +105,10 @@ class Settings(BaseSettings):
     # Bootstrap resamples for metric confidence intervals.
     metrics_bootstrap: int = Field(default=1000, ge=100, le=5000)  # memory: n x prompts
 
+    # Knowledge base (Module 4): chunk size and overlap, in estimated tokens.
+    kb_chunk_tokens: int = Field(default=400, ge=50, le=2000)
+    kb_chunk_overlap: int = Field(default=60, ge=0, le=500)
+
     # Prompt panel (Module 1).
     panel_prompts_per_cell: int = Field(default=20, ge=1, le=50)  # per (intent x persona)
     panel_dedup_threshold: float = Field(default=0.92, gt=0, le=1)
@@ -122,6 +126,14 @@ class Settings(BaseSettings):
     fixtures_dir: Path = REPO_ROOT / "tests" / "fixtures"
     brands_dir: Path = REPO_ROOT / "data" / "brands"
     prompts_dir: Path = REPO_ROOT / "prompts"  # versioned prompt templates
+
+    @model_validator(mode="after")
+    def _overlap_below_chunk(self) -> Settings:
+        # Overlap >= chunk size re-emits nearly every sentence in every chunk: the KB
+        # (and its embedding cost) balloons several-fold without adding information.
+        if self.kb_chunk_overlap * 2 >= self.kb_chunk_tokens:
+            raise ValueError("KB_CHUNK_OVERLAP must be less than half of KB_CHUNK_TOKENS")
+        return self
 
     @property
     def is_mock(self) -> bool:

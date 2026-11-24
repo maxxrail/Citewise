@@ -6,7 +6,7 @@
 | 1 | Prompt panel and topic discovery | 🔁 reviewed | 121 tests; all acceptance criteria verified on Postgres + SQLite 2026-11-23 |
 | 2 | Multi-engine answer collection | 🔁 reviewed | 222 tests; acceptance re-verified on fresh Postgres + SQLite 2026-11-24; live check needs Maxx's key |
 | 3 | Extraction and visibility metrics | ✅ done | 295 tests (+6 Postgres-only, all pass on PG 16); acceptance verified on Postgres + SQLite 2026-11-24; golden set reviewed by Maxx (65/65) |
-| 4 | Brand knowledge base and FactCheck | ⬜ not started | |
+| 4 | Brand knowledge base and FactCheck | ✅ done | 366 tests; acceptance verified on Postgres + SQLite; live verifier 95.6% / 0% false contradictions on held-out claims; live Linear run done 2026-11-24 |
 | 5 | Content agent | ⬜ not started | |
 | 6 | Evals, experiments and observability | ⬜ not started | |
 | 7 | AI crawler analytics | ⬜ not started | |
@@ -310,3 +310,112 @@ Stridelab mock scan, per engine: mention rate 42% (OpenAI) to 60% (Anthropic), o
 - **The fictional brand is unknown to a real engine.** Asked about orthotics in Stridelab shoes, Claude searched and answered about a real company, Stride Soles (stridesoles.com). The extractor filed it as an emerging company and didn't credit it to Stridelab. Stridelab's live mention rate was 20% (CI 0–62%, n=5). **For meaningful live visibility numbers, add a real brand.** The fictional brands stay for deterministic mock demos.
 - **The rest of the data looks right.** 21 real citations; real rankings (Brooks #1 and Hoka #2 for plantar fasciitis); 15 untracked companies surfaced as emerging (Altra, Salomon, Topo, Vivobarefoot, ...).
 - **Searches dominate cost.** Answers that searched cost about $0.012–0.024; the one that didn't search cost $0.0007.
+
+### 2026-11-24 - Module 4 (Brand knowledge base and FactCheck)
+**Built:**
+- **Knowledge base** (`services/kb/`):
+  - Ingest of Markdown, TXT and PDF with front matter, and of URLs in live mode only through an SSRF-safe, robots-respecting, size-capped fetcher.
+  - Sentence-aware ~400-token chunks with overlap and stable `chunk_key`s.
+  - Idempotent re-ingest that reports orphaned docs.
+  - Hybrid retrieval: BM25 plus dense, fused with RRF (k=60), with an optional validated LLM re-rank.
+- **FactCheck** (`services/factcheck/`):
+  - Claim extraction: each claim's span must be in the redacted answer, and the claim must match its span.
+  - Verification: never `contradicted` (or `supported`) without a substantial verbatim quote from a retrieved chunk's body that relates to the claim. Otherwise the verdict is downgraded and the downgrade recorded.
+  - Source tracing: an inline marker in the claim's sentence, then title overlap with brand terms excluded, then (live, opt-in) page text. Perplexity markers are mapped by URL.
+  - Idempotent `factcheck run`, versioned with a KB fingerprint. A failed re-check keeps the old claims.
+  - Per-engine sentiment narratives.
+- **Tables:** `kb_docs`, `kb_chunks`, `answer_factchecks` and `claims` (migration `0006`).
+- **KBs:** for Stridelab and Taskflow. The mock world plants 8 wrong claims, each cited inline to a culprit page.
+- **Linear** as the first real brand, with a KB from its official pages (2026-11-24). "Linear" is treated as an ambiguous word.
+- **Evals:**
+  - Retrieval: `kb_qa.jsonl`, 36 queries in 3 styles.
+  - Held-out verifier: `factcheck_claims.jsonl`, 45 claims written without seeing the rules.
+  - `citewise eval retrieval | factcheck`.
+- **CLI:**
+  - `kb ingest | search`;
+  - `factcheck run [--rerank] [--fetch-sources] | show | narrative`.
+- **API:** `GET /brands/{id}/factcheck`.
+
+**Acceptance (mock, Postgres and SQLite):**
+- **Planted claims:** at least 5 planted wrong claims, at least 4 flagged with evidence. Result: 8 of 8 planted claims flagged every time they appear, each with the refuting KB quote (pinned by a test) and its culprit page (inline marker, 0.95).
+- **Retrieval table:** printed. With the mock embedder, hybrid has the best recall@5 (83.3% vs 80.6% and 80.6%). With the real local embeddings (`retrieval_eval_local.md`), dense and hybrid tie at 100% recall@5; dense has the higher MRR (0.958 vs 0.903) and hybrid is best on claim queries (1.000 vs 0.917). DECISIONS explains why hybrid stays the FactCheck default.
+- **Contradicted claims:** each shows the claim, the KB quote, the engine and the likely source URL (`factcheck show`, API).
+- **Tests:** chunker boundaries, RRF math and verdict-schema validation.
+- **Postgres run end to end:** `kb ingest`, mock scan, extract, factcheck run (137 answers, 66 claims, 23 contradicted, all traced). A re-run checked 0.
+
+**Honest numbers:**
+- The simulated verifier is 8/8 on the planted claims, but its rules were written for those shapes.
+- On the held-out claims it scores 37.8% accuracy with a 29.6% false-contradiction rate (`evals/reports/factcheck_eval.md`). That is the number to beat, and only the live LLM verifier can say how good FactCheck is.
+
+**Code review (code-reviewer agent):**
+- **3 High, all fixed** (false-contradiction paths):
+  - another brand's product names leaked into the claim extractor;
+  - the fuzzy span check accepted changed numbers;
+  - trivial, heading or stitched quotes were accepted.
+- **6 Medium, all fixed:**
+  - the mock accuracy was implied rather than measured (now a held-out eval);
+  - weak live tracing;
+  - the KB was missing from idempotency, and `--force` could delete good results;
+  - SSRF on URL ingest;
+  - docs not written;
+  - claims weren't tied to their span.
+- **Lows fixed:**
+  - overlap validator;
+  - duplicate slugs;
+  - BOM handling;
+  - front-matter type check;
+  - PDF caps;
+  - orphaned-doc report;
+  - budget caps on narrative and re-rank;
+  - embedding space checked up front;
+  - eval chunk settings;
+  - empty clusters.
+- Regression tests: `tests/test_factcheck_review.py`.
+
+**Known gaps:**
+- The live verifier's held-out score, a live Linear scan and fact-check, and live re-rank numbers. All need Maxx's OK to spend (about $1.5; see below).
+- The golden sets `kb_qa.jsonl` and `factcheck_claims.jsonl` are `reviewed: false`.
+- The Linear KB is real data: spot-check its prices and limits, because they change.
+- Source tracing for OpenAI and Anthropic answers relies on titles (and page text when `--fetch-sources` is on). Their annotation offsets aren't stored, so markers aren't available.
+- Two concurrent fact-check runs of the same run both pay. They are row-safe.
+
+**Maxx must do:**
+1. Review the two new golden sets (`evals/datasets/golden/kb_qa.jsonl`, `factcheck_claims.jsonl`). The agents' least-sure rows are listed in the golden README.
+2. Optionally add `KB_CHUNK_TOKENS=400` and `KB_CHUNK_OVERLAP=60` to `.env.example`.
+3. Approve, or not, the live Linear run and the live evals.
+
+### 2026-11-24 - Module 4 live run (Claude, about $0.90)
+**Held-out verifier** (`evals/reports/factcheck_eval_live.md`, 45 claims):
+
+| Verifier | Accuracy | False contradictions | Precision / recall on wrong claims |
+|---|---|---|---|
+| Simulated (mock) | 37.8% | 29.6% | 38% / 28% |
+| claude-haiku-5-5, verify.v1 (2 runs) | 93.3–95.6% | 0–3.7% | n/a |
+| claude-haiku-5-5, verify.v2 | **95.6%** | **0%** | **100% / 100%** |
+
+**Retrieval** (`retrieval_eval_live.md`, real local embeddings plus Claude re-rank):
+
+| Method | Recall@1 | MRR |
+|---|---|---|
+| BM25 | 0.694 | 0.745 |
+| Dense | 0.917 | 0.958 |
+| Hybrid | 0.833 | 0.903 |
+| **Hybrid + re-rank** | **1.000** | **1.000** |
+
+**Linear end to end:**
+- **KB ingest** (free).
+- **Panel:** 300 Opus-generated prompts, deduplicated to 262, 6 topics ($0.31). Three topics overlap; real prompts cluster less cleanly.
+- **Scan:** 20 prompts on Claude, $0.31 against a $0.31 estimate. Linear is mentioned in 70% of answers (CI 48–90%) with a Visibility Score of 60.2.
+- **Extraction:** $0.02.
+- **Fact-check** with re-rank and fetched sources ($0.10): 133 claims, 6 contradicted. 5 are clear errors and 1 is debatable, all traced to third-party pages.
+- **Narrative:** "fast tool for engineering teams" vs "opinionated, engineering-focused".
+
+**Two lessons found live and fixed:**
+1. The verdict-before-rationale schema let the model contradict its own reasoning. Fixed in verify.v2.
+2. The review's word-overlap quote rule discarded correct verdicts. Dropped.
+
+See DECISIONS, "Module 4 live run".
+
+**Still for Maxx:**
+- Review `kb_qa.jsonl` and `factcheck_claims.jsonl`.
+- Spot-check `data/kb/linear/`.

@@ -1,0 +1,39 @@
+{
+  "mode": "live",
+  "rows": 45,
+  "reviewed": 0,
+  "accuracy": 0.9556,
+  "false_contradiction_rate": 0.0,
+  "evidence_hit_rate": 1.0,
+  "per_verdict": {
+    "supported": {
+      "precision": 1.0,
+      "recall": 0.8667
+    },
+    "contradicted": {
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "not_in_kb": {
+      "precision": 0.8571,
+      "recall": 1.0
+    }
+  },
+  "confusion": {
+    "supported": {
+      "supported": 13,
+      "not_in_kb": 2
+    },
+    "contradicted": {
+      "contradicted": 18
+    },
+    "not_in_kb": {
+      "not_in_kb": 12
+    }
+  },
+  "llm_failed": 0,
+  "errors": [
+    "fc-stridelab-08: expected supported, got not_in_kb (paraphrase_true): If you're unsure about the fit, you can run in a pair for roughly two months and still send them back at no cost if you live in the US.",
+    "fc-linear-10: expected supported, got not_in_kb (comparison_true): On yearly billing, Linear Business costs $6 more per user per month than Basic."
+  ]
+}

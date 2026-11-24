@@ -1,0 +1,20 @@
+# Real brand (Module 4): Linear, the issue-tracking / project-management tool (linear.app).
+# Its knowledge base (data/kb/linear/) is built only from Linear's official public pages,
+# dated 2026-11-24. Facts change: re-check them before relying on a FactCheck verdict.
+name: Linear
+domain: linear.app
+category: issue tracking and project management software
+aliases:
+  - Linear App
+  - linear.app
+competitors:
+  - Jira
+  - Asana
+  - ClickUp
+  - Notion
+  - Shortcut
+  - GitHub Issues
+personas:
+  - engineering manager
+  - startup founder
+  - product manager

@@ -121,6 +121,28 @@ uv run citewise eval extract                  # P/R/F1, rank accuracy, sentiment
 
 API: `GET /brands/{id}/metrics` (query: `run_id`, `engine`, `topic`, `intent`, `by=engine|topic|intent|run|all`; 409 until a run is extracted) and `GET /brands/{id}/competitors`.
 
+### 7. Knowledge base and FactCheck (Module 4)
+
+Each brand keeps a **source of truth** (`data/kb/<brand>/*.md`, with `title`, `category`, `as_of` and `source_url` front matter). FactCheck compares what the engines claim about the brand against it and points to the cited page that probably caused each wrong claim:
+
+```bash
+uv run citewise kb ingest Taskflow data/kb/taskflow      # chunk + embed; re-runnable (also .txt/.pdf, or a URL in live mode)
+uv run citewise kb search Taskflow "Jira importer"       # debug retrieval: BM25 + dense, fused (RRF); --rerank for an LLM re-rank
+uv run citewise extract run <run id>                     # FactCheck uses Module 3's brand mentions
+uv run citewise factcheck run <run id>                   # claims -> KB evidence -> verdict -> likely source
+uv run citewise factcheck show Taskflow                  # each wrong claim: KB quote, engine, likely source URL
+uv run citewise factcheck narrative Taskflow             # per engine: top positive and negative themes
+uv run citewise eval retrieval                           # recall@1/@5 + MRR: BM25 vs dense vs hybrid -> evals/reports/
+```
+
+- **Verdicts:** `supported`, `contradicted` or `not_in_kb`. A verdict is never `contradicted` (or `supported`) without a verbatim quote from a retrieved KB chunk; otherwise it is downgraded and the downgrade is recorded.
+- **Claims** must appear in the answer itself. Injected instructions, hidden HTML and planted JSON are stripped first, as in Module 3.
+- **Source tracing** uses the inline citation marker next to the claim, the citation's title and, in live mode, the cited page's text.
+- **Mock mode** plants 8 wrong claims (wrong prices, a "discontinued" product, "no Jira import", ...) in the simulated answers, each cited to the page that caused it. All 8 are flagged, each with the refuting KB quote and its source. The verifier is a simulated reader in mock mode, so for real-model numbers run with `CITEWISE_MODE=live`.
+- **Linear** is a real brand with a KB built only from its official pages (dated 2026-11-24). Its facts change, so re-check `data/kb/linear/` before trusting a verdict.
+
+API: `GET /brands/{id}/factcheck` (query: `run_id`, `verdict=contradicted|supported|not_in_kb|all`; 409 until a run is checked).
+
 ### Live mode
 
 Set `CITEWISE_MODE=live` and `ANTHROPIC_API_KEY` in `.env`. That one key runs everything Citewise does itself:

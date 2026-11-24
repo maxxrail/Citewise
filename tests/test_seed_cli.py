@@ -21,7 +21,7 @@ def test_cli_help_lists_seed() -> None:
 
 def test_example_brand_files_are_valid(settings: Settings) -> None:
     brands = load_brand_files(settings.brands_dir)
-    assert {b.name for b in brands} == {"Taskflow", "Stridelab"}
+    assert {b.name for b in brands} == {"Taskflow", "Stridelab", "Linear"}
     for b in brands:
         assert 4 <= len(b.competitors) <= 6
         assert b.aliases
@@ -29,11 +29,11 @@ def test_example_brand_files_are_valid(settings: Settings) -> None:
 
 
 def test_seed_is_idempotent(db: Session, settings: Settings) -> None:
-    assert seed_brands(db, settings.brands_dir) == (2, 0)
+    assert seed_brands(db, settings.brands_dir) == (3, 0)
     db.commit()
-    assert seed_brands(db, settings.brands_dir) == (0, 2)
+    assert seed_brands(db, settings.brands_dir) == (0, 3)
     db.commit()
-    assert sorted(b.name for b in list_brands(db)) == ["Stridelab", "Taskflow"]
+    assert sorted(b.name for b in list_brands(db)) == ["Linear", "Stridelab", "Taskflow"]
 
 
 def test_alembic_upgrade_and_downgrade_on_sqlite(tmp_path: Path) -> None:
