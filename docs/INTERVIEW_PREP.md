@@ -23,3 +23,27 @@ Partly, and the code is explicit about it. `eval-intent` reports two separate th
 
 **3. "What happens to a long run when the provider rate-limits you halfway through?"**
 It degrades instead of dying. `complete_structured` treats a provider exception after the SDK's retries the same as an invalid output: it retries once, then returns `None`. The tracker has already written an `ok=False` `llm_calls` row. Callers fall back. A generation cell is skipped and retried on the next run, because `generate` only fills cells that have no prompts. A topic gets a term-based label. An intent goes to the embedding classifier, and the LLM retries it on the next `cluster`. A per-command spend cap refuses further calls once reached, with the same skip semantics. All LLM calls in `cluster` happen before any DB write, so nothing paid for is lost to a rollback and no lock is held across model latency. An unpriced model is the one error that still fails loudly, before any money is spent.
+
+## Module 2 - Multi-engine answer collection
+
+**1. "How do you guarantee a scan never spends more than `--max-cost`, with four engines running calls concurrently?"**
+There are three layers.
+- **Before the run:** `create_run` estimates the cost (tokens at model price plus expected per-search fees) and refuses to create the run if the estimate exceeds the cap. Nothing is written or spent.
+- **During the run:** each call *reserves* its estimate before it is sent, and settles to the real cost afterwards. Concurrent calls therefore can't collectively overshoot the cap. Each call's own overshoot is bounded too, because every engine has an output-token cap (`SCAN_MAX_OUTPUT_TOKENS`). Before the review, three engines had no cap, so one reasoning-heavy answer could cost 100× its estimate.
+- **Accounting:** billed failures count. A truncated response is charged what it reports. A timeout, from asyncio or the SDK, is charged its estimate, because the provider may still finish and bill it. The run's cost is `SUM(llm_calls.cost_usd)`, so resume starts from what was really logged rather than a cached figure.
+
+The remaining error is estimate-vs-actual on in-flight calls: at most concurrency × engines × (max call cost − estimate). The overshoot test asserts that bound.
+
+**2. "Kill the process halfway through. What happens, and how do you make sure the resume doesn't duplicate work or spend twice?"**
+- **No duplicate rows:** the plan (prompt ids, engines, model IDs, system prompt) is frozen on the run row. `answers` has a unique `(run_id, prompt_id, engine)`, and the upsert never overwrites an ok answer. Resume asks only for pairs without an ok answer and updates failed rows in place.
+- **No double spend:** a lease. Starting a run is an atomic conditional `UPDATE` on `runs.heartbeat_at`. A background task refreshes it every 10 s, and a second executor is refused while it is fresh.
+- **What the review found:** the heartbeat used to move only when an answer landed. A slow Anthropic answer (up to 190 s), or a provider timing out every call, made a live run look dead after 2 minutes, so a second `scan resume` could take it over and pay again. The fix is covered by a scaled-down test that tries to steal the lease mid-call.
+- **On Ctrl+C:** the run is marked `interrupted`, and in-flight calls are logged at their estimate.
+
+**3. "Why did you build a simulator for mock mode instead of recording real answers, and how do you keep the live path honest?"**
+- **Why a simulator:** 50 prompts × 4 engines × 2 brands is 400 answers per scan. Hand-writing or recording them would make Module 3's metrics flat or stale. The simulator is deterministic over a fictional world file, with per-engine brand bias, true and false claims, and provider-shaped citations (OpenAI `utm_source`, Gemini redirect URLs). Share of voice therefore differs by engine, and Module 4 has false claims to catch.
+- **Keeping the live path honest:**
+  - Each adapter is split into an SDK call and a pure `parse_*`, which is tested offline against payloads shaped like the providers' docs (checked on a date noted in the code).
+  - Mock and live never mix. The cache key includes the mode, and the runner refuses a run from the other mode.
+  - Unpriced models are refused before any spend.
+  - The one remaining gap is documented: the adapters still need a 5-prompt live smoke run with real keys (about $0.06).

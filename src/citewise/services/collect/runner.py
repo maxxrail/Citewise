@@ -6,9 +6,10 @@ Guarantees:
   updated in place.
 - Resumable: the plan (prompt ids + texts, engines, models) is frozen on the run, so a run
   killed halfway (Ctrl+C, crash, reboot) finishes exactly the planned work.
-- One executor at a time: starting a run takes a lease (`runs.heartbeat_at`, refreshed as
-  answers land). A second process can't execute the same run while the lease is fresh, so
-  two terminals resuming one run can't double-spend it. `force=True` takes over a lease,
+- One executor at a time: starting a run takes a lease (`runs.heartbeat_at`, refreshed by a
+  background task every HEARTBEAT_EVERY_S, so slow calls can't let it lapse). A second
+  process can't execute the same run while the lease is fresh, so two terminals resuming
+  one run can't double-spend it. `force=True` takes over a lease,
   e.g. after a crash, without waiting for it to expire.
 - Bounded spend: the run is refused before it starts if the estimate exceeds the cap.
   During the run, each call *reserves* its estimated cost before it is sent, so in-flight
@@ -53,6 +54,7 @@ from citewise.providers.engines.base import (
     EngineError,
     close_adapter,
     is_retryable,
+    is_timeout,
 )
 from citewise.providers.engines.live import MAX_PAUSE_TURNS, is_grounding_redirect
 from citewise.providers.engines.registry import engine_model, get_engine
@@ -65,7 +67,8 @@ log = logging.getLogger(__name__)
 
 PURPOSE = "scan.answer"
 LEASE = timedelta(minutes=2)  # a heartbeat older than this means the executor is gone
-HEARTBEAT_EVERY_S = 10.0
+HEARTBEAT_EVERY_S = 10.0  # well inside LEASE, even with a slow DB
+DOMAIN_MAX = 255  # citations.domain column width
 PROGRESS_EVERY_S = 0.5  # run-row progress refresh; the final refresh is always exact
 ProgressCallback = Callable[[Run], None]
 Sleep = Callable[[float], Awaitable[None]]
@@ -290,7 +293,7 @@ def _store_answer(
                             position=c.position,
                             url=c.url,
                             normalized_url=normalize_url(c.url),
-                            domain=citation_domain(c.url, c.title),
+                            domain=citation_domain(c.url, c.title)[:DOMAIN_MAX],
                             title=c.title,
                         )
                     )
@@ -344,6 +347,24 @@ def _refresh(factory: sessionmaker[Session], run_id: int, *, heartbeat: bool = T
         return run
 
 
+def _beat(factory: sessionmaker[Session], run_id: int) -> None:
+    with factory() as session:
+        session.execute(update(Run).where(Run.id == run_id).values(heartbeat_at=datetime.now(UTC)))
+        session.commit()
+
+
+async def _heartbeat(factory: sessionmaker[Session], run_id: int) -> None:
+    """Keep the lease fresh for as long as the executor is alive, independent of answers
+    landing: a stretch of slow or timing-out calls (Anthropic can take
+    llm_timeout_s * MAX_PAUSE_TURNS per answer) must not look like a dead executor."""
+    while True:
+        await asyncio.sleep(HEARTBEAT_EVERY_S)
+        try:
+            _beat(factory, run_id)
+        except Exception:  # a DB blip must not kill the run; the next beat retries
+            log.warning("heartbeat for run %s failed", run_id, exc_info=True)
+
+
 def _claim(factory: sessionmaker[Session], run_id: int, force: bool) -> bool:
     """Atomically take the run's lease. False if another live executor holds it."""
     now = datetime.now(UTC)
@@ -384,6 +405,12 @@ async def execute_run(
         run = session.get(Run, run_id)
         if run is None:
             raise ValueError(f"No run {run_id}")
+        if run.mode != settings.citewise_mode:
+            # The cache key carries the run's mode: executing a live run with mock adapters
+            # (or the reverse) would file simulated answers under the other mode's key.
+            raise ValueError(
+                f"run {run_id} is a {run.mode} run; execute it with CITEWISE_MODE={run.mode}"
+            )
         if run.status == "completed":
             session.expunge(run)
             return run
@@ -392,35 +419,128 @@ async def execute_run(
             f"run {run_id} is being executed by another process (heartbeat within "
             f"{int(LEASE.total_seconds())}s). Wait, or pass --force if that process is gone."
         )
-    with factory() as session:
-        run = session.get(Run, run_id)
-        assert run is not None
-        prompts = {
-            p.id: p.text
-            for p in session.scalars(select(Prompt).where(Prompt.id.in_(run.prompt_ids)))
-        }
-        done_pairs = {
-            (a.prompt_id, a.engine)
-            for a in session.scalars(select(Answer).where(Answer.run_id == run_id, Answer.ok))
-        }
-        run.started_at = run.started_at or datetime.now(UTC)
-        session.commit()
-        plan_engines, models, system = list(run.engines), dict(run.models), run.system_prompt
-        cap, spent, mode = run.max_cost_usd, run.cost_usd, run.mode
-        planned = list(run.prompt_ids)
-    missing = [pid for pid in planned if pid not in prompts]
-
+    # From here on the run is ours: every exit path, including a setup failure such as a
+    # missing API key, must go through the `finally` below that records the outcome and
+    # releases the lease. Otherwise the run reads "running" forever.
     owned = engines is None  # close only the clients we created
-    adapters = engines or {e: get_engine(e, settings) for e in plan_engines}
-    todo = [
-        (pid, e)
-        for pid in planned
-        if pid in prompts
-        for e in plan_engines
-        if (pid, e) not in done_pairs
-    ]
+    adapters: dict[str, EngineAdapter] = {}
+    missing: list[int] = []
+    budget = _Budget(cap=0.0, spent=0.0)
+    status, error = "completed", None
+    beat: asyncio.Task[None] | None = None
+    try:
+        with factory() as session:
+            run = session.get(Run, run_id)
+            assert run is not None
+            prompts = {
+                p.id: p.text
+                for p in session.scalars(select(Prompt).where(Prompt.id.in_(run.prompt_ids)))
+            }
+            done_pairs = {
+                (a.prompt_id, a.engine)
+                for a in session.scalars(select(Answer).where(Answer.run_id == run_id, Answer.ok))
+            }
+            run.started_at = run.started_at or datetime.now(UTC)
+            session.commit()
+            plan_engines, models, system = list(run.engines), dict(run.models), run.system_prompt
+            cap, mode = run.max_cost_usd, run.mode
+            planned = list(run.prompt_ids)
+        # Spend so far, from llm_calls rather than the run row: after a hard kill the row's
+        # cost can lag the last few calls.
+        spent = _refresh(factory, run_id).cost_usd
+        missing = [pid for pid in planned if pid not in prompts]
+        budget = _Budget(cap=cap, spent=spent)
+        beat = asyncio.create_task(_heartbeat(factory, run_id))
+        for e in plan_engines:
+            adapters[e] = engines[e] if engines is not None else get_engine(e, settings)
+        await _execute(
+            run_id,
+            settings,
+            factory,
+            todo=[
+                (pid, e)
+                for pid in planned
+                if pid in prompts
+                for e in plan_engines
+                if (pid, e) not in done_pairs
+            ],
+            prompts=prompts,
+            adapters=adapters,
+            models=models,
+            system=system,
+            mode=mode,
+            budget=budget,
+            on_progress=on_progress,
+            sleep=sleep,
+            use_cache=use_cache,
+            seed=seed,
+        )
+    except asyncio.CancelledError:
+        status, error = "interrupted", "run was interrupted; continue with `citewise scan resume`"
+        raise
+    except Exception as exc:  # a bug or a setup failure, not a provider error (caught per call)
+        status, error = "failed", f"{type(exc).__name__}: {exc}"
+        log.exception("scan run %s failed", run_id)
+        raise
+    finally:
+        if beat is not None:
+            beat.cancel()
+        if owned:
+            for adapter in adapters.values():
+                try:
+                    await close_adapter(adapter)
+                except Exception:  # closing must never mask the run's own outcome
+                    log.warning("closing %s client failed", adapter.name, exc_info=True)
+        final = _refresh(factory, run_id, heartbeat=False)
+        if status == "completed":
+            if final.done < final.total and budget.stopped:
+                status = "stopped_budget"
+                error = (
+                    f"stopped at ${final.cost_usd:.4f} of ${budget.cap:.2f}; "
+                    "raise --max-cost and run `citewise scan resume`"
+                )
+            elif final.failed or missing:
+                status = "partial"
+                parts = []
+                if final.failed:
+                    parts.append(
+                        f"{final.failed} answers failed after retries (`scan resume` retries them)"
+                    )
+                if missing:
+                    parts.append(f"{len(missing)} planned prompts were deleted and can't be asked")
+                error = "; ".join(parts)
+        with factory() as session:
+            run_row = session.get(Run, run_id)
+            assert run_row is not None
+            run_row.status, run_row.error = status, error
+            run_row.finished_at = datetime.now(UTC)
+            run_row.heartbeat_at = None  # release the lease
+            session.commit()
+            session.expunge(run_row)
+    return run_row
+
+
+async def _execute(
+    run_id: int,
+    settings: Settings,
+    factory: sessionmaker[Session],
+    *,
+    todo: list[tuple[int, str]],
+    prompts: dict[int, str],
+    adapters: dict[str, EngineAdapter],
+    models: dict[str, str],
+    system: str | None,
+    mode: str,
+    budget: _Budget,
+    on_progress: ProgressCallback | None,
+    sleep: Sleep,
+    use_cache: bool,
+    seed: int | None,
+) -> None:
+    """Ask every (prompt, engine) pair in `todo`. Provider errors are handled per call; any
+    other exception cancels the siblings and propagates to `execute_run`."""
+    plan_engines = list(adapters)
     day = datetime.now(UTC).date().isoformat()
-    budget = _Budget(cap=cap, spent=spent)
     recorder = CallRecorder(factory)
     sems = {e: asyncio.Semaphore(settings.scan_concurrency) for e in plan_engines}
     limiters = {
@@ -432,7 +552,6 @@ async def execute_run(
     est = {e: estimate_call_cost(e, models[e], settings) for e in plan_engines}
     # Anthropic may need several requests per answer (pause_turn), each with the SDK timeout.
     call_timeout = settings.llm_timeout_s * MAX_PAUSE_TURNS + 10
-    last_beat = [time.monotonic()]
     last_report = [0.0]  # report the first answer straight away
 
     def report() -> None:
@@ -442,10 +561,7 @@ async def execute_run(
         if now - last_report[0] < PROGRESS_EVERY_S:
             return
         last_report[0] = now
-        beat = now - last_beat[0] > HEARTBEAT_EVERY_S
-        if beat:
-            last_beat[0] = now
-        row = _refresh(factory, run_id, heartbeat=beat)
+        row = _refresh(factory, run_id, heartbeat=False)
         if on_progress is not None:
             on_progress(row)
 
@@ -498,7 +614,7 @@ async def execute_run(
                     billed = exc.answer if isinstance(exc, EngineError) else None
                     if billed is not None:
                         cost, usage = answer_cost(engine, model, billed), billed.usage
-                    elif isinstance(exc, TimeoutError):
+                    elif is_timeout(exc):  # asyncio's or the SDK's (APITimeoutError)
                         cost, usage = est[engine], Usage()  # sent, so assume it was billed
                     else:
                         cost, usage = 0.0, Usage()  # refused before any work was done
@@ -521,51 +637,8 @@ async def execute_run(
                 report()
                 return
 
-    status, error = "completed", None
-    try:
-        # TaskGroup: if one task hits a bug, the siblings are cancelled instead of
-        # carrying on spending after the run was marked failed.
-        async with asyncio.TaskGroup() as tg:
-            for pid, e in todo:
-                tg.create_task(work(pid, e))
-    except asyncio.CancelledError:
-        status, error = "interrupted", "run was interrupted; continue with `citewise scan resume`"
-        raise
-    except Exception as exc:  # a bug, not a provider error (those are caught per call)
-        status, error = "failed", f"{type(exc).__name__}: {exc}"
-        log.exception("scan run %s failed", run_id)
-        raise
-    finally:
-        if owned:
-            for adapter in adapters.values():
-                try:
-                    await close_adapter(adapter)
-                except Exception:  # closing must never mask the run's own outcome
-                    log.warning("closing %s client failed", adapter.name, exc_info=True)
-        final = _refresh(factory, run_id, heartbeat=False)
-        if status == "completed":
-            if final.done < final.total and budget.stopped:
-                status = "stopped_budget"
-                error = (
-                    f"stopped at ${final.cost_usd:.4f} of ${cap:.2f}; "
-                    "raise --max-cost and run `citewise scan resume`"
-                )
-            elif final.failed or missing:
-                status = "partial"
-                parts = []
-                if final.failed:
-                    parts.append(
-                        f"{final.failed} answers failed after retries (`scan resume` retries them)"
-                    )
-                if missing:
-                    parts.append(f"{len(missing)} planned prompts were deleted and can't be asked")
-                error = "; ".join(parts)
-        with factory() as session:
-            run_row = session.get(Run, run_id)
-            assert run_row is not None
-            run_row.status, run_row.error = status, error
-            run_row.finished_at = datetime.now(UTC)
-            run_row.heartbeat_at = None  # release the lease
-            session.commit()
-            session.expunge(run_row)
-    return run_row
+    # TaskGroup: if one task hits a bug, the siblings are cancelled instead of carrying on
+    # spending after the run was marked failed.
+    async with asyncio.TaskGroup() as tg:
+        for pid, e in todo:
+            tg.create_task(work(pid, e))

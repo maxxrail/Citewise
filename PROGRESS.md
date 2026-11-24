@@ -4,7 +4,7 @@
 |---|---|---|---|
 | 0 | Foundations | ✅ done | 35 tests; all acceptance criteria verified 2026-11-23 |
 | 1 | Prompt panel and topic discovery | 🔁 reviewed | 121 tests; all acceptance criteria verified on Postgres + SQLite 2026-11-23 |
-| 2 | Multi-engine answer collection | ✅ done | 210 tests; mock acceptance verified on Postgres + SQLite 2026-11-23; live check needs Maxx's key |
+| 2 | Multi-engine answer collection | 🔁 reviewed | 222 tests; acceptance re-verified on fresh Postgres + SQLite 2026-11-24; live check needs Maxx's key |
 | 3 | Extraction and visibility metrics | ⬜ not started | |
 | 4 | Brand knowledge base and FactCheck | ⬜ not started | |
 | 5 | Content agent | ⬜ not started | |
@@ -163,3 +163,34 @@ Plus 6 Lows. Regression tests are in `tests/test_collect_review.py`.
 **Maxx must do:**
 1. **Update `.env.example` and your `.env`:** `ENGINE_MODEL_GEMINI=gemini-3.5-flash-lite` and `ENGINE_MODEL_PERPLEXITY=perplexity/sonar`. Both files still pin the old IDs, which override the new defaults. The old `sonar` ID is refused in live mode.
 2. **Live acceptance check** (needs `OPENAI_API_KEY`, about $0.06): `CITEWISE_MODE=live`, then `uv run citewise scan run Stridelab --size 5 --engines openai --max-cost 1`. Optionally repeat with `--engines anthropic,gemini,perplexity` and their keys.
+
+### 2026-11-24 - Module 2 review (`/review-module 02`)
+**Re-verified (not trusting the log above):**
+- `uv run pytest` passes: 210 before the review, 222 after.
+- `ruff check`, `ruff format --check`, `mypy src` and `pre-commit run --all-files` are clean.
+- Each acceptance test passes on its own: 50×4 under 10 s, kill + resume without duplicates, fail-twice-then-succeed retry, budget abort before start, URL normalization.
+- End to end on a fresh Postgres DB (`citewise_m2review`):
+  - `seed → panel generate → cluster → build --size 50 → scan run --size 50 --max-cost 3` gave 200 answers for $1.8954 against a $2.7475 estimate, in 3.1 s wall clock including CLI start-up.
+  - The same scan with `--max-cost 0.5` is refused before it starts.
+  - A same-day re-run costs $0 from the cache.
+  - Every run has 200 rows with 200 distinct (prompt, engine) pairs, and all leases were released.
+  - Each run has 858 citations. The 842 logged above most likely came from a different panel DB; the cost matches to the cent.
+- No hardcoded model IDs outside config and pricing, and no Windows-only code.
+
+**Fixed (1 High, 3 Medium), with regression tests in `tests/test_collect_review_m02.py`.** I confirmed that the runner tests fail on the old `runner.py`.
+- **H1 – the lease could lapse while the executor was alive.** The heartbeat only moved when an answer landed. One Anthropic answer can take 190 s, longer than the 2-minute lease, and a degraded provider can time out every call at once. In both cases a second `scan resume`, which the "leased" error message itself suggests, could take over and pay for the same calls again. Fix: a background heartbeat every 10 s.
+- **M1 – setup failures left runs stuck in `running`.** An API-started live run with a missing key (or an unpriced or retired model) got a 202 and then showed "running" forever, with no error. Fix: everything after taking the lease runs inside the `finally` that records `failed` and the error, and releases the lease. `execute_run` also refuses a run from the other mode, which only `scan resume` had checked.
+- **M2 – OpenAI, Gemini and Perplexity answers had no output-token cap,** so the per-call budget reservation bounded nothing. Fix: `SCAN_MAX_OUTPUT_TOKENS` per engine (6000 / 4096 / 3000 / 2500). The parameter names and the fact that reasoning tokens count were checked against the docs on 2026-11-24. Perplexity `status: incomplete` is now a non-retryable failure that keeps its reported cost.
+- **M3 – SDK timeouts were costed at $0.** The SDK timeout (`APITimeoutError`) fires before the runner's, so the documented "timeouts are charged their estimate" never applied live. Fix: `is_timeout()`.
+
+**Low, also fixed:** resume reads spend so far from `llm_calls` rather than a possibly stale run row, and citation domains are truncated to the column width (a 300-character host would have aborted a whole Postgres run).
+
+**Low, not fixed (documented):**
+- An exception on an Anthropic `pause_turn` continuation drops the cost of the earlier billed turns.
+- A connect timeout is over-charged one estimate.
+- `scan run --size` above the panel size rebuilds the panel (by design; see DECISIONS).
+
+**Maxx must do:**
+1. Optionally add `SCAN_MAX_OUTPUT_TOKENS={"openai":6000,"anthropic":4096,"gemini":3000,"perplexity":2500}` to `.env.example`. Claude can't read that file. The defaults live in config, so nothing breaks without it.
+2. Drop the scratch review database if you like: `docker compose exec db psql -U citewise -d citewise -c "DROP DATABASE citewise_m2review"`.
+3. The live smoke check above is still open. It is now also the first real test of the new output caps.
