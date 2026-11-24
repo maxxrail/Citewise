@@ -304,3 +304,9 @@ Stridelab mock scan, per engine: mention rate 42% (OpenAI) to 60% (Anthropic), o
 **Live check (2026-11-24):** `record_extract_fixtures.py` on `claude-haiku-5-5` returned 65/65 schema-valid responses on the first attempt. It spent $0.0344, and every call was tracked in `llm_calls` (ok, tokens, cost, latency). The dev DB was migrated 0004 -> 0005. The offline eval now replays these responses (65/65 replayed).
 
 **Maxx did:** added `ANTHROPIC_API_KEY` to `.env`, switched its model lines to Claude, and updated `.env.example`.
+
+### 2026-11-24 - First live scan (Claude)
+`scan run Stridelab --size 5 --engines anthropic`, run 3 in the dev DB, completed 5/5 answers for $0.083 against a $0.078 estimate. `extract run 3` then cost $0.0044 and found 22 mentions.
+- **The fictional brand is unknown to a real engine.** Asked about orthotics in Stridelab shoes, Claude searched and answered about a real company, Stride Soles (stridesoles.com). The extractor filed it as an emerging company and didn't credit it to Stridelab. Stridelab's live mention rate was 20% (CI 0–62%, n=5). **For meaningful live visibility numbers, add a real brand.** The fictional brands stay for deterministic mock demos.
+- **The rest of the data looks right.** 21 real citations; real rankings (Brooks #1 and Hoka #2 for plantar fasciitis); 15 untracked companies surfaced as emerging (Altra, Salomon, Topo, Vivobarefoot, ...).
+- **Searches dominate cost.** Answers that searched cost about $0.012–0.024; the one that didn't search cost $0.0007.
