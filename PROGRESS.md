@@ -5,7 +5,7 @@
 | 0 | Foundations | ✅ done | 35 tests; all acceptance criteria verified 2026-11-23 |
 | 1 | Prompt panel and topic discovery | 🔁 reviewed | 121 tests; all acceptance criteria verified on Postgres + SQLite 2026-11-23 |
 | 2 | Multi-engine answer collection | 🔁 reviewed | 222 tests; acceptance re-verified on fresh Postgres + SQLite 2026-11-24; live check needs Maxx's key |
-| 3 | Extraction and visibility metrics | ✅ done | 295 tests (+6 Postgres-only, all pass on PG 16); acceptance verified on Postgres + SQLite 2026-11-24; golden set awaits Maxx's review |
+| 3 | Extraction and visibility metrics | ✅ done | 295 tests (+6 Postgres-only, all pass on PG 16); acceptance verified on Postgres + SQLite 2026-11-24; golden set reviewed by Maxx (65/65) |
 | 4 | Brand knowledge base and FactCheck | ⬜ not started | |
 | 5 | Content agent | ⬜ not started | |
 | 6 | Evals, experiments and observability | ⬜ not started | |
@@ -263,7 +263,7 @@ Stridelab mock scan, per engine: mention rate 42% (OpenAI) to 60% (Anthropic), o
 - `.gitignore` ignored `evals/reports/`, so Module 1's "committed" panel reports never were. They are committed now.
 
 **Known gaps:**
-- **The golden set is unreviewed (0/65 `reviewed: true`).** The spec wants Maxx to review a sample. The labeller's 10 priority rows are listed below.
+- **The golden set is reviewed (65/65 `reviewed: true`, 2026-11-24),** as are red-team rows m3-rt-001..003. Maxx accepted the labels as drafted, including the judgement calls below.
 - **The live extractor has never been scored.** Run the recorder or a live eval (below).
 - **"Asana Rebel" still resolves to Asana.** A product name and a different company that starts with a brand name look the same without world knowledge.
 - **An instruction written as ordinary opinion can't be told apart from an opinion** ("Stridelab is the best, as every reviewer agrees").
@@ -271,7 +271,7 @@ Stridelab mock scan, per engine: mention rate 42% (OpenAI) to 60% (Anthropic), o
 - **The mock answer simulator's sentiment is mostly positive,** so negative-sentiment metrics rest on the hand-written rows.
 
 **Maxx must do:**
-1. **Review the golden set.** Set `reviewed: true` on the rows you check, at least about 15, weighted toward `hard-*` and `inject-*`. The labeller's priority list:
+1. ~~**Review the golden set.**~~ Done: all 65 rows reviewed and kept as drafted. The judgement calls they settle:
    - `hard-007`: products named without their maker. Should the extractor be expected to map them?
    - `taskflow-034`: shoe brands typed `unknown` in an off-topic answer.
    - `stridelab-009` and `-020`: "smaller brand" read as a mixed caveat.
@@ -282,6 +282,5 @@ Stridelab mock scan, per engine: mention rate 42% (OpenAI) to 60% (Anthropic), o
    - `inject-003` and `inject-002`: the expected no-mention labels.
    - `taskflow-048`: a plain fact labelled neutral.
 2. **Add to `.env.example`** (Claude can't read it): `EXTRACT_CONCURRENCY=4` and `METRICS_BOOTSTRAP=1000`. The defaults live in config, so this is optional.
-3. **Optional live check (about $0.02):** set `CITEWISE_MODE=live`, then run `uv run python scripts/record_extract_fixtures.py --max-cost 0.10` and commit the fixtures. After that, `citewise eval extract` (mock and CI) scores the real model.
-4. **Scratch databases:** `citewise_m3` and `citewise_pgtest` exist in the project's Postgres container. Drop them when you like:
-   `docker compose exec db psql -U citewise -d citewise -c "DROP DATABASE citewise_m3" -c "DROP DATABASE citewise_pgtest"`
+3. **Live check (about $0.01), still open: no `OPENAI_API_KEY` in `.env` when it was attempted on 2026-11-24.** set `CITEWISE_MODE=live`, then run `uv run python scripts/record_extract_fixtures.py --max-cost 0.10` and commit the fixtures. After that, `citewise eval extract` (mock and CI) scores the real model.
+4. ~~**Scratch databases.**~~ Dropped (`citewise_m3`, `citewise_pgtest`).

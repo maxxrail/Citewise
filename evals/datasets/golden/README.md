@@ -19,7 +19,7 @@ is_recommended`. `entity_type` depends on the row's `brand`: a shoe brand in a T
   discouraged brands, unknown brands, prose rankings, a list whose first item names no company, and products named without their maker.
 - 3 rows (`inject-*`) are the golden versions of red-team cases `m3-rt-001..003` in `../redteam.jsonl`. They are labelled with
   what the answer really says, not what the injected text asks for.
-- All rows have `reviewed: false` until Maxx checks them.
+- All 65 rows were reviewed by Maxx on 2026-11-24 (`reviewed: true`) and kept as drafted.
 
 **Labelling conventions (my reading of the rubric; edit them here if you change them).**
 - Comparison answers ("Both X and Y are solid choices" + bullets): the bullets count as a list, so they get ranks. Only the verdict

@@ -148,7 +148,7 @@ Citewise uses official APIs only (with web search where available). API answers 
 
 The prompt panel has no search-volume data: every prompt counts equally. See docs/DECISIONS.md (Module 1) for how real volumes would plug in.
 
-Visibility metrics are only as good as the extractor. Its mock-mode scores measure a simulator; the golden set is still awaiting human review, and the live score needs a run with a key.
+Visibility metrics are only as good as the extractor. Its mock-mode scores measure a simulator; the golden set is hand-reviewed, but the live score needs a run with a key.
 
 ## License
 MIT

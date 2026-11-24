@@ -1,6 +1,6 @@
 # Mention extractor eval
 
-Golden set: `evals/datasets/golden/mentions.jsonl`: 65 answers, 0 hand-reviewed. Mode: **mock**. Generated 2026-11-24 by `citewise eval extract`.
+Golden set: `evals/datasets/golden/mentions.jsonl`: 65 answers, 65 hand-reviewed. Mode: **mock**. Generated 2026-11-24 by `citewise eval extract`.
 
 > **Mock mode.** Unless real responses have been recorded (`scripts/record_extract_fixtures.py`, needs a key), Stage B is the simulated extractor (`providers/mock_extract.py`), so the B and merged columns are a *smoke test of the pipeline*, not a model score. 48 of the rows are also simulator output: the hand-written table below is the fairer number, and Stage A (no LLM) is the honest offline baseline. Run `CITEWISE_MODE=live citewise eval extract` for real numbers.
 
